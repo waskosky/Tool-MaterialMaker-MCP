@@ -78,3 +78,18 @@ shading, engine imports, the historical full suite, and external GitHub CI were
 not run during this integration. Those acceptance steps remain in
 [TESTING.md](TESTING.md). The published-release manifest remains at 0.7.0 because
 this alpha has not been released.
+
+## Upstream contributions after integration
+
+The user then authorized the first two proposed upstream fixes. These were ported
+onto the original 0.7 baseline in separate worktrees and published as
+[#7](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/7) from `main`
+and [#8](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/8) from
+`fix/render-publication`. The root checkout stays on `integration/next`.
+
+The export patch passed 34 focused local checks and the fork's Windows CI
+(1,002 passed, 25 deselected). The render patch passed 47 focused local checks,
+including regressions for compatibility findings from pinned native source.
+Both received independent review. These results concern the small upstream
+patches, not a new native certification of this alpha. PR links, branch heads,
+remaining alpha renderer follow-ups and workflow state are in [UPSTREAM.md](UPSTREAM.md).

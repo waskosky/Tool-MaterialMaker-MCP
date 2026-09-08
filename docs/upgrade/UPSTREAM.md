@@ -2,21 +2,36 @@
 
 Continue development on `integration/next`, tracking `origin/integration/next`.
 Reserve local and origin `main` for selected, reviewable upstream contributions.
-Do not merge the full integration branch into that contribution branch.
+Use separate contribution heads from `upstream/main` when concurrent PRs need
+independent review. Do not merge the full integration branch into those heads.
 
 - Fork: [waskosky/Tool-MaterialMaker-MCP](https://github.com/waskosky/Tool-MaterialMaker-MCP).
 - Upstream: [graysonchalmers/Tool-MaterialMaker-MCP](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP).
-- Inspected upstream main: `b41b65c612557a7da35a045091199058c0f76abb`, identical to
-  `origin/main` when inspected. No code changes are needed on main to publish the
-  integration branch.
-- Open upstream work: no open issues; the sole open PR is the automated
+- Contribution baseline: upstream main `b41b65c612557a7da35a045091199058c0f76abb`,
+  identical to `origin/main` before these contributions. Each new PR contains one
+  independent commit on that baseline.
+- Previously open upstream work: no open issues; the sole PR before our submissions was the automated
   [0.8.0 release PR #6](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/6).
   It changes release metadata and the changelog, not the defects below. Its version
   number does not mean upstream already contains this fork's alpha implementation.
 
-These are proposed contributions, not submitted requests. Priority reflects the
-impact visible in current upstream source; native/GPU behavior has not been newly
+The first two contributions are now submitted and remain open. Priority reflects
+the impact visible in upstream source; native/GPU behavior has not been newly
 certified during this review.
+
+| Request | Origin head | Commit | Verification |
+| --- | --- | --- | --- |
+| [#7: bind Play downloads to completed render snapshots](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/7) | `main` | `a2e100e` | 34 focused local checks; [Windows CI](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34260468951): 1,002 passed, 25 deselected. |
+| [#8: validate staged output before publication](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/8) | `fix/render-publication` | `d3c0bb6` | 47 focused local checks; independent review and regression fixes. |
+
+Both target upstream `main`. Upstream PR workflows require maintainer approval;
+the fork's Windows result belongs to #7. The inherited `release-please` workflow
+was disabled on the fork after it attempted to create a fork release PR and GitHub
+rejected that operation. Release automation remains enabled upstream. No release
+was published. The integration branch remains the development checkout.
+
+Review worktrees are retained at `.worktrees/upstream-export` (`main`) and
+`.worktrees/upstream-render` (`fix/render-publication`) for follow-up changes.
 
 ## 1. Export the graph and files that produced the selected preview
 
@@ -27,11 +42,12 @@ their edited preview, plus images left by another material.
 Sources: [HTTP export route](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/play/server.py#L76-L81),
 [ZIP helper](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/play/api.py#L66-L81).
 
-Proposed PR: bind each completed preview to its exact saved graph, settings and
-output inventory, and export that result. This can be a small file-backed receipt
-without introducing the entire SQLite service. Cover edited controls, another
-material's leftover PNG, and an obsolete preview response. The integration's
-build/export tests provide examples of the required behavior.
+Submitted in #7: each completed preview has private maps, a saved ZIP/applied
+graph, and a receipt. Map and export routes require its `preview_id`. Browser
+selection, editing and newer requests invalidate the prior download and ignore
+obsolete replies. Tests cover edited controls, unrelated PNGs, later renders,
+incomplete results, HTTP downloads and request-order races. Completed previews
+persist on disk; the upstream README documents cleanup.
 
 ## 2. Reject failed or corrupt renders and preserve the previous preview
 
@@ -42,13 +58,18 @@ invalid output and discard the user's last usable preview.
 Sources: [batch result handling](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/render.py#L164-L194),
 [preview publication](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/preview.py#L50-L69).
 
-Proposed PR: private staging, successful-exit checks, actual PNG decoding and
-dimension/channel checks, followed by publication only after validation. Preserve
-the last good preview on failure. Resolve relative output paths before passing
-them to Godot as a small companion fix. Keep the existing public tool signatures
-and upstream engine-export behavior when porting; do not copy a changed exporter
-contract indiscriminately. Failure handling can be checked with small local
-fixtures before native acceptance.
+Submitted in #8: private staging, successful-exit checks, actual PNG decoding and
+baked-map dimensions, followed by publication after validation. Each crash retry
+clears its old texture output. Process/decode failures preserve previous files.
+Relative output paths are resolved before invoking Godot.
+
+Native-source review caught compatibility details that the patch now preserves:
+document-relative image references, rectangular dynamic texture buffers, protected
+engine material/metadata files, and absolute texture paths in UE5 helper scripts.
+Every native product is carried forward, with existing companion files visible
+to the native overwrite rules. Public tool signatures are unchanged. This does
+not certify PBR channel semantics, arbitrary custom profiles, or atomic publication
+of an entire multi-file directory. Real native/engine acceptance remains pending.
 
 ## 3. Protect native edits against unintended callers and stale/partial mutations
 
@@ -83,3 +104,9 @@ The new shared project database, recipe families, world bindings, composition an
 mesh workflows stay on `integration/next` while they mature. The fixes found only
 inside those new modules are not existing upstream bugs. Coordinate release
 numbering with upstream's release automation when submitting selected changes.
+
+Before alpha native acceptance, carry the retry-isolation and document-relative
+image handling findings into its renderer with its cancellation and immutable
+build contracts intact. The alpha renderer currently stages once per render,
+not once per retry. Do not wholesale-copy #8's legacy engine-export publication
+onto the service's separate package contract.

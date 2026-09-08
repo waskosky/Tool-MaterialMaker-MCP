@@ -79,6 +79,9 @@ doesn't serve that loop, check with Grayson before building it.
   `main` reserved for focused contributions to `upstream` (Grayson's repository).
   Do not merge the complete integration branch into `main`; port only the
   selected, reviewed upstream changes. Push this fork's work to `origin`.
+  Concurrent independent PRs may use separate contribution branches based on
+  `upstream/main`; the current render PR uses `fix/render-publication`. See
+  `docs/upgrade/UPSTREAM.md` for PR heads, worktrees and verification.
 - Gate rule: never start Phase N+1 until Phase N's gate is green and recorded in STATUS.md.
 - Validation errors are returned as data, not raised, so Claude can self-correct.
 - Keep units isolated: catalog builder, graph/validator, render runner, MCP server.
