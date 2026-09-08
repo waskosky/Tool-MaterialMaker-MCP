@@ -43,3 +43,4 @@ _godot/
 build/
 dist/
 .acceptance/
+.worktrees/
