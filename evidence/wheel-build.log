@@ -1,0 +1,424 @@
+109 package resource files verified.
+/opt/pyvenv/lib/python3.13/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+/opt/pyvenv/lib/python3.13/site-packages/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  dist._finalize_license_expression()
+/opt/pyvenv/lib/python3.13/site-packages/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: MIT License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  self._finalize_license_expression()
+running bdist_wheel
+running build
+running build_py
+copying src/mm_mcp/server.py -> build/lib/mm_mcp
+copying src/mm_mcp/paths.py -> build/lib/mm_mcp
+copying src/mm_mcp/artifacts.py -> build/lib/mm_mcp
+copying src/mm_mcp/activity.py -> build/lib/mm_mcp
+copying src/mm_mcp/__init__.py -> build/lib/mm_mcp
+copying src/mm_mcp/jobs.py -> build/lib/mm_mcp
+copying src/mm_mcp/core.py -> build/lib/mm_mcp
+copying src/mm_mcp/catalog_builder.py -> build/lib/mm_mcp
+copying src/mm_mcp/idle.py -> build/lib/mm_mcp
+copying src/mm_mcp/tools.py -> build/lib/mm_mcp
+copying src/mm_mcp/live.py -> build/lib/mm_mcp
+copying src/mm_mcp/validator.py -> build/lib/mm_mcp
+copying src/mm_mcp/transactions.py -> build/lib/mm_mcp
+copying src/mm_mcp/composition.py -> build/lib/mm_mcp
+copying src/mm_mcp/mesh_masks.py -> build/lib/mm_mcp
+copying src/mm_mcp/preview.py -> build/lib/mm_mcp
+copying src/mm_mcp/config.py -> build/lib/mm_mcp
+copying src/mm_mcp/builds.py -> build/lib/mm_mcp
+copying src/mm_mcp/recipes.py -> build/lib/mm_mcp
+copying src/mm_mcp/service.py -> build/lib/mm_mcp
+copying src/mm_mcp/policy.py -> build/lib/mm_mcp
+copying src/mm_mcp/render.py -> build/lib/mm_mcp
+copying src/mm_mcp/play/server.py -> build/lib/mm_mcp/play
+copying src/mm_mcp/play/sliders.py -> build/lib/mm_mcp/play
+copying src/mm_mcp/play/api.py -> build/lib/mm_mcp/play
+copying src/mm_mcp/play/renderer.py -> build/lib/mm_mcp/play
+running egg_info
+writing src/mm_mcp.egg-info/PKG-INFO
+writing dependency_links to src/mm_mcp.egg-info/dependency_links.txt
+writing entry points to src/mm_mcp.egg-info/entry_points.txt
+writing requirements to src/mm_mcp.egg-info/requires.txt
+writing top-level names to src/mm_mcp.egg-info/top_level.txt
+reading manifest file 'src/mm_mcp.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.pyc' found anywhere in distribution
+warning: no previously-included files matching '*.pyo' found anywhere in distribution
+adding license file 'LICENSE'
+writing manifest file 'src/mm_mcp.egg-info/SOURCES.txt'
+copying src/mm_mcp/play/static/app.js -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/play/static/index.html -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/play/static/style.css -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/data/addons/mm_live/live_server.gd -> build/lib/mm_mcp/data/addons/mm_live
+copying src/mm_mcp/play/static/app.js -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/play/static/index.html -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/play/static/style.css -> build/lib/mm_mcp/play/static
+copying src/mm_mcp/data/addons/mm_live/live_server.gd -> build/lib/mm_mcp/data/addons/mm_live
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/mm_mcp
+copying build/lib/mm_mcp/server.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/paths.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/doctor.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/artifacts.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+creating build/bdist.linux-x86_64/wheel/mm_mcp/play
+copying build/lib/mm_mcp/play/server.py -> build/bdist.linux-x86_64/wheel/./mm_mcp/play
+copying build/lib/mm_mcp/play/sliders.py -> build/bdist.linux-x86_64/wheel/./mm_mcp/play
+copying build/lib/mm_mcp/play/__init__.py -> build/bdist.linux-x86_64/wheel/./mm_mcp/play
+copying build/lib/mm_mcp/play/api.py -> build/bdist.linux-x86_64/wheel/./mm_mcp/play
+copying build/lib/mm_mcp/play/renderer.py -> build/bdist.linux-x86_64/wheel/./mm_mcp/play
+creating build/bdist.linux-x86_64/wheel/mm_mcp/play/static
+copying build/lib/mm_mcp/play/static/three.min.js -> build/bdist.linux-x86_64/wheel/./mm_mcp/play/static
+copying build/lib/mm_mcp/play/static/app.js -> build/bdist.linux-x86_64/wheel/./mm_mcp/play/static
+copying build/lib/mm_mcp/play/static/VENDOR.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/play/static
+copying build/lib/mm_mcp/play/static/index.html -> build/bdist.linux-x86_64/wheel/./mm_mcp/play/static
+copying build/lib/mm_mcp/play/static/style.css -> build/bdist.linux-x86_64/wheel/./mm_mcp/play/static
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data
+copying build/lib/mm_mcp/data/AUTHORING.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/addons
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/addons/mm_live
+copying build/lib/mm_mcp/data/addons/mm_live/live_server.gd -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/addons/mm_live
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s06_river_pebbles.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s09_ashlar_wall.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s04_scattered_river_stones.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s10_flagstone.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s02_gray_granite.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s02_gray_granite.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s04_scattered_river_stones.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s07_cobblestone.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s10_flagstone.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s07_cobblestone.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s11_marble.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s05_hex_stone_tile.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s08_dry_stone_wall.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s09_ashlar_wall.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s06_river_pebbles.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s05_hex_stone_tile.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s08_dry_stone_wall.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+copying build/lib/mm_mcp/data/cookbook/stone/s11_marble.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/stone
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l05_quilted_leather.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l02_distressed_two_tone.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l05_quilted_leather.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l06_topstitched_leather.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l03_suede.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l04_reptile_exotic.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l06_topstitched_leather.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l02_distressed_two_tone.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l03_suede.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l01_black_oiled_leather.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l04_reptile_exotic.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+copying build/lib/mm_mcp/data/cookbook/leather/l01_black_oiled_leather.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/leather
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t05_cracked_ice.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t01_sand_dunes.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t02_fresh_snow.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t01_sand_dunes.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t07_forest_floor.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t03_gravel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t03_gravel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t05_cracked_ice.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t04_grass_field.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t02_fresh_snow.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t06_cooled_lava.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t07_forest_floor.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t04_grass_field.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+copying build/lib/mm_mcp/data/cookbook/terrain/t06_cooled_lava.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/terrain
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w03_painted_wood_siding.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w04_driftwood_gray.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w05_dark_walnut.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w05_dark_walnut.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w04_driftwood_gray.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+copying build/lib/mm_mcp/data/cookbook/wood/w03_painted_wood_siding.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/wood
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o04_snake_scales.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o05_coral.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o04_snake_scales.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o03_tree_bark.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o03_tree_bark.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o05_coral.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+copying build/lib/mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/organics
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/glass
+copying build/lib/mm_mcp/data/cookbook/glass/gl01_frosted_glass.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/glass
+copying build/lib/mm_mcp/data/cookbook/glass/gl01_frosted_glass.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/glass
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/ceramic
+copying build/lib/mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/ceramic
+copying build/lib/mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/ceramic
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/plastics
+copying build/lib/mm_mcp/data/cookbook/plastics/p01_glossy_plastic.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/plastics
+copying build/lib/mm_mcp/data/cookbook/plastics/p01_glossy_plastic.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/plastics
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm04_hammertone.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm04_hammertone.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+copying build/lib/mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/painted-metal
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f01_woven_denim.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f05_silk_satin.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f06_velvet.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f04_wool_knit.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f04_wool_knit.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f06_velvet.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f01_woven_denim.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+copying build/lib/mm_mcp/data/cookbook/fabrics/f05_silk_satin.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/fabrics
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf03_circuit_board.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf01_hull_plating.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf01_hull_plating.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf03_circuit_board.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+copying build/lib/mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/scifi
+creating build/bdist.linux-x86_64/wheel/mm_mcp/data/cookbook/metal
+copying build/lib/mm_mcp/data/cookbook/metal/m02_brushed_aluminum.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/metal
+copying build/lib/mm_mcp/data/cookbook/metal/m01_weathered_copper.md -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/metal
+copying build/lib/mm_mcp/data/cookbook/metal/m02_brushed_aluminum.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/metal
+copying build/lib/mm_mcp/data/cookbook/metal/m01_weathered_copper.ptex -> build/bdist.linux-x86_64/wheel/./mm_mcp/data/cookbook/metal
+copying build/lib/mm_mcp/activity.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/__init__.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/inspect.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/jobs.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/graph.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/core.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/catalog_builder.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/idle.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/tools.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/live.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/validator.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/transactions.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/composition.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/mesh_masks.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/preview.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/overlay.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/config.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/builds.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/cookbook.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+creating build/bdist.linux-x86_64/wheel/mm_mcp/preview_project
+copying build/lib/mm_mcp/preview_project/preview.gd -> build/bdist.linux-x86_64/wheel/./mm_mcp/preview_project
+copying build/lib/mm_mcp/preview_project/project.godot -> build/bdist.linux-x86_64/wheel/./mm_mcp/preview_project
+copying build/lib/mm_mcp/preview_project/preview.tscn -> build/bdist.linux-x86_64/wheel/./mm_mcp/preview_project
+copying build/lib/mm_mcp/recipes.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/service.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/policy.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+copying build/lib/mm_mcp/render.py -> build/bdist.linux-x86_64/wheel/./mm_mcp
+running install_egg_info
+Copying src/mm_mcp.egg-info to build/bdist.linux-x86_64/wheel/./mm_mcp-0.8.0a1-py3.13.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/mm_mcp-0.8.0a1.dist-info/WHEEL
+creating '/mnt/data/mm_work/Tool-MaterialMaker-MCP-main/dist/.tmp-iw4c5rr4/mm_mcp-0.8.0a1-py3-none-any.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'mm_mcp/__init__.py'
+adding 'mm_mcp/activity.py'
+adding 'mm_mcp/artifacts.py'
+adding 'mm_mcp/builds.py'
+adding 'mm_mcp/catalog_builder.py'
+adding 'mm_mcp/composition.py'
+adding 'mm_mcp/config.py'
+adding 'mm_mcp/cookbook.py'
+adding 'mm_mcp/core.py'
+adding 'mm_mcp/doctor.py'
+adding 'mm_mcp/graph.py'
+adding 'mm_mcp/idle.py'
+adding 'mm_mcp/inspect.py'
+adding 'mm_mcp/jobs.py'
+adding 'mm_mcp/live.py'
+adding 'mm_mcp/mesh_masks.py'
+adding 'mm_mcp/overlay.py'
+adding 'mm_mcp/paths.py'
+adding 'mm_mcp/policy.py'
+adding 'mm_mcp/preview.py'
+adding 'mm_mcp/recipes.py'
+adding 'mm_mcp/render.py'
+adding 'mm_mcp/server.py'
+adding 'mm_mcp/service.py'
+adding 'mm_mcp/tools.py'
+adding 'mm_mcp/transactions.py'
+adding 'mm_mcp/validator.py'
+adding 'mm_mcp/data/AUTHORING.md'
+adding 'mm_mcp/data/addons/mm_live/live_server.gd'
+adding 'mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.md'
+adding 'mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f01_woven_denim.md'
+adding 'mm_mcp/data/cookbook/fabrics/f01_woven_denim.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.md'
+adding 'mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f04_wool_knit.md'
+adding 'mm_mcp/data/cookbook/fabrics/f04_wool_knit.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f05_silk_satin.md'
+adding 'mm_mcp/data/cookbook/fabrics/f05_silk_satin.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f06_velvet.md'
+adding 'mm_mcp/data/cookbook/fabrics/f06_velvet.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.md'
+adding 'mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.ptex'
+adding 'mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.md'
+adding 'mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.ptex'
+adding 'mm_mcp/data/cookbook/glass/gl01_frosted_glass.md'
+adding 'mm_mcp/data/cookbook/glass/gl01_frosted_glass.ptex'
+adding 'mm_mcp/data/cookbook/leather/l01_black_oiled_leather.md'
+adding 'mm_mcp/data/cookbook/leather/l01_black_oiled_leather.ptex'
+adding 'mm_mcp/data/cookbook/leather/l02_distressed_two_tone.md'
+adding 'mm_mcp/data/cookbook/leather/l02_distressed_two_tone.ptex'
+adding 'mm_mcp/data/cookbook/leather/l03_suede.md'
+adding 'mm_mcp/data/cookbook/leather/l03_suede.ptex'
+adding 'mm_mcp/data/cookbook/leather/l04_reptile_exotic.md'
+adding 'mm_mcp/data/cookbook/leather/l04_reptile_exotic.ptex'
+adding 'mm_mcp/data/cookbook/leather/l05_quilted_leather.md'
+adding 'mm_mcp/data/cookbook/leather/l05_quilted_leather.ptex'
+adding 'mm_mcp/data/cookbook/leather/l06_topstitched_leather.md'
+adding 'mm_mcp/data/cookbook/leather/l06_topstitched_leather.ptex'
+adding 'mm_mcp/data/cookbook/metal/m01_weathered_copper.md'
+adding 'mm_mcp/data/cookbook/metal/m01_weathered_copper.ptex'
+adding 'mm_mcp/data/cookbook/metal/m02_brushed_aluminum.md'
+adding 'mm_mcp/data/cookbook/metal/m02_brushed_aluminum.ptex'
+adding 'mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.md'
+adding 'mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.ptex'
+adding 'mm_mcp/data/cookbook/organics/o03_tree_bark.md'
+adding 'mm_mcp/data/cookbook/organics/o03_tree_bark.ptex'
+adding 'mm_mcp/data/cookbook/organics/o04_snake_scales.md'
+adding 'mm_mcp/data/cookbook/organics/o04_snake_scales.ptex'
+adding 'mm_mcp/data/cookbook/organics/o05_coral.md'
+adding 'mm_mcp/data/cookbook/organics/o05_coral.ptex'
+adding 'mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.md'
+adding 'mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.md'
+adding 'mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.md'
+adding 'mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.md'
+adding 'mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.md'
+adding 'mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/pm04_hammertone.md'
+adding 'mm_mcp/data/cookbook/painted-metal/pm04_hammertone.ptex'
+adding 'mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.md'
+adding 'mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.ptex'
+adding 'mm_mcp/data/cookbook/plastics/p01_glossy_plastic.md'
+adding 'mm_mcp/data/cookbook/plastics/p01_glossy_plastic.ptex'
+adding 'mm_mcp/data/cookbook/scifi/sf01_hull_plating.md'
+adding 'mm_mcp/data/cookbook/scifi/sf01_hull_plating.ptex'
+adding 'mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.md'
+adding 'mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.ptex'
+adding 'mm_mcp/data/cookbook/scifi/sf03_circuit_board.md'
+adding 'mm_mcp/data/cookbook/scifi/sf03_circuit_board.ptex'
+adding 'mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.md'
+adding 'mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.ptex'
+adding 'mm_mcp/data/cookbook/stone/s02_gray_granite.md'
+adding 'mm_mcp/data/cookbook/stone/s02_gray_granite.ptex'
+adding 'mm_mcp/data/cookbook/stone/s04_scattered_river_stones.md'
+adding 'mm_mcp/data/cookbook/stone/s04_scattered_river_stones.ptex'
+adding 'mm_mcp/data/cookbook/stone/s05_hex_stone_tile.md'
+adding 'mm_mcp/data/cookbook/stone/s05_hex_stone_tile.ptex'
+adding 'mm_mcp/data/cookbook/stone/s06_river_pebbles.md'
+adding 'mm_mcp/data/cookbook/stone/s06_river_pebbles.ptex'
+adding 'mm_mcp/data/cookbook/stone/s07_cobblestone.md'
+adding 'mm_mcp/data/cookbook/stone/s07_cobblestone.ptex'
+adding 'mm_mcp/data/cookbook/stone/s08_dry_stone_wall.md'
+adding 'mm_mcp/data/cookbook/stone/s08_dry_stone_wall.ptex'
+adding 'mm_mcp/data/cookbook/stone/s09_ashlar_wall.md'
+adding 'mm_mcp/data/cookbook/stone/s09_ashlar_wall.ptex'
+adding 'mm_mcp/data/cookbook/stone/s10_flagstone.md'
+adding 'mm_mcp/data/cookbook/stone/s10_flagstone.ptex'
+adding 'mm_mcp/data/cookbook/stone/s11_marble.md'
+adding 'mm_mcp/data/cookbook/stone/s11_marble.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t01_sand_dunes.md'
+adding 'mm_mcp/data/cookbook/terrain/t01_sand_dunes.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t02_fresh_snow.md'
+adding 'mm_mcp/data/cookbook/terrain/t02_fresh_snow.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t03_gravel.md'
+adding 'mm_mcp/data/cookbook/terrain/t03_gravel.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t04_grass_field.md'
+adding 'mm_mcp/data/cookbook/terrain/t04_grass_field.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t05_cracked_ice.md'
+adding 'mm_mcp/data/cookbook/terrain/t05_cracked_ice.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t06_cooled_lava.md'
+adding 'mm_mcp/data/cookbook/terrain/t06_cooled_lava.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t07_forest_floor.md'
+adding 'mm_mcp/data/cookbook/terrain/t07_forest_floor.ptex'
+adding 'mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.md'
+adding 'mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.ptex'
+adding 'mm_mcp/data/cookbook/wood/w03_painted_wood_siding.md'
+adding 'mm_mcp/data/cookbook/wood/w03_painted_wood_siding.ptex'
+adding 'mm_mcp/data/cookbook/wood/w04_driftwood_gray.md'
+adding 'mm_mcp/data/cookbook/wood/w04_driftwood_gray.ptex'
+adding 'mm_mcp/data/cookbook/wood/w05_dark_walnut.md'
+adding 'mm_mcp/data/cookbook/wood/w05_dark_walnut.ptex'
+adding 'mm_mcp/play/__init__.py'
+adding 'mm_mcp/play/api.py'
+adding 'mm_mcp/play/renderer.py'
+adding 'mm_mcp/play/server.py'
+adding 'mm_mcp/play/sliders.py'
+adding 'mm_mcp/play/static/VENDOR.md'
+adding 'mm_mcp/play/static/app.js'
+adding 'mm_mcp/play/static/index.html'
+adding 'mm_mcp/play/static/style.css'
+adding 'mm_mcp/play/static/three.min.js'
+adding 'mm_mcp/preview_project/preview.gd'
+adding 'mm_mcp/preview_project/preview.tscn'
+adding 'mm_mcp/preview_project/project.godot'
+adding 'mm_mcp-0.8.0a1.dist-info/licenses/LICENSE'
+adding 'mm_mcp-0.8.0a1.dist-info/METADATA'
+adding 'mm_mcp-0.8.0a1.dist-info/WHEEL'
+adding 'mm_mcp-0.8.0a1.dist-info/entry_points.txt'
+adding 'mm_mcp-0.8.0a1.dist-info/top_level.txt'
+adding 'mm_mcp-0.8.0a1.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+mm_mcp-0.8.0a1-py3-none-any.whl

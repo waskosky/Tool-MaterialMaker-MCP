@@ -1,29 +1,24 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Material Maker Play</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <div id="layout">
-    <aside id="left">
-      <h1>Material Maker Play</h1>
-      <div id="gallery"></div>
-      <div id="controls" hidden>
-        <h2 id="material-name"></h2>
-        <div id="sliders"></div>
-        <div id="actions">
-          <button id="full">Render full quality</button>
-          <button id="download">Download</button>
-          <span id="status"></span>
-        </div>
-      </div>
-    </aside>
-    <main id="viewport"></main>
-  </div>
-  <script src="/static/three.min.js"></script>
-  <script src="/static/app.js"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material Workshop</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><header><h1>Material Workshop</h1><span id="capabilities">Connecting to local service…</span></header>
+<div id="layout"><aside><h2>Recipe library</h2><input id="search" type="search" placeholder="Search material, structure, or recipe" aria-label="Search recipes">
+<label><input id="favorites-only" type="checkbox"> Favorites only</label><div id="gallery"></div>
+<h2>Shared projects</h2><button id="refresh-projects">Refresh projects</button><select id="projects" aria-label="Open project"><option value="">Select a project</option></select></aside>
+<main><div class="toolbar"><label>Shape <select id="shape"><option>sphere</option><option>plane</option><option>cube</option></select></label>
+<label>Lighting <select id="lighting"><option>studio</option><option>grazing</option><option>soft</option></select></label>
+<label>Tile repeat <input id="repeat" type="number" min="1" max="32" value="1" step="1"></label>
+<label>Height as bump <input id="height-toggle" type="checkbox"></label><button id="pin">Pin comparison</button><button id="compare">Compare pinned</button></div>
+<div id="viewport" aria-label="3D material preview"></div><p class="hint">Drag to orbit. Scroll to zoom. This viewer previews opaque baseline channels; native engine appearance requires separate verification.</p>
+<div id="status" role="status" aria-live="polite">Open a recipe to begin.</div><div id="evidence"></div><img id="comparison" alt="Pinned material channel comparisons" hidden></main>
+<section id="editor"><h2 id="material-name">No project selected</h2><p id="revision"></p><div class="toolbar"><button id="undo">Undo</button><button id="redo">Redo</button><button id="reset">Reset controls</button><button id="refresh">Reload shared state</button></div>
+<div id="sliders"></div><div id="build-settings"><label>Resolution <select id="size"><option>128</option><option selected>256</option><option>512</option><option>1024</option><option>2048</option></select></label>
+<label>Package <select id="target"><option>generic</option><option>godot</option><option>roblox</option><option>unity</option><option>unreal</option></select></label>
+<label>Tile size (meters) <input id="physical-size" type="number" min="0.001" max="100000" value="1" step="0.1"></label>
+<button id="render">Build material</button><button id="cancel" disabled>Cancel</button><button id="download" disabled>Download verified build</button></div>
+<details><summary>Recipe variations and snapshots</summary><p>Lock controls above, then enter explicit numeric ranges keyed by control ID.</p>
+<textarea id="ranges" rows="4" aria-label="Variation ranges" placeholder='{"dune_ripples/param0": [5, 15]}'>{}</textarea>
+<label>Family seed <input id="family-seed" type="number" value="1" step="1"></label><button id="family">Build six recipe variants</button><pre id="family-result"></pre>
+<input id="snapshot-name" placeholder="Snapshot name" aria-label="Snapshot name"><button id="snapshot">Save snapshot</button><button id="restore">Restore snapshot</button>
+<input id="recipe-name" placeholder="New personal recipe name" aria-label="Personal recipe name"><button id="save-recipe">Save personal recipe</button></details></section></div>
+<script src="/static/three.min.js"></script><script src="/static/app.js"></script></body></html>

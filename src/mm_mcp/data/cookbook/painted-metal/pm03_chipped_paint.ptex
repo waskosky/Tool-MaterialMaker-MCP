@@ -1,0 +1,1233 @@
+{
+ "connections": [
+  {
+   "from": "chip_mask",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 1
+  },
+  {
+   "from": "chip_mask",
+   "from_port": 1,
+   "to": "paint_layer",
+   "to_port": 0
+  },
+  {
+   "from": "chip_mask",
+   "from_port": 2,
+   "to": "paint_layer",
+   "to_port": 1
+  },
+  {
+   "from": "bare_metal_base",
+   "from_port": 0,
+   "to": "paint_metal_composite",
+   "to_port": 0
+  },
+  {
+   "from": "bare_metal_base",
+   "from_port": 1,
+   "to": "paint_metal_composite",
+   "to_port": 1
+  },
+  {
+   "from": "chip_mask",
+   "from_port": 3,
+   "to": "paint_metal_composite",
+   "to_port": 2
+  },
+  {
+   "from": "chip_mask",
+   "from_port": 4,
+   "to": "paint_metal_composite",
+   "to_port": 3
+  },
+  {
+   "from": "chip_mask",
+   "from_port": 5,
+   "to": "paint_metal_composite",
+   "to_port": 4
+  },
+  {
+   "from": "paint_layer",
+   "from_port": 0,
+   "to": "paint_metal_composite",
+   "to_port": 5
+  },
+  {
+   "from": "paint_layer",
+   "from_port": 1,
+   "to": "paint_metal_composite",
+   "to_port": 6
+  },
+  {
+   "from": "paint_metal_composite",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 0
+  },
+  {
+   "from": "paint_metal_composite",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 2
+  },
+  {
+   "from": "paint_metal_composite",
+   "from_port": 2,
+   "to": "Material",
+   "to_port": 4
+  }
+ ],
+ "label": "Graph",
+ "name": "431",
+ "node_position": {
+  "x": 0,
+  "y": 0
+ },
+ "nodes": [
+  {
+   "export_paths": {},
+   "name": "Material",
+   "node_position": {
+    "x": 837,
+    "y": 123
+   },
+   "parameters": {
+    "albedo_color": {
+     "a": 1,
+     "b": 1,
+     "g": 1,
+     "r": 1,
+     "type": "Color"
+    },
+    "ao": 1,
+    "depth_scale": 1,
+    "emission_energy": 1,
+    "metallic": 1,
+    "normal": 1,
+    "roughness": 1,
+    "size": 11,
+    "sss": 0
+   },
+   "type": "material"
+  },
+  {
+   "name": "bare_metal_base",
+   "label": "Bare Metal Base",
+   "type": "graph",
+   "node_position": {
+    "x": 333.9,
+    "y": 137.0
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.5,
+       "g": 0.51,
+       "b": 0.53,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.6,
+       "g": 0.61,
+       "b": 0.63,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    },
+    "param1": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.4,
+       "g": 0.41,
+       "b": 0.43,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.5,
+       "g": 0.51,
+       "b": 0.53,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -66.10000000000002,
+      "y": 137.0
+     },
+     "parameters": {},
+     "ports": [],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 733.9,
+      "y": 137.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -66.10000000000002,
+      "y": 337.0
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.5,
+         "g": 0.51,
+         "b": 0.53,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.6,
+         "g": 0.61,
+         "b": 0.63,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      },
+      "param1": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.4,
+         "g": 0.41,
+         "b": 0.43,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.5,
+         "g": 0.51,
+         "b": 0.53,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Bare metal color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "BareMetalColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Metal shadow tone",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "MetalShadowTone",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "SteelRoughnessNoise",
+     "node_position": {
+      "x": 86,
+      "y": 301
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.7,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "SteelToneNoise",
+     "node_position": {
+      "x": 86,
+      "y": 147
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.8,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "SteelMaskNoise",
+     "node_position": {
+      "x": 89,
+      "y": -6
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.9,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "BareMetalColor",
+     "node_position": {
+      "x": 365,
+      "y": -41
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.5,
+         "g": 0.51,
+         "b": 0.53,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.6,
+         "g": 0.61,
+         "b": 0.63,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "SteelRoughnessTone",
+     "node_position": {
+      "x": 363,
+      "y": 337
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0.354545,
+         "g": 0.354545,
+         "pos": 0,
+         "r": 0.354545
+        },
+        {
+         "a": 1,
+         "b": 0.745455,
+         "g": 0.745455,
+         "pos": 1,
+         "r": 0.745455
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "SteelToneMask",
+     "node_position": {
+      "x": 371,
+      "y": 47
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 0.445455,
+         "r": 0
+        },
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0.445456,
+         "r": 1
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "MetalShadowTone",
+     "node_position": {
+      "x": 371,
+      "y": 214
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.4,
+         "g": 0.41,
+         "b": 0.43,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.5,
+         "g": 0.51,
+         "b": 0.53,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "SteelRoughnessMaskTone",
+     "node_position": {
+      "x": 480,
+      "y": 141
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "BareMetalRoughness",
+     "node_position": {
+      "x": 566,
+      "y": 253
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 4
+     },
+     "type": "blend"
+    },
+    {
+     "name": "BareMetalAlbedo",
+     "node_position": {
+      "x": 562,
+      "y": -23
+     },
+     "parameters": {
+      "amount": 0.800781,
+      "blend_type": 0
+     },
+     "type": "blend"
+    }
+   ],
+   "connections": [
+    {
+     "from": "SteelRoughnessNoise",
+     "from_port": 0,
+     "to": "SteelRoughnessTone",
+     "to_port": 0
+    },
+    {
+     "from": "SteelToneNoise",
+     "from_port": 0,
+     "to": "MetalShadowTone",
+     "to_port": 0
+    },
+    {
+     "from": "BareMetalColor",
+     "from_port": 0,
+     "to": "BareMetalAlbedo",
+     "to_port": 0
+    },
+    {
+     "from": "MetalShadowTone",
+     "from_port": 0,
+     "to": "BareMetalAlbedo",
+     "to_port": 1
+    },
+    {
+     "from": "SteelMaskNoise",
+     "from_port": 0,
+     "to": "SteelToneMask",
+     "to_port": 0
+    },
+    {
+     "from": "SteelToneMask",
+     "from_port": 0,
+     "to": "BareMetalAlbedo",
+     "to_port": 2
+    },
+    {
+     "from": "SteelRoughnessTone",
+     "from_port": 0,
+     "to": "BareMetalRoughness",
+     "to_port": 1
+    },
+    {
+     "from": "SteelToneNoise",
+     "from_port": 0,
+     "to": "BareMetalColor",
+     "to_port": 0
+    },
+    {
+     "from": "SteelRoughnessMaskTone",
+     "from_port": 0,
+     "to": "BareMetalRoughness",
+     "to_port": 0
+    },
+    {
+     "from": "SteelToneMask",
+     "from_port": 0,
+     "to": "SteelRoughnessMaskTone",
+     "to_port": 0
+    },
+    {
+     "from": "BareMetalAlbedo",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "BareMetalRoughness",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    }
+   ]
+  },
+  {
+   "name": "chip_mask",
+   "label": "Chip Mask",
+   "type": "graph",
+   "node_position": {
+    "x": 0.0,
+    "y": 0.0
+   },
+   "parameters": {
+    "param0": 5
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "out3",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out4",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out5",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -400.0,
+      "y": 200.0
+     },
+     "parameters": {
+      "param0": 5
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Chip pattern scale",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "ChipNoise",
+         "widget": "scale_x"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ChipNoise",
+     "type": "perlin",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "scale_x": 5,
+      "scale_y": 5,
+      "iterations": 5
+     }
+    },
+    {
+     "name": "ChipMask",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 1,
+         "g": 1,
+         "b": 1,
+         "pos": 0.27
+        },
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.33
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "ChipNoise",
+     "from_port": 0,
+     "to": "ChipMask",
+     "to_port": 0
+    },
+    {
+     "from": "ChipMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "ChipNoise",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "ChipNoise",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    },
+    {
+     "from": "ChipMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 3
+    },
+    {
+     "from": "ChipMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 4
+    },
+    {
+     "from": "ChipMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 5
+    }
+   ]
+  },
+  {
+   "name": "paint_layer",
+   "label": "Paint Layer",
+   "type": "graph",
+   "node_position": {
+    "x": 0.0,
+    "y": 0.0
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "type": "Gradient",
+     "points": [
+      {
+       "a": 1,
+       "r": 0.28,
+       "g": 0.44,
+       "b": 0.28,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.34,
+       "g": 0.5,
+       "b": 0.33,
+       "pos": 1.0
+      }
+     ]
+    },
+    "param1": {
+     "interpolation": 1,
+     "type": "Gradient",
+     "points": [
+      {
+       "a": 1,
+       "r": 0.34,
+       "g": 0.34,
+       "b": 0.34,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.36,
+       "g": 0.36,
+       "b": 0.36,
+       "pos": 1.0
+      }
+     ]
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -400.0,
+      "y": 200.0
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.28,
+         "g": 0.44,
+         "b": 0.28,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.34,
+         "g": 0.5,
+         "b": 0.33,
+         "pos": 1.0
+        }
+       ]
+      },
+      "param1": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.34,
+         "g": 0.34,
+         "b": 0.34,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.36,
+         "g": 0.36,
+         "b": 0.36,
+         "pos": 1.0
+        }
+       ]
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Paint color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "PaintColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Paint sheen",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "PaintRoughness",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "PaintColor",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.28,
+         "g": 0.44,
+         "b": 0.28,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.34,
+         "g": 0.5,
+         "b": 0.33,
+         "pos": 1.0
+        }
+       ]
+      }
+     }
+    },
+    {
+     "name": "PaintRoughness",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.34,
+         "g": 0.34,
+         "b": 0.34,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.36,
+         "g": 0.36,
+         "b": 0.36,
+         "pos": 1.0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "PaintColor",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "PaintRoughness",
+     "to_port": 0
+    },
+    {
+     "from": "PaintColor",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "PaintRoughness",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    }
+   ]
+  },
+  {
+   "name": "paint_metal_composite",
+   "label": "Paint/Metal Composite",
+   "type": "graph",
+   "node_position": {
+    "x": 0.0,
+    "y": 0.0
+   },
+   "parameters": {
+    "param0": 0.3
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "in2",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in3",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in4",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in5",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "in6",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 400.0,
+      "y": 0.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgb",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -400.0,
+      "y": 200.0
+     },
+     "parameters": {
+      "param0": 0.3
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Chip edge relief",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "ChipEdgeNormal",
+         "widget": "param1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "AlbedoComposite",
+     "type": "blend",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "blend_type": 0,
+      "amount": 1
+     }
+    },
+    {
+     "name": "RoughnessComposite",
+     "type": "blend",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "blend_type": 0,
+      "amount": 1
+     }
+    },
+    {
+     "name": "ChipEdgeNormal",
+     "type": "normal_map",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "param0": 10,
+      "param1": 0.3,
+      "param2": 0,
+      "param4": 0
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "RoughnessComposite",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 2,
+     "to": "AlbedoComposite",
+     "to_port": 2
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 3,
+     "to": "RoughnessComposite",
+     "to_port": 2
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 4,
+     "to": "ChipEdgeNormal",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 5,
+     "to": "AlbedoComposite",
+     "to_port": 1
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 6,
+     "to": "RoughnessComposite",
+     "to_port": 1
+    },
+    {
+     "from": "AlbedoComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "RoughnessComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "ChipEdgeNormal",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    }
+   ]
+  }
+ ],
+ "parameters": {},
+ "type": "graph"
+}

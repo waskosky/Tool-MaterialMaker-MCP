@@ -16,6 +16,8 @@ from mm_mcp.preview import render_preview as _render_preview
 from mm_mcp.doctor import run_check
 from mm_mcp.inspect import inspect_ptex
 from mm_mcp.idle import IdleWatchdog
+from mm_mcp.policy import graph_dependencies
+from mm_mcp.core import ServiceError, atomic_json, parse_json, MAX_JSON_BYTES
 
 # Startup is lazy: importing this module must NOT validate config or build the
 # catalog, so `mm-mcp --check` / `--version` work even when config is broken
@@ -106,6 +108,10 @@ def render_graph(ptex: dict, size: int = 512, basename: str = "material",
     if errors:
         return {"ok": False, "images": [], "error": "validation failed",
                 "problems": errors}
+    try:
+        graph_dependencies(ptex,cfg)
+    except ServiceError as exc:
+        return exc.result()
     result = render(ptex, size=size, basename=basename, target=target, cfg=cfg)
     return {"ok": result.ok, "images": result.images,
             "error": result.error, "log_tail": result.log_tail}
@@ -137,6 +143,10 @@ def render_node_output(ptex: dict, node_name: str, port: int = 0, size: int = 51
     if errors:
         return {"ok": False, "image": None, "error": "validation failed",
                 "problems": errors}
+    try:
+        graph_dependencies(isolated,cfg)
+    except ServiceError as exc:
+        return exc.result()
     result = render(isolated, size=size, basename=basename, target=target, cfg=cfg)
     if not result.ok:
         return {"ok": False, "image": None, "error": result.error,
@@ -175,16 +185,27 @@ def render_preview(albedo_path: str, normal_path: str, orm_path: str,
             "error": result.error, "log_tail": result.log_tail}
 
 
-def save_graph(ptex: dict, path: str) -> dict:
+def save_graph(ptex: dict, path: str, overwrite: bool = False) -> dict:
+    """Save only user-owned .ptex source, never overwrite managed service state."""
     _touch_idle()
+    from pathlib import Path
+    from mm_mcp.core import ServiceError, file_lock
     try:
-        path = ensure_within_roots(path, load_config().allowed_roots)
-    except PathNotAllowed as exc:
-        return {"ok": False, "error": str(exc)}
-    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(ptex, fh, indent=1)
-    return {"ok": True, "path": path}
+        cfg=load_config()
+        destination=Path(ensure_within_roots(path,cfg.allowed_roots))
+        workspace=Path(cfg.workspace_dir or Path(cfg.output_dir)/'workspace').resolve()
+        if destination.suffix.lower()!='.ptex' or destination.is_relative_to(workspace):
+            raise ServiceError('MANAGED_PATH_DENIED','Save .ptex source outside the managed workspace; use material_recipe_save for personal recipes.')
+        if type(overwrite) is not bool:
+            raise ServiceError('REQUEST_TYPE','overwrite must be boolean.')
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        with file_lock(destination.parent/'.source-save.lock'):
+            if destination.exists() and not overwrite:
+                raise ServiceError('OVERWRITE_DENIED','File exists. Choose a new path or explicitly request overwrite.')
+            atomic_json(destination,ptex)
+        return {'ok':True,'path':str(destination)}
+    except (PathNotAllowed,ServiceError,OSError,ValueError) as exc:
+        return exc.result() if isinstance(exc,ServiceError) else {'ok':False,'error':str(exc)}
 
 
 def inspect_project(path: str) -> dict:
@@ -199,11 +220,11 @@ def inspect_project(path: str) -> dict:
         return {"ok": False, "error": str(exc)}
     try:
         with open(path, "rb") as fh:
-            raw = fh.read()
+            raw = fh.read(MAX_JSON_BYTES+1)
     except OSError as exc:
         return {"ok": False, "error": f"cannot read '{path}': {exc}"}
     try:
-        ptex = json.loads(raw.decode("utf-8"))
+        ptex = parse_json(raw)
     except (ValueError, UnicodeDecodeError) as exc:
         return {"ok": False, "error": f"'{path}' is not valid UTF-8 JSON: {exc}"}
     return {"ok": True, **inspect_ptex(ptex, file_bytes=raw)}
@@ -329,201 +350,62 @@ def live_start(launch_timeout: float = 60.0) -> dict:
             "error": session.error}
 
 
+def _live_result(result) -> dict:
+    return {**(result.data or {}), "ok":result.ok, "error":result.error}
+
+
 def live_get_graph() -> dict:
-    """Fetch the graph currently on Material Maker's active tab, in the same
-    {nodes, connections} shape as a .ptex file."""
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "graph": None, "error": session.error}
-    result = live.get_graph()
-    return {"ok": result.ok, "graph": result.data.get("graph") if result.ok else None,
-            "error": result.error}
+    """Read the active native graph including its instance-bound revision and capabilities."""
+    cfg,_=_ensure_ready(); session=_ensure_live_session(cfg)
+    return _live_result(live.get_graph()) if session.ok else {"ok":False,"error":session.error}
 
 
 def live_clear() -> dict:
-    """Reset the live graph on Material Maker's active tab to a single
-    default Material node, discarding every other node and connection --
-    the same reset the GUI's own "New" menu item performs. Irreversible;
-    there is no undo over the socket, so call live_get_graph first if the
-    current graph is worth keeping. Shows a brief on-screen notice in the
-    live window so a person watching isn't left wondering why it changed."""
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "error": session.error}
-    result = live.clear_graph()
-    return {"ok": result.ok, "error": result.error}
+    """Unconditional destructive clearing was removed. Use an explicit revisioned replacement after a snapshot."""
+    return {"ok":False,"code":"DESTRUCTIVE_OPERATION_DISABLED","error":"Use live_get_graph and a revisioned live_load; automatic recovery is mandatory."}
 
 
-_LIVE_OP_HANDLERS = {
-    "add_node": lambda op, cfg: live.add_node(
-        op["node_type"], op.get("parameters"), x=op.get("x", 0.0), y=op.get("y", 0.0), cfg=cfg),
-    "connect_nodes": lambda op, cfg: live.connect_nodes(
-        op["from_name"], op["from_port"], op["to_name"], op["to_port"], cfg=cfg),
-    "set_param": lambda op, cfg: live.set_param(op["name"], op["parameters"], cfg=cfg),
-    "disconnect_nodes": lambda op, cfg: live.disconnect_nodes(
-        op["from_name"], op["from_port"], op["to_name"], op["to_port"], cfg=cfg),
-    "reposition_node": lambda op, cfg: live.reposition_node(
-        op["name"], op["x"], op["y"], cfg=cfg),
-}
+def live_apply(ops: list, expected_revision: str, idempotency_key: str, dry_run: bool = False) -> dict:
+    """Prepare and validate the entire native patch before publication. Requires the experimental write capability."""
+    cfg,_=_ensure_ready(); session=_ensure_live_session(cfg)
+    if not session.ok:return {"ok":False,"error":session.error}
+    return _live_result(live.transaction(ops,expected_revision,idempotency_key,cfg=cfg,dry_run=dry_run))
 
 
-def live_apply(ops: list) -> dict:
-    """Apply a batch of mutations to the live graph in order, each validated
-    against the catalog before it reaches the socket (same validation
-    live.py's add_node/connect_nodes/set_param already do). Stops at the
-    first failing op rather than continuing: a later op in the same batch
-    may assume an earlier one already applied (e.g. connecting a node
-    add_node just created), so there's nothing safe to do with the rest of
-    the batch once one op fails. Each op is a dict:
-    {"op": "add_node", "node_type": ..., "parameters": {...}, "x": ..., "y": ...} |
-    {"op": "connect_nodes", "from_name": ..., "from_port": ..., "to_name": ..., "to_port": ...} |
-    {"op": "disconnect_nodes", "from_name": ..., "from_port": ..., "to_name": ..., "to_port": ...} |
-    {"op": "reposition_node", "name": ..., "x": ..., "y": ...} |
-    {"op": "set_param", "name": ..., "parameters": {...}}.
-
-    There is deliberately no "rename_node" op -- see live.reposition_node's
-    docstring for why renaming an existing node isn't supported.
-
-    A malformed op (not a dict, or missing a required field) is reported as
-    data rather than raised, same as an unrecognized 'op' value -- so a
-    batch that partially applied before hitting a bad op still reports what
-    already succeeded, instead of losing that record to an uncaught
-    exception.
-    """
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "results": [], "error": session.error}
-    results = []
-    for i, op in enumerate(ops):
-        if not isinstance(op, dict):
-            error = f"op {i} is not a valid operation object: {op!r}"
-            results.append({"index": i, "op": None, "ok": False, "data": None, "error": error})
-            return {"ok": False, "results": results, "error": error}
-        kind = op.get("op")
-        handler = _LIVE_OP_HANDLERS.get(kind)
-        if handler is None:
-            error = f"op {i} has an unrecognized 'op' value: {kind!r}"
-            results.append({"index": i, "op": kind, "ok": False, "data": None, "error": error})
-            return {"ok": False, "results": results, "error": error}
-        try:
-            result = handler(op, cfg)
-        except (KeyError, TypeError, AttributeError) as exc:
-            error = f"op {i} ({kind}) is missing or has a malformed field: {exc}"
-            results.append({"index": i, "op": kind, "ok": False, "data": None, "error": error})
-            return {"ok": False, "results": results, "error": error}
-        results.append({"index": i, "op": kind, "ok": result.ok,
-                         "data": result.data, "error": result.error})
-        if not result.ok:
-            return {"ok": False, "results": results,
-                    "error": f"op {i} ({kind}) failed: {result.error}"}
-    return {"ok": True, "results": results, "error": None}
+def live_history(direction: str, expected_revision: str, idempotency_key: str) -> dict:
+    """Use bridge-owned undo/redo. Native editor-wide undo integration is not claimed."""
+    cfg,_=_ensure_ready();session=_ensure_live_session(cfg)
+    if not session.ok:return {"ok":False,"error":session.error}
+    return _live_result(live.history(direction,expected_revision,idempotency_key))
 
 
 def live_render_node_output(node_name: str, port: int = 0, basename: str = "node_output",
-                             profile: str = "Godot/Godot 4 Standard") -> dict:
-    """Render a single node's output in isolation on the live graph, without
-    leaving it rewired afterward: temporarily reconnects node_name's output
-    `port` into the material node's albedo input, renders, then restores
-    whatever originally fed albedo_tex -- reconnecting the original source if
-    one existed, or disconnecting the temporary wire if albedo_tex started
-    out unconnected. Restore always runs, even if the render itself fails, so
-    the live window is never left stuck mid-preview -- but if the restore
-    call itself fails, that is reported back as ok=False (with the render's
-    own image still attached if the render succeeded), never silently
-    swallowed, since a failed restore leaves the live graph wired to the
-    temporary preview connection. Mirrors render_node_output's batch-path
-    return shape ({ok, image, error, log_tail}), but against whatever graph
-    is currently open in the live window. Note the shape only: log_tail is
-    always empty on this live path (live Godot output goes to
-    cfg.output_dir/mm_live.log, not captured per render), so it does NOT
-    carry the batch path's per-render diagnostics -- check mm_live.log for
-    those."""
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "image": None, "error": session.error}
-    current = live.get_graph()
-    if not current.ok:
-        return {"ok": False, "image": None, "error": current.error}
-    graph = current.data["graph"]
-    try:
-        material_name = find_material_node(graph)["name"]
-    except ValueError as exc:
-        return {"ok": False, "image": None, "error": str(exc)}
-    if not any(n.get("name") == node_name for n in graph.get("nodes", [])):
-        return {"ok": False, "image": None,
-                "error": f"no node named '{node_name}' in the live graph"}
-    original = next((c for c in graph.get("connections", [])
-                      if c.get("to") == material_name and c.get("to_port", 0) == 0), None)
-
-    preview = live.connect_nodes(node_name, port, material_name, 0, cfg=cfg)
-    if not preview.ok:
-        return {"ok": False, "image": None, "error": preview.error}
-
-    result = live.render(basename=basename, profile=profile, cfg=cfg)
-
-    if original is not None:
-        restore = live.connect_nodes(original["from"], original.get("from_port", 0),
-                                      material_name, 0, cfg=cfg)
-    else:
-        restore = live.disconnect_nodes(node_name, port, material_name, 0, cfg=cfg)
-    restore_warning = None
-    if not restore.ok:
-        restore_warning = (f"restoring the original wiring failed: {restore.error} -- "
-                            "the live graph is still wired to the temporary preview connection")
-
-    if not result.ok:
-        error = result.error
-        if restore_warning:
-            error = f"{error}; additionally, {restore_warning}"
-        return {"ok": False, "image": None, "error": error,
-                "log_tail": result.log_tail}
-    albedo = _first_albedo(result.images)
-    if albedo is None:
-        error = "render succeeded but no albedo output was produced"
-        if restore_warning:
-            error = f"{error}; additionally, {restore_warning}"
-        return {"ok": False, "image": None, "error": error,
-                "log_tail": result.log_tail}
-    if restore_warning:
-        return {"ok": False, "image": albedo, "error": restore_warning,
-                "log_tail": result.log_tail}
-    return {"ok": True, "image": albedo, "error": None, "log_tail": result.log_tail}
+                            profile: str = "Godot/Godot 4 Standard", size: int = 512) -> dict:
+    """Read the native graph, then batch-render an isolated COPY. Never temporarily rewire an artist's tab."""
+    current=live_get_graph()
+    if not current.get('ok'):return current
+    result=render_node_output(current['graph'],node_name,port,size,basename,profile)
+    result['source_revision']=current['revision'];result['native_graph_mutated']=False
+    return result
 
 
-def live_render(basename: str = "material", profile: str = "Godot/Godot 4 Standard") -> dict:
-    """Trigger a render in the live window (the same underlying export path
-    the GUI's own render button uses) and return the same {ok, images,
-    error, log_tail} shape render_graph already uses."""
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "images": [], "error": session.error, "log_tail": ""}
-    result = live.render(basename=basename, profile=profile, cfg=cfg)
-    return {"ok": result.ok, "images": result.images, "error": result.error,
-            "log_tail": result.log_tail}
+def live_render(basename: str = "material", profile: str = "Godot/Godot 4 Standard", size: int = 512) -> dict:
+    """Render the inspected active graph at the requested pixel size; verify returned image bytes and dimensions."""
+    cfg,_=_ensure_ready();session=_ensure_live_session(cfg)
+    if not session.ok:return {"ok":False,"error":session.error}
+    result=live.render(basename=basename,profile=profile,size=size,cfg=cfg)
+    return {"ok":result.ok,"images":result.images,"error":result.error,"log_tail":result.log_tail}
 
 
-def live_load(graph: dict | None = None, path: str | None = None) -> dict:
-    """Replace the graph shown in the running Material Maker session with one
-    you supply, in place (no new tab). Pass a graph dict (the {nodes,
-    connections, ...} shape live_get_graph returns) or a .ptex file path:
-    exactly one. The graph is validated against the catalog before loading.
-    This changes only what is shown: it never saves a file. Closes the loop for
-    driving a specific material live (e.g. the play surface pushing a picked
-    material). Requires a Claude Code restart to appear, like every live tool."""
-    cfg, _ = _ensure_ready()
-    session = _ensure_live_session(cfg)
-    if not session.ok:
-        return {"ok": False, "error": session.error}
-    result = live.load_graph(graph=graph, path=path, cfg=cfg)
-    return {"ok": result.ok, "error": result.error, "data": result.data}
+def live_load(graph: dict | None = None, path: str | None = None,
+              expected_revision: str = "", idempotency_key: str = "") -> dict:
+    """Prepare a replacement with a recovery snapshot. Both revision and retry key are mandatory."""
+    cfg,_=_ensure_ready();session=_ensure_live_session(cfg)
+    if not session.ok:return {"ok":False,"error":session.error}
+    return _live_result(live.load_graph(graph=graph,path=path,cfg=cfg,
+                        expected_revision=expected_revision,idempotency_key=idempotency_key))
 
 
-# Register the plain functions as MCP tools.
 mcp.tool()(list_node_types)
 mcp.tool()(describe_node)
 mcp.tool()(validate)
@@ -541,6 +423,10 @@ mcp.tool()(live_render)
 mcp.tool()(live_render_node_output)
 mcp.tool()(live_clear)
 mcp.tool()(live_load)
+mcp.tool()(live_history)
+
+from mm_mcp.tools import register as register_material_tools
+register_material_tools(mcp)
 
 
 @mcp.resource("catalog://nodes")
@@ -552,12 +438,12 @@ def catalog_resource() -> str:
 def _authoring_guide_path() -> str:
     """<repo>/docs/AUTHORING.md when running from a source checkout (this
     file is src/mm_mcp/server.py, so three dirname hops up is the repo root).
-    Empty string when that file does not exist, e.g. an installed wheel,
-    which does not package docs/."""
+    Wheels fall back to the synchronized mm_mcp/data/AUTHORING.md copy."""
     here = os.path.abspath(__file__)
     repo = os.path.dirname(os.path.dirname(os.path.dirname(here)))
     candidate = os.path.join(repo, "docs", "AUTHORING.md")
-    return candidate if os.path.isfile(candidate) else ""
+    packaged = os.path.join(os.path.dirname(__file__), "data", "AUTHORING.md")
+    return candidate if os.path.isfile(candidate) else packaged if os.path.isfile(packaged) else ""
 
 
 def read_authoring_guide() -> str:
@@ -567,8 +453,8 @@ def read_authoring_guide() -> str:
     if not path:
         return (
             "# Authoring guide unavailable\n\n"
-            "docs/AUTHORING.md was not found next to this install. The wheel "
-            "does not package docs/; use a source checkout to read the guide."
+            "Neither the source nor packaged authoring guide was found. Reinstall the "
+            "reviewed distribution and check scripts/sync_package_data.py."
         )
     with open(path, encoding="utf-8") as fh:
         return fh.read()
@@ -626,13 +512,20 @@ def main(argv: list | None = None) -> int:
         print(_USAGE, file=sys.stderr)
         return 2
     global _idle
-    cfg, _ = _ensure_ready()
+    cfg = load_config()
+    # Recipe discovery and workspace operations remain available without a renderer.
     if cfg.idle_exit_minutes > 0:
-        _idle = IdleWatchdog(cfg.idle_exit_minutes * 60, on_expire=_idle_exit)
+        from mm_mcp.service import services_active
+        _idle = IdleWatchdog(cfg.idle_exit_minutes * 60, on_expire=_idle_exit, is_active=services_active)
         _idle.start()
         print(f"mm-mcp: idle exit after {cfg.idle_exit_minutes} min without tool calls",
               file=sys.stderr)
-    mcp.run()
+    from mm_mcp.service import close_services
+    try:
+        mcp.run()
+    finally:
+        close_services()
+        _close_live_session_atexit()
     return 0
 
 

@@ -1,51 +1,41 @@
-"""README numbers must match the tree. Teardowns #1 and #3 both found
-hand-typed counts that had drifted (11/15 vs 15/15; six live tools vs seven;
-46 materials vs a 43-material contact sheet). This closes the drift class:
-the README states counts in digits and this test recomputes them."""
-import inspect
-import os
+"""Keep the current README and tool reference consistent with shipped resources."""
+import asyncio
+from pathlib import Path
 import re
+
+import pytest
 
 from mm_mcp import server
 from mm_mcp.cookbook import list_cookbook
+from mm_mcp.tools import TOOLS
 
-_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-with open(os.path.join(_ROOT, "README.md"), encoding="utf-8") as fh:
-    README = fh.read()
-ENTRIES = list_cookbook(os.path.join(_ROOT, "cookbook"))
-
-
-def _live_tool_names() -> set:
-    return {name for name, obj in vars(server).items()
-            if name.startswith("live_") and inspect.isfunction(obj)}
+ROOT = Path(__file__).resolve().parents[1]
+README = (ROOT / 'README.md').read_text(encoding='utf-8')
+REFERENCE = (ROOT / 'docs/upgrade/TOOLS.md').read_text(encoding='utf-8')
+REGISTERED = {tool.name for tool in asyncio.run(server.mcp.list_tools())}
+SHARED = {tool.__name__ for tool in TOOLS}
+LIVE = {name for name in REGISTERED if name.startswith('live_')}
 
 
 def test_readme_cookbook_material_count_matches_tree():
-    m = re.search(r"cookbook is (\d+)\s+materials\s+across\s+(\d+)\s+categories", README)
-    assert m, "README 'Material cookbook' sentence must read '<N> materials across <M> categories'"
-    assert int(m.group(1)) == len(ENTRIES)
-    assert int(m.group(2)) == len({e.category for e in ENTRIES})
+    entries = list_cookbook(str(ROOT / 'cookbook'))
+    counts = re.search(r'cookbook is (\d+) materials across (\d+) categories', README)
+    assert counts, 'README must describe the cookbook material and category counts'
+    assert int(counts[1]) == len(entries)
+    assert int(counts[2]) == len({entry.category for entry in entries})
 
 
-def test_readme_contact_sheet_summary_count_matches_tree():
-    m = re.search(r"Show the cookbook contact sheet</b>\s+\((\d+)\s+materials:", README)
-    assert m, "contact-sheet <summary> must state '(<N> materials:'"
-    assert int(m.group(1)) == len(ENTRIES)
+@pytest.mark.parametrize('kind, names', [
+    ('shared material', SHARED), ('batch', REGISTERED - SHARED - LIVE), ('live', LIVE),
+])
+def test_readme_tool_counts_match_sdk_registration(kind, names):
+    count = re.search(r'(\d+) ' + kind + r' tools', README)
+    assert count, f'README must state the number of {kind} tools'
+    assert int(count[1]) == len(names)
 
 
-def test_readme_play_surface_count_matches_tree():
-    m = re.search(r"gallery of the (\d+)\s+cookbook\s+materials", README)
-    assert m, "Play surface paragraph must read 'gallery of the <N> cookbook materials'"
-    assert int(m.group(1)) == len(ENTRIES)
-
-
-def test_readme_live_tool_count_matches_server():
-    m = re.search(r"plus (\d+)\s+more\s+in\s+Live\s+mode", README)
-    assert m, "Tools sentence must read 'plus <N> more in Live mode'"
-    assert int(m.group(1)) == len(_live_tool_names())
-
-
-def test_readme_live_tool_table_lists_every_live_tool():
-    rows = set(re.findall(r"^\| `(live_\w+)` \|", README, flags=re.M))
-    expected = _live_tool_names()
-    assert rows == expected
+def test_reference_documents_all_registered_tools():
+    shared = set(re.findall(r'^## (material_\w+)$', REFERENCE, re.M))
+    legacy = set(re.findall(r'^\| `(\w+)` \|', REFERENCE, re.M))
+    assert shared == SHARED
+    assert shared | legacy == REGISTERED

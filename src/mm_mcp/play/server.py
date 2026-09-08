@@ -1,131 +1,176 @@
-"""Standalone local web server for the play surface. Binds to 127.0.0.1, single
-user, no auth. Launched by a human via `mm-play`. Renders are serialized in the
-facade (renderer.py), so the threading server is safe."""
+"""Token-authenticated, loopback-only browser adapter for the shared service.
+
+The operator receives a fragment-token launch URL. Fragments are not sent in
+HTTP requests; JavaScript exchanges the token via a header. No CORS is enabled.
+"""
 import csv
+import hmac
 import json
+import mimetypes
 import os
+from pathlib import Path
+import secrets
 import socket
+import threading
 import subprocess
+from urllib.parse import parse_qs,urlsplit,unquote
 import webbrowser
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-
+from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+from mm_mcp.config import load_config
 from mm_mcp.catalog_builder import build_catalog
-from mm_mcp.config import load_config, require_valid
-from mm_mcp.play import api
-from mm_mcp.paths import reject_path_fragment, PathNotAllowed
+from mm_mcp.core import ServiceError,MAX_JSON_BYTES,parse_json,identifier
+from mm_mcp.service import get_service
+from mm_mcp.play.sliders import derive_sliders
+from mm_mcp.paths import reject_path_fragment,PathNotAllowed
 
-STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+STATIC_DIR=str(Path(__file__).parent/'static')
 
-
-def make_handler(cfg, catalog, outdir, static_dir):
+def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,token=None):
+    app=service or get_service(cfg,catalog)
+    session_token=token or secrets.token_urlsafe(32)
     class Handler(BaseHTTPRequestHandler):
-        def log_message(self, *args):
-            pass  # quiet
-
-        def _send_json(self, obj, status=200):
-            body = json.dumps(obj).encode("utf-8")
+        protocol_version='HTTP/1.0'
+        def setup(self):
+            super().setup(); self.connection.settimeout(30)
+        def log_message(self,*args):
+            pass
+        def _send(self,data,ctype='application/json',status=200,filename=None):
+            if not isinstance(data,bytes):
+                data=json.dumps(data,allow_nan=False).encode()
             self.send_response(status)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
-
-        def _send_bytes(self, data, content_type, status=200):
-            self.send_response(status)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(data)))
-            self.end_headers()
-            self.wfile.write(data)
-
-        def _serve_static(self, rel):
+            self.send_header('Content-Type',ctype); self.send_header('Content-Length',str(len(data)))
+            self.send_header('Cache-Control','no-store')
+            self.send_header('X-Content-Type-Options','nosniff')
+            self.send_header('Referrer-Policy','no-referrer')
+            self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
+            if filename:
+                self.send_header('Content-Disposition',f'attachment; filename="{identifier(filename)}"')
+            self.end_headers(); self.wfile.write(data)
+        def _guard(self,api=False):
+            port=self.server.server_address[1]
+            allowed={f'127.0.0.1:{port}',f'localhost:{port}'}
+            if self.headers.get('Host','') not in allowed:
+                raise ServiceError('HOST_DENIED','Invalid local Host header.')
+            origin=self.headers.get('Origin')
+            if origin and origin not in {'http://'+host for host in allowed}:
+                raise ServiceError('ORIGIN_DENIED','Cross-origin requests are disabled.')
+            if self.headers.get('Sec-Fetch-Site')=='cross-site':
+                raise ServiceError('ORIGIN_DENIED','Cross-site requests are disabled.')
+            if api and not hmac.compare_digest(self.headers.get('X-MM-Token',''),session_token):
+                raise ServiceError('AUTH_REQUIRED','Open the full launch URL printed by mm-play, including its fragment token.')
+        def _body(self):
+            if self.headers.get('Transfer-Encoding'):
+                raise ServiceError('REQUEST_ENCODING','Chunked requests are not accepted.')
+            if self.headers.get_content_type()!='application/json':
+                raise ServiceError('CONTENT_TYPE','Use application/json.')
             try:
-                reject_path_fragment(rel)
-            except PathNotAllowed:
-                return self._send_json({"ok": False, "error": "bad path"}, 400)
-            path = os.path.join(static_dir, rel)
-            if not os.path.isfile(path):
-                return self._send_json({"ok": False, "error": "not found"}, 404)
-            ctype = ("text/html" if path.endswith(".html")
-                     else "application/javascript" if path.endswith(".js")
-                     else "text/css" if path.endswith(".css")
-                     else "application/octet-stream")
-            with open(path, "rb") as fh:
-                self._send_bytes(fh.read(), ctype)
-
-        def _dispatch_get(self):
-            path = self.path.split("?", 1)[0]
-            if path == "/":
-                return self._serve_static("index.html")
-            if path == "/api/materials":
-                return self._send_json(api.list_materials(cfg))
-            if path.startswith("/api/material/"):
-                name = path[len("/api/material/"):]
-                out = api.get_material(cfg, catalog, name)
-                return self._send_json(out, 200 if out["ok"] else 404)
-            if path.startswith("/api/maps/"):
-                name = path[len("/api/maps/"):]
-                try:
-                    reject_path_fragment(name)
-                except PathNotAllowed:
-                    return self._send_json({"ok": False, "error": "bad path"}, 400)
-                fp = os.path.join(outdir, name)
-                if not os.path.isfile(fp):
-                    return self._send_json({"ok": False, "error": "not found"}, 404)
-                with open(fp, "rb") as fh:
-                    return self._send_bytes(fh.read(), "image/png")
-            if path == "/api/export":
-                from urllib.parse import parse_qs, urlparse
-                q = parse_qs(urlparse(self.path).query)
-                name = (q.get("material_id") or [""])[0]
-                data, fname = api.export(cfg, catalog,
-                                         {"material_id": name, "values": {}}, outdir)
-                if data is None:
-                    return self._send_json({"ok": False, "error": fname}, 404)
-                self.send_response(200)
-                self.send_header("Content-Type", "application/zip")
-                self.send_header("Content-Disposition",
-                                 f'attachment; filename="{fname}"')
-                self.send_header("Content-Length", str(len(data)))
-                self.end_headers()
-                self.wfile.write(data)
-                return
-            if path.startswith("/static/"):
-                return self._serve_static(path[len("/static/"):])
-            return self._send_json({"ok": False, "error": "not found"}, 404)
-
-        def _dispatch_post(self):
-            path = self.path.split("?", 1)[0]
-            length = int(self.headers.get("Content-Length") or 0)
-            raw = self.rfile.read(length) if length else b"{}"
+                length=int(self.headers.get('Content-Length','0'))
+            except ValueError as exc:
+                raise ServiceError('REQUEST_LENGTH','Invalid content length.') from exc
+            if not 0<length<=MAX_JSON_BYTES:
+                raise ServiceError('REQUEST_LENGTH','Body must contain 1 byte through 8 MiB.')
+            body=parse_json(self.rfile.read(length))
+            if not isinstance(body,dict):
+                raise ServiceError('REQUEST_TYPE','Request must be an object.')
+            return body
+        def _static(self,name):
+            reject_path_fragment(name)
+            path=Path(static_dir)/name
+            if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(Path(static_dir).resolve()):
+                raise ServiceError('NOT_FOUND','Static file not found.')
+            return self._send(path.read_bytes(),mimetypes.guess_type(name)[0] or 'application/octet-stream')
+        def _get(self):
+            url=urlsplit(self.path); path=unquote(url.path); query=parse_qs(url.query)
+            self._guard(api=path.startswith('/api/'))
+            if path=='/':
+                return self._static('index.html')
+            if path.startswith('/static/'):
+                return self._static(path[len('/static/'):])
+            if path=='/api/capabilities':
+                return self._send(app.capabilities())
+            if path=='/api/materials':
+                return self._send({'ok':True,'materials':app.recipes.search((query.get('q') or [''])[0],limit=100)})
+            if path.startswith('/api/material/'):
+                info=app.recipes.describe(path[len('/api/material/'):])
+                return self._send({**info,'sliders':info['controls']})
+            if path=='/api/projects':
+                return self._send({'ok':True,'projects':app.graphs.list()})
+            if path.startswith('/api/projects/'):
+                result=app.graphs.read(path[len('/api/projects/'):])
+                result['controls']=derive_sliders(result['graph'],app.catalog)
+                return self._send(result)
+            if path.startswith('/api/jobs/'):
+                return self._send(app.jobs.get(path[len('/api/jobs/'):]))
+            if path.startswith('/api/builds/'):
+                rest=path[len('/api/builds/'):].split('/')
+                if len(rest)==1:
+                    return self._send({'ok':True,'manifest':app.builds.get(rest[0])})
+                if len(rest)==3 and rest[1]=='files':
+                    file=app.builds.artifact(rest[0],rest[2])
+                    return self._send(file.read_bytes(),mimetypes.guess_type(file.name)[0] or 'application/octet-stream')
+            if path=='/api/export':
+                bid=(query.get('build_id') or [''])[0]
+                return self._send(app.builds.export(bid),'application/zip',filename=bid+'.zip')
+            if path.startswith('/api/comparisons/'):
+                name=identifier(path[len('/api/comparisons/'):])
+                file=app.root/'comparisons'/name
+                if file.suffix!='.png' or not file.is_file() or file.is_symlink():
+                    raise ServiceError('NOT_FOUND','Comparison not found.')
+                return self._send(file.read_bytes(),'image/png')
+            raise ServiceError('NOT_FOUND','Endpoint not found.')
+        def _post(self):
+            self._guard(api=True); path=urlsplit(self.path).path; body=self._body()
+            if path=='/api/render':
+                result=app.build(body)
+            elif path=='/api/jobs':
+                result=app.jobs.submit(body)
+            elif path.startswith('/api/jobs/') and path.endswith('/cancel'):
+                result=app.jobs.cancel(path[len('/api/jobs/'):-len('/cancel')])
+            elif path=='/api/projects':
+                result=app.instantiate(body['recipe_id'],body.get('values'),body.get('title',''))
+            elif path=='/api/patch':
+                result=app.patch(**body)
+            elif path=='/api/history':
+                result=app.graphs.history_step(body['project_id'],body['expected_revision'],body['direction'])
+                result['controls']=derive_sliders(result['graph'],app.catalog)
+            elif path=='/api/snapshot':
+                result=app.graphs.snapshot(body['project_id'],body['name'])
+            elif path=='/api/restore':
+                result=app.graphs.restore(body['project_id'],body['name'],body['expected_revision'])
+            elif path=='/api/family':
+                result=app.family(**body)
+            elif path=='/api/context':
+                result=app.world_context(**body)
+            elif path=='/api/compare':
+                result=app.compare(**body)
+            elif path=='/api/mesh-masks':
+                from mm_mcp.mesh_masks import bake_mesh_masks
+                result=bake_mesh_masks(cfg=cfg,**body)
+            elif path=='/api/recipes/save':
+                result=app.save_recipe(**body)
+            else:
+                raise ServiceError('NOT_FOUND','Endpoint not found.')
+            return self._send(result)
+        def _handle(self,callback):
             try:
-                body = json.loads(raw or b"{}")
-            except json.JSONDecodeError:
-                return self._send_json({"ok": False, "error": "bad json"}, 400)
-            if path == "/api/render":
-                out = api.render_request(cfg, catalog, body, outdir)
-                return self._send_json(out, 200 if out["ok"] else 400)
-            return self._send_json({"ok": False, "error": "not found"}, 404)
-
-        # An unexpected error inside a handler must come back to the browser as a
-        # JSON error it can display, not bubble into ThreadingHTTPServer's default
-        # traceback that kills the response and leaves the client's fetch hanging
-        # (the "rendering... forever" symptom). A misconfigured Godot binary is
-        # caught at startup by require_valid in serve(); this is the net for
-        # anything that slips past.
+                callback()
+            except ServiceError as exc:
+                status=401 if exc.code=='AUTH_REQUIRED' else 403 if exc.code in ('HOST_DENIED','ORIGIN_DENIED') else 404 if exc.code.endswith('NOT_FOUND') else 409 if 'CONFLICT' in exc.code else 400
+                self._send(exc.result(),status=status)
+            except (ValueError,TypeError,KeyError,PathNotAllowed) as exc:
+                self._send({'ok':False,'code':'INVALID_REQUEST','error':str(exc)},status=400)
+            except (BrokenPipeError,ConnectionResetError,TimeoutError):
+                pass
+            except Exception:
+                import traceback,sys
+                traceback.print_exc(file=sys.stderr)
+                self._send({'ok':False,'code':'INTERNAL_ERROR','error':'Local service error; consult the terminal log.'},status=500)
         def do_GET(self):
-            try:
-                self._dispatch_get()
-            except Exception as exc:  # noqa: BLE001 - deliberate catch-all boundary
-                self._send_json({"ok": False, "error": str(exc)}, 500)
-
+            self._handle(self._get)
         def do_POST(self):
-            try:
-                self._dispatch_post()
-            except Exception as exc:  # noqa: BLE001 - deliberate catch-all boundary
-                self._send_json({"ok": False, "error": str(exc)}, 500)
-
+            self._handle(self._post)
+    Handler.session_token=session_token
     return Handler
-
 
 def port_in_use(port: int, host: str = "127.0.0.1") -> bool:
     """True when something accepts TCP connections on host:port. A connect
@@ -178,54 +223,57 @@ class _StrictThreadingHTTPServer(ThreadingHTTPServer):
     # On POSIX it only bypasses TIME_WAIT, so clearing it there just makes a
     # quick restart fail; keep it on for anything that isn't Windows.
     allow_reuse_address = os.name != "nt"
+    daemon_threads = True
+
+    def __init__(self, *args, **kwargs):
+        self._request_slots = threading.BoundedSemaphore(24)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, client_address):
+        if not self._request_slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self._request_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._request_slots.release()
 
 
-def serve(cfg=None, open_browser=False):
-    cfg = cfg or load_config()
-    # Fail fast with an actionable message that names the exact bad path,
-    # instead of starting and then throwing a cryptic WinError 2 traceback on
-    # every render (which the browser only ever sees as "rendering..." forever).
-    # Same guard the MCP server runs at its own startup.
-    try:
-        require_valid(cfg)
-    except FileNotFoundError as exc:
-        print(f"Cannot start Material Maker Play: {exc}")
-        return None
+
+
+
+def serve(cfg=None,open_browser=False):
+    cfg=cfg or load_config()
     if port_in_use(cfg.play_port):
-        owner = describe_port_owner(cfg.play_port)
-        who = f" by {owner}" if owner else ""
-        print(f"Cannot start Material Maker Play: port {cfg.play_port} is already in use{who}.")
-        print("  Most likely a stale mm-play from an earlier session is still running.")
-        if owner and owner.startswith("PID "):
-            pid = owner.split()[1]
-            print(f"  Stop it:   Stop-Process -Id {pid}")
-        print("  Or use another port: set MM_PLAY_PORT in .env and relaunch.")
-        return None
-    catalog = build_catalog(cfg.nodes_dir)
-    outdir = os.path.join(cfg.output_dir, "play")
-    os.makedirs(outdir, exist_ok=True)
-    handler = make_handler(cfg, catalog, outdir, STATIC_DIR)
-    try:
-        httpd = _StrictThreadingHTTPServer(("127.0.0.1", cfg.play_port), handler)
-    except OSError as exc:
-        print(f"Cannot start Material Maker Play: could not bind port {cfg.play_port} ({exc}).")
-        print("  Set MM_PLAY_PORT in .env to use another port.")
-        return None
-    url = f"http://127.0.0.1:{cfg.play_port}/"
-    print(f"Material Maker Play running at {url}  (Ctrl+C to stop)")
+        print(f'Port {cfg.play_port} is already in use. Set MM_PLAY_PORT to another port.'); return None
+    catalog=build_catalog(cfg.nodes_dir)
+    app=get_service(cfg,catalog); token=secrets.token_urlsafe(32)
+    handler=make_handler(cfg,catalog,service=app,token=token)
+    httpd=_StrictThreadingHTTPServer(('127.0.0.1',cfg.play_port),handler)
+    url=f'http://127.0.0.1:{cfg.play_port}/#token={token}'
+    print('Material Maker Play launch URL (keep private):\n'+url)
+    print('Catalog and native-render status are shown in the browser. Ctrl+C stops this process.')
+    app.jobs.start()
     if open_browser:
         webbrowser.open(url)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        httpd.shutdown()
-    return None
+        pass
+    finally:
+        httpd.server_close(); app.close()
+    return httpd
 
+def main():
+    import sys
+    serve(open_browser='--open' in sys.argv)
 
-def main(argv=None):
-    serve(open_browser=True)
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__=='__main__':
+    main()

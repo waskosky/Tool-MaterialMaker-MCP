@@ -41,6 +41,10 @@ class Config:
     cookbook_dir: str = ""
     play_port: int = 8788
     idle_exit_minutes: int = 0
+    workspace_dir: str = ""
+    max_resolution: int = 2048
+    allow_custom_shaders: bool = False
+    enable_experimental_live_writes: bool = False
 
 
 def _resolve_console(godot_binary: str) -> str:
@@ -54,13 +58,13 @@ def _resolve_console(godot_binary: str) -> str:
 def _default_cookbook_dir() -> str:
     """<repo>/cookbook when running from a source checkout (this file is
     src/mm_mcp/config.py, so three dirname hops up is the repo root). Empty
-    when that directory does not exist, e.g. an installed wheel, which does
-    not package the cookbook; the example tools then serve only Material
-    Maker's bundled examples."""
+    when neither source nor wheel resources exist. Wheels include the reviewed
+    cookbook under mm_mcp/data/cookbook."""
     here = os.path.abspath(__file__)
     repo = os.path.dirname(os.path.dirname(os.path.dirname(here)))
     candidate = os.path.join(repo, "cookbook")
-    return candidate if os.path.isdir(candidate) else ""
+    packaged = os.path.join(os.path.dirname(__file__), "data", "cookbook")
+    return candidate if os.path.isdir(candidate) else packaged if os.path.isdir(packaged) else ""
 
 
 def require_valid(cfg: "Config") -> None:
@@ -115,9 +119,24 @@ def load_config(overrides: dict | None = None) -> Config:
     project_path = env["MM_PROJECT_PATH"]
     output_dir = env["MM_OUTPUT_DIR"] or os.path.join(os.getcwd(), "output")
     live_overlay_dir = env["MM_LIVE_OVERLAY_DIR"] or os.path.join(os.getcwd(), "mm_live_overlay")
-    allowed_roots = [p for p in env["MM_ALLOWED_ROOTS"].split(os.pathsep) if p]
+    workspace_dir = os.path.abspath(env.get("MM_WORKSPACE_DIR") or os.path.join(output_dir, "workspace"))
+    roots_raw = env["MM_ALLOWED_ROOTS"]
+    if roots_raw.startswith("["):
+        import json
+        allowed_roots = json.loads(roots_raw)
+        if not isinstance(allowed_roots, list) or not all(isinstance(p, str) and p for p in allowed_roots):
+            raise ValueError("MM_ALLOWED_ROOTS must be a JSON array of paths")
+    else:
+        allowed_roots = [p for p in roots_raw.split(os.pathsep) if p]
+    if not allowed_roots and env.get("MM_TRUSTED_UNRESTRICTED_PATHS") != "1":
+        allowed_roots = [workspace_dir, os.path.abspath(output_dir)]
     cookbook_dir = env["MM_COOKBOOK_DIR"] or _default_cookbook_dir()
     play_port = int(env["MM_PLAY_PORT"] or 8788)
+    if not 1024 <= play_port <= 65535:
+        raise ValueError("MM_PLAY_PORT must be between 1024 and 65535")
+    maximum = int(env.get("MM_MAX_RESOLUTION", "2048"))
+    if maximum < 32 or maximum > 4096 or maximum & (maximum - 1):
+        raise ValueError("MM_MAX_RESOLUTION must be a power of two from 32 through 4096")
     idle_exit_minutes = _parse_idle_exit_minutes(env["MM_IDLE_EXIT_MINUTES"] or "0")
     return Config(
         godot_binary=env["MM_GODOT_BINARY"],
@@ -131,4 +150,8 @@ def load_config(overrides: dict | None = None) -> Config:
         cookbook_dir=cookbook_dir,
         play_port=play_port,
         idle_exit_minutes=idle_exit_minutes,
+        workspace_dir=workspace_dir,
+        max_resolution=maximum,
+        allow_custom_shaders=env.get("MM_ALLOW_CUSTOM_SHADERS") == "1",
+        enable_experimental_live_writes=env.get("MM_ENABLE_EXPERIMENTAL_LIVE_WRITES") == "1",
     )

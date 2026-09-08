@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.0a1 (unreleased)
+
+- Integrate the supplied alpha upgrade: shared projects and revision history,
+  recipe controls and families, verified builds and target exports, asynchronous
+  jobs, browser editing, and authenticated native transport.
+- Preserve the original cookbook, authoring helpers, and historical tests; ship
+  synchronized cookbook, guide, browser and add-on resources in the wheel.
+- Fix ignored raw-graph controls, personal recipe approval inheritance, custom
+  export-code approval, persisted-job recovery, and stale browser build responses.
+- Update setup examples, the Windows launcher, portable CI and wheel checks.
+
+See [migration guidance](docs/upgrade/MIGRATION.md) for breaking contracts and
+[the integration record](docs/upgrade/INTEGRATION.md) for validation scope.
+Native writes remain experimental and disabled by default.
+
 ## [0.7.0](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/compare/v0.6.0...v0.7.0) (2026-09-06)
 
 

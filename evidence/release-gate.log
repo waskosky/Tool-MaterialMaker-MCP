@@ -1,0 +1,10 @@
+109 package resource files verified.
+........................................................................ [ 32%]
+....................................................ss.................. [ 65%]
+......s................................................................. [ 97%]
+.....                                                                    [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/upgrade/test_optional_integration.py:11: could not import 'mcp.server.mcpserver': No module named 'mcp'
+SKIPPED [1] tests/upgrade/test_optional_integration.py:20: Native rendering requires MM_RUN_NATIVE_ACCEPTANCE=1 and configured tools.
+SKIPPED [1] tests/test_paths.py:52: Windows case-folding only
+218 passed, 3 skipped in 12.12s

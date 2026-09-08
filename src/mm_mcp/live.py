@@ -4,6 +4,14 @@ import os
 import socket
 import subprocess
 import time
+import secrets
+import stat
+import copy
+from pathlib import Path
+from mm_mcp.core import ServiceError, MAX_JSON_BYTES, canonical, identifier, parse_json, resolution, digest
+from mm_mcp.transactions import apply_patch
+from mm_mcp.artifacts import verify_images
+from mm_mcp.policy import graph_dependencies
 from dataclasses import dataclass
 
 from mm_mcp.catalog_builder import build_catalog
@@ -25,12 +33,11 @@ LIVE_PORT = 8765
 # than launch_timeout on purpose -- see connect_or_launch's docstring.
 _SQUATTED_PORT_GRACE = 5.0
 
-# addons/mm_live/ is a top-level sibling of src/, not bundled inside
-# src/mm_mcp/ -- unlike preview_project/, it does NOT ship in a built wheel.
-# Acceptable under Phase 4's current GitHub-clone distribution decision
-# (PyPI on hold); revisit if that changes.
+# Prefer the source addon while developing; a synchronized copy ships in wheels.
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _ADDON_PATH = os.path.join(_REPO_ROOT, "addons", "mm_live")
+if not os.path.isdir(_ADDON_PATH):
+    _ADDON_PATH = str(Path(__file__).parent / "data" / "addons" / "mm_live")
 
 
 @dataclass
@@ -40,44 +47,103 @@ class LiveResult:
     error: str | None = None
 
 
+
+def _runtime_record():
+    path = Path(os.environ.get('MM_RUNTIME_DIR') or Path.home()/'.mm-mcp')/'live.json'
+    try:
+        if path.is_symlink():
+            raise ServiceError('AUTH_RECORD', 'Native discovery record must not be a symlink.')
+        info = path.stat()
+        if os.name != 'nt' and (info.st_mode & 0o077 or info.st_uid != os.getuid()):
+            raise ServiceError('AUTH_RECORD', 'Native discovery record must be private to the current user (0600).')
+        record = parse_json(path.read_bytes())
+        if record.get('host') != '127.0.0.1' or record.get('port') != LIVE_PORT or record.get('protocol') != 'mm-live/2':
+            raise ServiceError('AUTH_RECORD', 'Unsupported native discovery endpoint.')
+        return record
+    except OSError as exc:
+        raise ServiceError('AUTH_RECORD', 'No authenticated bridge record. Launch the updated addon first.') from exc
+
+
 def _send_command(cmd: dict, host: str = LIVE_HOST, port: int = LIVE_PORT,
                    timeout: float = 5.0) -> LiveResult:
-    """Open a fresh TCP connection, send one JSON line, read one JSON line
-    back, close. One-shot per call, matching the addon's per-connection
-    dispatch -- there is no persistent session state on either side."""
+    if host not in ('127.0.0.1', 'localhost') or port != LIVE_PORT:
+        return LiveResult(ok=False,error='Only the authenticated loopback bridge endpoint is supported.')
     try:
-        sock = socket.create_connection((host, port), timeout=timeout)
-    except OSError as exc:
-        return LiveResult(ok=False, error=f"could not reach live server at {host}:{port}: {exc}")
+        record=_runtime_record()
+        message={**cmd,'token':record['token'],'protocol':'mm-live/2'}
+        payload=(canonical(message)+'\n').encode()
+        if len(payload)>MAX_JSON_BYTES:
+            raise ServiceError('LIMIT','Native request exceeds 8 MiB.')
+        with socket.create_connection((host,port),timeout=timeout) as sock:
+            sock.sendall(payload); sock.settimeout(timeout)
+            buf=bytearray()
+            while b'\n' not in buf:
+                chunk=sock.recv(min(65536,MAX_JSON_BYTES+1-len(buf)))
+                if not chunk:
+                    raise ServiceError('CONNECTION_CLOSED','Bridge closed without a complete response.')
+                buf.extend(chunk)
+                if len(buf)>MAX_JSON_BYTES:
+                    raise ServiceError('LIMIT','Native response exceeds 8 MiB.')
+        data=parse_json(bytes(buf).split(b'\n',1)[0])
+        if not isinstance(data,dict):
+            raise ServiceError('BAD_RESPONSE','Bridge response must be an object.')
+        return LiveResult(ok=bool(data.get('ok')),data=data,error=data.get('error'))
+    except (ServiceError,OSError,KeyError,ValueError) as exc:
+        return LiveResult(ok=False,error=str(exc),data=exc.result() if isinstance(exc,ServiceError) else None)
 
-    try:
-        with sock:
-            sock.sendall((json.dumps(cmd) + "\n").encode("utf-8"))
-            sock.settimeout(timeout)
-            buf = b""
-            try:
-                while b"\n" not in buf:
-                    chunk = sock.recv(4096)
-                    if not chunk:
-                        return LiveResult(ok=False,
-                                           error="connection closed before a response line arrived")
-                    buf += chunk
-            except TimeoutError:
-                return LiveResult(ok=False,
-                                   error=f"timed out waiting for a response from {host}:{port}")
-    except OSError as exc:
-        return LiveResult(ok=False, error=f"live server connection failed: {exc}")
 
-    line = buf.split(b"\n", 1)[0]
+def transaction(operations,expected_revision,idempotency_key,*,cfg=None,dry_run=False,timeout=90.0):
+    cfg=cfg or load_config()
+    if not expected_revision or not idempotency_key:
+        return LiveResult(False,error='expected_revision and idempotency_key are required.')
     try:
-        data = json.loads(line.decode("utf-8"))
-    except (ValueError, UnicodeDecodeError) as exc:
-        return LiveResult(ok=False, error=f"malformed response from live server: {exc}")
-    if not isinstance(data, dict):
-        return LiveResult(ok=False, error="live server response was not a JSON object")
-    if not data.get("ok", False):
-        return LiveResult(ok=False, error=data.get("error", "live server reported failure"))
-    return LiveResult(ok=True, data=data)
+        client_hash=digest({'ops':operations,'expected_revision':expected_revision,'dry_run':dry_run})
+    except ServiceError as exc:
+        return LiveResult(False,data=exc.result(),error=str(exc))
+    receipt=_send_command({'cmd':'transaction_status','idempotency_key':idempotency_key,
+                           'client_request_hash':client_hash},timeout=timeout)
+    if receipt.ok:
+        return receipt
+    if not receipt.data or receipt.data.get('code')!='RECEIPT_NOT_FOUND':
+        return receipt
+    current=get_graph(timeout=timeout)
+    if not current.ok:
+        return current
+    if current.data.get('revision') != expected_revision:
+        return LiveResult(False,data={'code':'REVISION_CONFLICT'},error='Native graph changed; inspect it again.')
+    try:
+        proposed,_=apply_patch(current.data['graph'],operations,_ensure_catalog(cfg))
+        _check_new_shader_policy(current.data['graph'],proposed,cfg)
+    except ServiceError as exc:
+        return LiveResult(False,data=exc.result(),error=str(exc))
+    return _send_command({'cmd':'replace_graph','data':canonical(proposed),
+                          'expected_revision':expected_revision,'idempotency_key':idempotency_key,
+                          'dry_run':dry_run,'client_request_hash':client_hash},timeout=timeout)
+
+
+def _shader_models(value):
+    out=set()
+    if isinstance(value,dict):
+        if 'shader_model' in value:
+            out.add(digest(value['shader_model']))
+        for child in value.values():
+            out.update(_shader_models(child))
+    elif isinstance(value,list):
+        for child in value:
+            out.update(_shader_models(child))
+    return out
+
+
+def _check_new_shader_policy(before,after,cfg):
+    unchanged=_shader_models(after)<=_shader_models(before)
+    graph_dependencies(after,cfg,trusted_recipe=unchanged)
+
+
+def history(direction,expected_revision,idempotency_key):
+    if direction not in ('undo','redo') or not expected_revision or not idempotency_key:
+        return LiveResult(False,error='Supply undo/redo, expected_revision, and idempotency_key.')
+    return _send_command({'cmd':direction,'expected_revision':expected_revision,'idempotency_key':idempotency_key,
+                          'client_request_hash':digest({'direction':direction,'expected_revision':expected_revision})},timeout=90)
 
 
 def ping(host: str = LIVE_HOST, port: int = LIVE_PORT, timeout: float = 5.0) -> LiveResult:
@@ -88,15 +154,8 @@ def get_graph(host: str = LIVE_HOST, port: int = LIVE_PORT, timeout: float = 5.0
     return _send_command({"cmd": "get_graph"}, host, port, timeout)
 
 
-def clear_graph(host: str = LIVE_HOST, port: int = LIVE_PORT, timeout: float = 5.0) -> LiveResult:
-    """Reset the live graph on Material Maker's active tab to a single
-    default Material node, discarding every other node and connection --
-    the same reset the GUI's own "New" menu item performs
-    (graph_edit.gd:714's new_material()). No validation to do here (there
-    is no proposed graph to check against the catalog), so this is a bare
-    one-shot command like ping/get_graph. Irreversible; there is no undo
-    over the socket."""
-    return _send_command({"cmd": "clear_graph"}, host, port, timeout)
+def clear_graph(*args, **kwargs):
+    return LiveResult(False,error="Unconditional clear is disabled. Snapshot the project and apply an explicit revisioned replacement.")
 
 
 def _wait_for_ready_or_give_up(host: str, port: int,
@@ -180,195 +239,86 @@ def _validation_errors(ptex: dict, cfg: Config) -> list[dict]:
 # launch is subject to the same slowness. get_graph's *default* stays 5s for
 # standalone callers; only ping (used by the connect_or_launch poll loop)
 # must stay short there, and it is untouched.
-def add_node(node_type: str, parameters: dict | None = None, x: float = 0.0, y: float = 0.0,
-             cfg: Config | None = None, host: str = LIVE_HOST, port: int = LIVE_PORT,
-             timeout: float = 30.0) -> LiveResult:
-    """Validate node_type/parameters against the catalog in isolation (a
-    brand-new, unconnected node has no effect on the rest of the live
-    graph), then send add_node if valid. On success, LiveResult.data["name"]
-    is the node's real post-creation name -- Material Maker may rename it
-    on a collision, so never assume it matches node_type."""
-    cfg = cfg or load_config()
-    parameters = parameters or {}
-    proposed = {"nodes": [{"name": "_new", "type": node_type,
-                            "node_position": {"x": x, "y": y}, "parameters": parameters}],
-                "connections": []}
-    errors = _validation_errors(proposed, cfg)
-    if errors:
-        return LiveResult(ok=False, error="validation failed", data={"problems": errors})
-    return _send_command({"cmd": "add_node", "type": node_type, "parameters": parameters,
-                           "x": x, "y": y}, host, port, timeout)
 
-
-def connect_nodes(from_name: str, from_port: int, to_name: str, to_port: int,
-                   cfg: Config | None = None, host: str = LIVE_HOST, port: int = LIVE_PORT,
-                   timeout: float = 30.0) -> LiveResult:
-    """Fetch the current live graph, validate the proposed connection
-    against it, and only send connect_nodes if that validation is clean."""
-    cfg = cfg or load_config()
-    current = get_graph(host, port, timeout)
+def _one(op,cfg=None,timeout=90.0):
+    current=get_graph(timeout=timeout)
     if not current.ok:
         return current
-    graph = current.data["graph"]
-    proposed = {"nodes": graph.get("nodes", []),
-                "connections": graph.get("connections", []) +
-                               [{"from": from_name, "from_port": from_port,
-                                 "to": to_name, "to_port": to_port}]}
-    errors = _validation_errors(proposed, cfg)
-    if errors:
-        return LiveResult(ok=False, error="validation failed", data={"problems": errors})
-    return _send_command({"cmd": "connect_nodes", "from": from_name, "from_port": from_port,
-                           "to": to_name, "to_port": to_port}, host, port, timeout)
+    return transaction([op],current.data['revision'],secrets.token_hex(16),cfg=cfg,timeout=timeout)
+
+def add_node(node_type,parameters=None,x=0.0,y=0.0,cfg=None,**kwargs):
+    name=node_type+'_'+secrets.token_hex(4)
+    result=_one({'op':'add_node','node_type':node_type,'name':name,'parameters':parameters or {},'x':x,'y':y},cfg)
+    if result.ok:
+        result.data['name']=name
+    return result
+
+def connect_nodes(from_name,from_port,to_name,to_port,cfg=None,**kwargs):
+    return _one({'op':'connect_nodes','from_name':from_name,'from_port':from_port,
+                 'to_name':to_name,'to_port':to_port,'replace':True},cfg)
+
+def disconnect_nodes(from_name,from_port,to_name,to_port,cfg=None,**kwargs):
+    return _one({'op':'disconnect_nodes','from_name':from_name,'from_port':from_port,
+                 'to_name':to_name,'to_port':to_port},cfg)
+
+def reposition_node(name,x,y,cfg=None,**kwargs):
+    return _one({'op':'reposition_node','name':name,'x':x,'y':y},cfg)
+
+def set_param(name,parameters,cfg=None,**kwargs):
+    return _one({'op':'set_param','path':name,'parameters':parameters},cfg)
 
 
-def disconnect_nodes(from_name: str, from_port: int, to_name: str, to_port: int,
-                      cfg: Config | None = None, host: str = LIVE_HOST, port: int = LIVE_PORT,
-                      timeout: float = 30.0) -> LiveResult:
-    """Fetch the current live graph and confirm the exact connection exists
-    before sending disconnect_nodes -- there's nothing to validate against
-    the catalog here (removing a connection can't violate a port-range or
-    unknown-type check), only whether it's actually there to remove."""
-    cfg = cfg or load_config()
-    current = get_graph(host, port, timeout)
-    if not current.ok:
-        return current
-    graph = current.data["graph"]
-    exists = any(c.get("from") == from_name and c.get("from_port", 0) == from_port
-                 and c.get("to") == to_name and c.get("to_port", 0) == to_port
-                 for c in graph.get("connections", []))
-    if not exists:
-        return LiveResult(ok=False,
-                           error=f"no connection from '{from_name}' port {from_port} to "
-                                 f"'{to_name}' port {to_port} in the current live graph")
-    return _send_command({"cmd": "disconnect_nodes", "from": from_name, "from_port": from_port,
-                           "to": to_name, "to_port": to_port}, host, port, timeout)
+
+def load_graph(graph=None,path=None,*,cfg=None,expected_revision=None,idempotency_key=None,**kwargs):
+    cfg=cfg or load_config()
+    if (graph is None)==(path is None):
+        return LiveResult(False,error='Supply exactly one of graph or path.')
+    try:
+        if path is not None:
+            graph=parse_json(Path(paths.ensure_within_roots(path,cfg.allowed_roots)).read_bytes())
+        if not isinstance(graph,dict):
+            raise ServiceError('GRAPH_TYPE','Graph must be an object.')
+        problems=validate_graph(graph,_ensure_catalog(cfg),mode='strict')
+        if any(p['severity']=='error' for p in problems):
+            raise ServiceError('VALIDATION_FAILED','Graph failed validation.',problems=problems)
+        if not expected_revision or not idempotency_key:
+            raise ServiceError('REVISION_REQUIRED','Replacing a graph requires expected_revision and idempotency_key.')
+        current=get_graph()
+        if not current.ok:
+            return current
+        _check_new_shader_policy(current.data['graph'],graph,cfg)
+        return _send_command({'cmd':'replace_graph','data':canonical(graph),'expected_revision':expected_revision,
+                              'idempotency_key':idempotency_key},timeout=90)
+    except (ServiceError,OSError,ValueError,paths.PathNotAllowed) as exc:
+        return LiveResult(False,error=str(exc),data=exc.result() if isinstance(exc,ServiceError) else None)
 
 
-def reposition_node(name: str, x: float, y: float, cfg: Config | None = None,
-                     host: str = LIVE_HOST, port: int = LIVE_PORT,
-                     timeout: float = 30.0) -> LiveResult:
-    """Fetch the current live graph and confirm the target node exists before
-    sending reposition_node -- there's nothing to validate against the
-    catalog here (moving a node can't violate a type/connection rule), only
-    whether it's actually there to move. Renaming an existing node is
-    deliberately NOT supported: Material Maker's own undo/redo command
-    dispatcher (graph_edit.gd's undoredo_command) has no rename case at all
-    among its add/remove/update/setparams/move_generators/etc. commands, so
-    this isn't a gap in the addon -- it's genuinely unsupported by Material
-    Maker itself, and reimplementing it by hand (Node.name assignment) would
-    risk desyncing the GraphNode's "node_"+name scene-tree addressing and
-    Godot's own built-in GraphEdit connection bookkeeping (both keyed by
-    name), with no upstream precedent for doing it safely."""
-    cfg = cfg or load_config()
-    current = get_graph(host, port, timeout)
-    if not current.ok:
-        return current
-    graph = current.data["graph"]
-    if not any(n.get("name") == name for n in graph.get("nodes", [])):
-        return LiveResult(ok=False, error=f"no node named '{name}' in the current live graph")
-    return _send_command({"cmd": "reposition_node", "name": name, "x": x, "y": y},
-                          host, port, timeout)
-
-
-def set_param(name: str, parameters: dict, cfg: Config | None = None, host: str = LIVE_HOST,
-              port: int = LIVE_PORT, timeout: float = 30.0) -> LiveResult:
-    """Fetch the current live graph, confirm the target node exists, merge
-    the proposed parameters into a copy of its current ones, validate that,
-    and only send set_param if clean."""
-    cfg = cfg or load_config()
-    current = get_graph(host, port, timeout)
-    if not current.ok:
-        return current
-    graph = current.data["graph"]
-    nodes = graph.get("nodes", [])
-    target = next((n for n in nodes if n.get("name") == name), None)
-    if target is None:
-        return LiveResult(ok=False, error=f"no node named '{name}' in the current live graph")
-    merged_nodes = [
-        {**n, "parameters": {**n.get("parameters", {}), **parameters}} if n is target else n
-        for n in nodes
-    ]
-    proposed = {"nodes": merged_nodes, "connections": graph.get("connections", [])}
-    problems = validate_graph(proposed, _ensure_catalog(cfg))
-    errors = [p for p in problems if p["severity"] == "error"]
-    # An unrecognized parameter name is classified as a "warning" by
-    # validate_graph (Material Maker's own loader tolerates stray keys
-    # rather than rejecting them -- see validator.py), but set_param must
-    # treat it as blocking anyway: the addon has no way to safely refuse an
-    # unrecognized parameter name once it's forwarded to Material Maker's
-    # set_node_parameters, so this is the only line of defense against a
-    # partially-applied mutation or an unhandled error in the live window.
-    unknown_param_warnings = [
-        p for p in problems
-        if p["severity"] == "warning" and p["where"] == name
-        and "unknown parameter" in p["message"]
-    ]
-    blocking = errors + unknown_param_warnings
-    if blocking:
-        return LiveResult(ok=False, error="validation failed", data={"problems": blocking})
-    return _send_command({"cmd": "set_param", "name": name, "parameters": parameters},
-                          host, port, timeout)
-
-
-def load_graph(graph: dict | None = None, path: str | None = None, *,
-               cfg: Config | None = None, host: str = LIVE_HOST, port: int = LIVE_PORT,
-               timeout: float = 30.0) -> LiveResult:
-    """Replace the graph shown on Material Maker's active tab, in place, with
-    `graph` (a {nodes, connections, ...} dict) or the graph read from `path`
-    (a .ptex file). Exactly one of graph/path is required. The graph is
-    validated against the catalog before the socket is touched; validation and
-    read/parse failures are returned as data, never raised. Uses the 30s
-    mutation-op timeout: a load compiles shaders like the other mutating ops.
-    Does not save: this changes what is shown, never a file on disk."""
-    cfg = cfg or load_config()
-    if (graph is None) == (path is None):
-        return LiveResult(ok=False,
-                          error="load_graph requires exactly one of graph= or path=")
-    if path is not None:
-        try:
-            resolved = paths.ensure_within_roots(path, cfg.allowed_roots)
-        except paths.PathNotAllowed as exc:
-            return LiveResult(ok=False, error=str(exc))
-        try:
-            with open(resolved, encoding="utf-8") as fh:
-                graph = json.load(fh)
-        except (OSError, ValueError) as exc:
-            return LiveResult(ok=False, error=f"could not read graph file '{path}': {exc}")
-    if not isinstance(graph, dict):
-        return LiveResult(ok=False, error="graph must be a JSON object (dict)")
-    errors = _validation_errors(graph, cfg)
-    if errors:
-        return LiveResult(ok=False, error="validation failed", data={"problems": errors})
-    return _send_command({"cmd": "load_graph", "data": json.dumps(graph)}, host, port, timeout)
-
-
-def render(basename: str = "material", profile: str = "Godot/Godot 4 Standard",
-           cfg: Config | None = None, host: str = LIVE_HOST, port: int = LIVE_PORT,
-           timeout: float = 60.0) -> RenderResult:
-    """Trigger a live-window export via the addon's render command, then
-    verify success the same way render.py's batch path does: by checking
-    for fresh <basename>_*.png files on disk, since export_material has no
-    failure signal of its own to report over the socket.
-
-    Unlike render.py's batch path, the returned RenderResult.log_tail is
-    always empty here: the live Godot process's stdout/stderr goes to
-    cfg.output_dir/mm_live.log (opened once per launch, for the whole
-    process lifetime), not captured per render over the socket. Check that
-    log file for live-render diagnostics; don't expect batch-path log_tail
-    parity from this path."""
-    cfg = cfg or load_config()
-    outdir = cfg.output_dir
-    os.makedirs(outdir, exist_ok=True)
-    before = _snapshot_pngs(outdir, basename)
-    prefix = os.path.join(outdir, basename)
-    result = _send_command({"cmd": "render", "prefix": prefix, "profile": profile},
-                            host, port, timeout)
-    if not result.ok:
-        return RenderResult(ok=False, error=result.error)
-    images = _collect_fresh_images(outdir, basename, before)
-    if not images:
-        return RenderResult(ok=False, error="no PNG output produced by live render")
-    return RenderResult(ok=True, images=images)
+def render(basename='material',profile='Godot/Godot 4 Standard',cfg=None,host=LIVE_HOST,port=LIVE_PORT,
+           timeout=180.0,size=512,outdir=None,expected_revision=None):
+    cfg=cfg or load_config()
+    try:
+        identifier(basename); resolution(size,getattr(cfg,'max_resolution',2048))
+        current=get_graph(host,port,timeout)
+        if not current.ok:
+            return RenderResult(False,error=current.error)
+        expected_revision=expected_revision or current.data['revision']
+        output=Path(outdir or cfg.output_dir).resolve(); output.mkdir(parents=True,exist_ok=True)
+        output=Path(paths.ensure_within_roots(str(output),[cfg.output_dir]))
+        import tempfile,shutil
+        with tempfile.TemporaryDirectory(prefix='.live-',dir=output) as stage:
+            result=_send_command({'cmd':'render','prefix':str(Path(stage)/basename),'profile':profile,
+                                  'size':size,'expected_revision':expected_revision},host,port,timeout)
+            if not result.ok:
+                return RenderResult(False,error=result.error)
+            images=list(Path(stage).glob(basename+'_*.png'))
+            from mm_mcp.builds import expected_channels
+            verify_images(images,size,expected_channels(current.data['graph'],_ensure_catalog(cfg)),stage)
+            published=[]
+            for image in images:
+                dest=output/image.name; os.replace(image,dest); published.append(str(dest))
+            return RenderResult(True,images=published)
+    except (ServiceError,OSError,paths.PathNotAllowed) as exc:
+        return RenderResult(False,error=str(exc))
 
 
 @dataclass
@@ -434,8 +384,18 @@ def _launch_overlay(cfg: Config) -> subprocess.Popen:
     # otherwise every launch/relaunch leaks one fd. The finally runs even if
     # Popen raises, so a failed spawn doesn't leak the handle either.
     try:
+        env = dict(os.environ)
+        runtime = Path(env.get("MM_RUNTIME_DIR") or Path.home()/".mm-mcp")
+        runtime.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if os.name != "nt":
+            runtime.chmod(0o700)
+        env["MM_ENABLE_EXPERIMENTAL_LIVE_WRITES"] = "1" if cfg.enable_experimental_live_writes else "0"
+        env["MM_ALLOW_CUSTOM_SHADERS"] = "1" if cfg.allow_custom_shaders else "0"
+        env.update({"MM_ALLOWED_ROOTS":json.dumps(cfg.allowed_roots+[cfg.project_path]),"MM_RUNTIME_DIR":str(runtime),"MM_LIVE_TOKEN":secrets.token_urlsafe(32),
+                    "MM_LIVE_OUTPUT_ROOT":str(Path(cfg.output_dir).resolve())})
         return subprocess.Popen(_launch_command(cfg, overlay_dir),
-                                 stdout=log_file, stderr=subprocess.STDOUT)
+                                 stdout=log_file, stderr=subprocess.STDOUT, env=env,
+                                 **({"start_new_session":True} if os.name!="nt" else {}))
     finally:
         log_file.close()
 

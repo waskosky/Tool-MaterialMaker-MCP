@@ -2,6 +2,11 @@ import json
 import os
 import subprocess
 import tempfile
+import signal
+import time
+from pathlib import Path
+from mm_mcp.core import ServiceError, resolution, identifier
+from mm_mcp.artifacts import verify_images
 from dataclasses import dataclass, field
 from mm_mcp.config import Config, load_config
 
@@ -47,6 +52,16 @@ def _kill_tree(process) -> None:
     pid = getattr(process, "pid", None)
     if pid is None:
         return
+    if os.name != "nt":
+        try:
+            # Only kill a group created by this worker, never the caller's own group.
+            if os.getpgid(pid) == pid:
+                os.killpg(pid, signal.SIGKILL)
+            else:
+                process.kill()
+        except (OSError, ProcessLookupError):
+            pass
+        return
     try:
         subprocess.run(["taskkill", "/F", "/T", "/PID", str(pid)],
                         capture_output=True, timeout=10)
@@ -54,7 +69,7 @@ def _kill_tree(process) -> None:
         pass
 
 
-def _run_godot(cmd: list, timeout: int) -> subprocess.CompletedProcess:
+def _run_godot(cmd: list, timeout: int, cancel=None) -> subprocess.CompletedProcess:
     """Run a Godot command with capture, retrying up to 3x around the
     transient Windows crash codes above. Raises _GodotTimeout on timeout.
     Shared by render() and preview.render_preview(), which otherwise each had
@@ -77,9 +92,20 @@ def _run_godot(cmd: list, timeout: int) -> subprocess.CompletedProcess:
     proc = None
     for _ in range(3):
         with tempfile.TemporaryFile() as out_f, tempfile.TemporaryFile() as err_f:
-            process = subprocess.Popen(cmd, stdout=out_f, stderr=err_f)
+            process = subprocess.Popen(cmd, stdout=out_f, stderr=err_f, **({"start_new_session": True} if os.name != "nt" else {}))
             try:
-                process.wait(timeout=timeout)
+                if cancel is None:
+                    process.wait(timeout=timeout)
+                else:
+                    deadline = time.monotonic() + timeout
+                    while process.poll() is None:
+                        if cancel():
+                            _kill_tree(process)
+                            process.kill(); process.wait(timeout=10)
+                            raise ServiceError("CANCELLED", "Render was cancelled before publication.")
+                        if time.monotonic() >= deadline:
+                            raise subprocess.TimeoutExpired(cmd, timeout)
+                        time.sleep(.1)
             except subprocess.TimeoutExpired:
                 _kill_tree(process)
                 process.kill()
@@ -163,32 +189,39 @@ def _build_command(cfg: Config, ptex_path: str, target: str, outdir: str, size: 
 
 def render(ptex: dict, size: int = 512, outdir: str | None = None,
            basename: str = "material", target: str = "Godot/Godot 4 Standard",
-           cfg: Config | None = None) -> RenderResult:
+           cfg: Config | None = None, cancel=None, required_channels=()) -> RenderResult:
+    """Render in a private directory; never accept partial nonzero-exit output.
+
+    The service owns immutable publication. This legacy facade atomically replaces
+    individual verified output files for callers that still use basename paths.
+    Only PNG outputs are certified; other exporter products are not a complete
+    engine-package guarantee. Use material_build for the stronger contract.
+    """
     cfg = cfg or load_config()
-    outdir = outdir or cfg.output_dir
-    os.makedirs(outdir, exist_ok=True)
-
-    # Snapshot existing output files before render to detect fresh outputs
-    before = _snapshot_pngs(outdir, basename)
-
-    ptex_path = os.path.join(outdir, basename + ".ptex")
-    with open(ptex_path, "w", encoding="utf-8") as fh:
-        json.dump(ptex, fh)
-
-    cmd = _build_command(cfg, ptex_path, target, outdir, size)
-
     try:
-        proc = _run_godot(cmd, 180)
+        resolution(size, getattr(cfg, "max_resolution", 2048))
+        identifier(basename, "basename")
+        outdir = os.path.abspath(outdir or cfg.output_dir)
+        os.makedirs(outdir, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=".render-", dir=outdir) as stage:
+            ptex_path = os.path.join(stage, basename + ".ptex")
+            with open(ptex_path, "w", encoding="utf-8") as fh:
+                json.dump(ptex, fh, allow_nan=False)
+            cmd = _build_command(cfg, ptex_path, target, stage, size)
+            proc = _run_godot(cmd, 180, cancel=cancel) if cancel is not None else _run_godot(cmd, 180)
+            log_tail = _log_tail(proc)
+            if proc.returncode != 0:
+                return RenderResult(ok=False, log_tail=log_tail, error=f"Godot exited {proc.returncode}; no files published")
+            images = [str(p) for p in sorted(Path(stage).glob(basename + "_*.png"))]
+            verify_images(images, size=size, required=required_channels, root=stage)
+            if cancel and cancel():
+                raise ServiceError("CANCELLED", "Render cancelled before publication.")
+            published=[]
+            for image in images:
+                dest=os.path.join(outdir, os.path.basename(image)); os.replace(image,dest); published.append(dest)
+            os.replace(ptex_path, os.path.join(outdir, basename + ".ptex"))
+            return RenderResult(ok=True, images=published, log_tail=log_tail)
     except _GodotTimeout:
-        return RenderResult(ok=False, error="Godot render timed out after 180s")
-    log_tail = _log_tail(proc)
-
-    images = _collect_fresh_images(outdir, basename, before)
-
-    if proc.returncode != 0 and not images:
-        return RenderResult(ok=False, log_tail=log_tail,
-                            error=f"Godot exited {proc.returncode}")
-    if not images:
-        return RenderResult(ok=False, log_tail=log_tail,
-                            error="no PNG output produced")
-    return RenderResult(ok=True, images=images, log_tail=log_tail)
+        return RenderResult(ok=False, error="Godot render timed out after 180s; no files published")
+    except (ServiceError, OSError, ValueError) as exc:
+        return RenderResult(ok=False, error=str(exc))

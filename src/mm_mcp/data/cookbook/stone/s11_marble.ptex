@@ -1,0 +1,696 @@
+{
+ "connections": [
+  {
+   "from": "marble_veins",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 0
+  },
+  {
+   "from": "marble_veins",
+   "from_port": 1,
+   "to": "marble_relief",
+   "to_port": 0
+  },
+  {
+   "from": "marble_veins",
+   "from_port": 2,
+   "to": "marble_relief",
+   "to_port": 1
+  },
+  {
+   "from": "marble_relief",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 1
+  },
+  {
+   "from": "marble_relief",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 4
+  },
+  {
+   "from": "marble_relief",
+   "from_port": 2,
+   "to": "Material",
+   "to_port": 6
+  },
+  {
+   "from": "marble_relief",
+   "from_port": 3,
+   "to": "marble_veins",
+   "to_port": 0
+  }
+ ],
+ "label": "Graph",
+ "name": "258",
+ "node_position": {
+  "x": 0,
+  "y": 0
+ },
+ "nodes": [
+  {
+   "name": "Material",
+   "node_position": {
+    "x": 944,
+    "y": -30
+   },
+   "parameters": {
+    "albedo_color": {
+     "a": 1,
+     "b": 1,
+     "g": 1,
+     "r": 1,
+     "type": "Color"
+    },
+    "ao_light_affect": 1,
+    "depth_scale": 0.1,
+    "emission_energy": 1,
+    "metallic": 1,
+    "normal_scale": 1,
+    "resolution": 1,
+    "roughness": 0.15,
+    "size": 11,
+    "subsurf_scatter_strength": 0
+   },
+   "type": "material"
+  },
+  {
+   "name": "marble_veins",
+   "label": "Marble Base & Veins",
+   "type": "graph",
+   "node_position": {
+    "x": 187.83333333333334,
+    "y": -151.75
+   },
+   "parameters": {
+    "param0": 3,
+    "param1": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.86,
+       "g": 0.85,
+       "b": 0.82,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.93,
+       "g": 0.93,
+       "b": 0.9,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    },
+    "param2": 0.5
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -212.16666666666666,
+      "y": -151.75
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 587.8333333333334,
+      "y": -151.75
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -212.16666666666666,
+      "y": 48.25
+     },
+     "parameters": {
+      "param0": 3,
+      "param1": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.86,
+         "g": 0.85,
+         "b": 0.82,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.93,
+         "g": 0.93,
+         "b": 0.9,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      },
+      "param2": 0.5
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Vein scale",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "PlateCells",
+         "widget": "scale_x"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Base color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "StoneColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param2",
+       "shortdesc": "Vein softness",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "JointComposite",
+         "widget": "amount"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "PlateCells",
+     "node_position": {
+      "x": -165,
+      "y": -96.75
+     },
+     "parameters": {
+      "intensity": 0.6,
+      "randomness": 1,
+      "scale_x": 3,
+      "scale_y": 3,
+      "stretch_x": 1,
+      "stretch_y": 1
+     },
+     "type": "voronoi"
+    },
+    {
+     "name": "PlateEdges",
+     "node_position": {
+      "x": 93,
+      "y": -117.75
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 0,
+         "r": 0
+        },
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0.063636,
+         "r": 1
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "StoneColor",
+     "node_position": {
+      "x": 338,
+      "y": -237.75
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.86,
+         "g": 0.85,
+         "b": 0.82,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.93,
+         "g": 0.93,
+         "b": 0.9,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "BaseNoise",
+     "node_position": {
+      "x": 56,
+      "y": -361.75
+     },
+     "parameters": {
+      "iterations": 10,
+      "persistence": 0.9,
+      "scale_x": 2,
+      "scale_y": 2
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "JointComposite",
+     "node_position": {
+      "x": 541,
+      "y": -82.75
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 2
+     },
+     "type": "blend"
+    },
+    {
+     "name": "JointWarp",
+     "node_position": {
+      "x": 264,
+      "y": -13.75
+     },
+     "parameters": {
+      "amount": 0.5,
+      "eps": 0.045,
+      "epsilon": 0
+     },
+     "type": "warp"
+    }
+   ],
+   "connections": [
+    {
+     "from": "BaseNoise",
+     "from_port": 0,
+     "to": "StoneColor",
+     "to_port": 0
+    },
+    {
+     "from": "PlateCells",
+     "from_port": 1,
+     "to": "PlateEdges",
+     "to_port": 0
+    },
+    {
+     "from": "StoneColor",
+     "from_port": 0,
+     "to": "JointComposite",
+     "to_port": 1
+    },
+    {
+     "from": "PlateEdges",
+     "from_port": 0,
+     "to": "JointWarp",
+     "to_port": 0
+    },
+    {
+     "from": "JointWarp",
+     "from_port": 0,
+     "to": "JointComposite",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "JointWarp",
+     "to_port": 1
+    },
+    {
+     "from": "JointComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "JointWarp",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "BaseNoise",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    }
+   ]
+  },
+  {
+   "name": "marble_relief",
+   "label": "Relief & Metallic",
+   "type": "graph",
+   "node_position": {
+    "x": 406.4692993333333,
+    "y": 122.13541666666667
+   },
+   "parameters": {
+    "param0": 0.1
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": 6.469299333333311,
+      "y": 122.13541666666667
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 806.4692993333333,
+      "y": 122.13541666666667
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgb",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out3",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": 6.469299333333311,
+      "y": 322.1354166666667
+     },
+     "parameters": {
+      "param0": 0.1
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Vein relief",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "StoneNormal",
+         "widget": "param1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ReliefNoiseCoarse",
+     "node_position": {
+      "x": -144,
+      "y": 50.25
+     },
+     "parameters": {
+      "iterations": 3,
+      "persistence": 0.5,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "NonMetallic",
+     "node_position": {
+      "x": 465,
+      "y": 33.25
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "ReliefComposite",
+     "node_position": {
+      "x": 442,
+      "y": 175.25
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 0
+     },
+     "type": "blend"
+    },
+    {
+     "name": "StoneNormal",
+     "node_position": {
+      "x": 706,
+      "y": 95.25
+     },
+     "parameters": {
+      "amount": 0.35,
+      "param0": 11,
+      "param1": 0.1,
+      "param2": 0,
+      "param3": 0,
+      "param4": 1,
+      "size": 2
+     },
+     "type": "normal_map"
+    },
+    {
+     "name": "ReliefRamp",
+     "node_position": {
+      "x": 252,
+      "y": 178.25
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "ReliefHeight",
+     "node_position": {
+      "x": 717.815796,
+      "y": 200.5625
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    }
+   ],
+   "connections": [
+    {
+     "from": "ReliefNoiseCoarse",
+     "from_port": 0,
+     "to": "NonMetallic",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefRamp",
+     "from_port": 0,
+     "to": "ReliefComposite",
+     "to_port": 1
+    },
+    {
+     "from": "ReliefComposite",
+     "from_port": 0,
+     "to": "ReliefHeight",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefHeight",
+     "from_port": 0,
+     "to": "StoneNormal",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "ReliefRamp",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "ReliefComposite",
+     "to_port": 0
+    },
+    {
+     "from": "NonMetallic",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "StoneNormal",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "ReliefComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    },
+    {
+     "from": "ReliefNoiseCoarse",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 3
+    }
+   ]
+  }
+ ],
+ "parameters": {},
+ "type": "graph"
+}

@@ -1,0 +1,784 @@
+{
+ "connections": [
+  {
+   "from": "soil_grass_color",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 0
+  },
+  {
+   "from": "grass_coverage",
+   "from_port": 2,
+   "to": "soil_grass_color",
+   "to_port": 0
+  },
+  {
+   "from": "grass_coverage",
+   "from_port": 0,
+   "to": "surface_finish",
+   "to_port": 0
+  },
+  {
+   "from": "grass_coverage",
+   "from_port": 1,
+   "to": "surface_finish",
+   "to_port": 1
+  },
+  {
+   "from": "surface_finish",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 2
+  },
+  {
+   "from": "surface_finish",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 4
+  }
+ ],
+ "label": "Graph",
+ "name": "431",
+ "node_position": {
+  "x": 0,
+  "y": 0
+ },
+ "nodes": [
+  {
+   "export_paths": {},
+   "name": "Material",
+   "node_position": {
+    "x": 837,
+    "y": 123
+   },
+   "parameters": {
+    "albedo_color": {
+     "a": 1,
+     "b": 1,
+     "g": 1,
+     "r": 1,
+     "type": "Color"
+    },
+    "ao": 1,
+    "depth_scale": 1,
+    "emission_energy": 1,
+    "metallic": 0,
+    "normal": 1,
+    "roughness": 1,
+    "size": 11,
+    "sss": 0
+   },
+   "type": "material"
+  },
+  {
+   "name": "soil_grass_color",
+   "label": "Soil & Grass Color",
+   "type": "graph",
+   "node_position": {
+    "x": 346.0,
+    "y": 74.25
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.18,
+       "g": 0.12,
+       "b": 0.07,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.32,
+       "g": 0.23,
+       "b": 0.14,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    },
+    "param1": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.1,
+       "g": 0.22,
+       "b": 0.06,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.3,
+       "g": 0.48,
+       "b": 0.14,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -54.0,
+      "y": 74.25
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 746.0,
+      "y": 74.25
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -54.0,
+      "y": 274.25
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.18,
+         "g": 0.12,
+         "b": 0.07,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.32,
+         "g": 0.23,
+         "b": 0.14,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      },
+      "param1": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.1,
+         "g": 0.22,
+         "b": 0.06,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.3,
+         "g": 0.48,
+         "b": 0.14,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Soil color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "SoilColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Grass color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "GrassColor",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "SoilNoise",
+     "node_position": {
+      "x": 86,
+      "y": 147
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.8,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "SoilColor",
+     "node_position": {
+      "x": 365,
+      "y": -41
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.18,
+         "g": 0.12,
+         "b": 0.07,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.32,
+         "g": 0.23,
+         "b": 0.14,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "GrassColor",
+     "node_position": {
+      "x": 371,
+      "y": 214
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.1,
+         "g": 0.22,
+         "b": 0.06,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.3,
+         "g": 0.48,
+         "b": 0.14,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "AlbedoComposite",
+     "node_position": {
+      "x": 562,
+      "y": -23
+     },
+     "parameters": {
+      "amount": 0.800781,
+      "blend_type": 0
+     },
+     "type": "blend"
+    }
+   ],
+   "connections": [
+    {
+     "from": "SoilNoise",
+     "from_port": 0,
+     "to": "GrassColor",
+     "to_port": 0
+    },
+    {
+     "from": "SoilColor",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 0
+    },
+    {
+     "from": "GrassColor",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 1
+    },
+    {
+     "from": "SoilNoise",
+     "from_port": 0,
+     "to": "SoilColor",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 2
+    },
+    {
+     "from": "AlbedoComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    }
+   ]
+  },
+  {
+   "name": "grass_coverage",
+   "label": "Grass Coverage",
+   "type": "graph",
+   "node_position": {
+    "x": 230.0,
+    "y": 20.5
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0,
+       "g": 0,
+       "b": 0,
+       "pos": 0.65
+      },
+      {
+       "a": 1,
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "pos": 0.65
+      }
+     ],
+     "type": "Gradient"
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -170.0,
+      "y": 20.5
+     },
+     "parameters": {},
+     "ports": [],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 630.0,
+      "y": 20.5
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -170.0,
+      "y": 220.5
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.65
+        },
+        {
+         "a": 1,
+         "r": 1,
+         "g": 1,
+         "b": 1,
+         "pos": 0.65
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Coverage",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "GrassCoverageMask",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "BladeNoise",
+     "node_position": {
+      "x": 89,
+      "y": -6
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.9,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "GrassCoverageMask",
+     "node_position": {
+      "x": 371,
+      "y": 47
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.65
+        },
+        {
+         "a": 1,
+         "r": 1,
+         "g": 1,
+         "b": 1,
+         "pos": 0.65
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    }
+   ],
+   "connections": [
+    {
+     "from": "BladeNoise",
+     "from_port": 0,
+     "to": "GrassCoverageMask",
+     "to_port": 0
+    },
+    {
+     "from": "GrassCoverageMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "GrassCoverageMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "GrassCoverageMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    }
+   ]
+  },
+  {
+   "name": "surface_finish",
+   "label": "Surface Finish",
+   "type": "graph",
+   "node_position": {
+    "x": 299.0,
+    "y": 206.4
+   },
+   "parameters": {
+    "param0": 0.3
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -101.0,
+      "y": 206.4
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 699.0,
+      "y": 206.4
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgb",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -101.0,
+      "y": 406.4
+     },
+     "parameters": {
+      "param0": 0.3
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Relief strength",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "GrassNormal",
+         "widget": "param1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "SoilRoughnessNoise",
+     "node_position": {
+      "x": 86,
+      "y": 301
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.7,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "SoilRoughnessTone",
+     "node_position": {
+      "x": 363,
+      "y": 337
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0.354545,
+         "g": 0.354545,
+         "pos": 0,
+         "r": 0.354545
+        },
+        {
+         "a": 1,
+         "b": 0.745455,
+         "g": 0.745455,
+         "pos": 1,
+         "r": 0.745455
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "GrassRoughnessTone",
+     "node_position": {
+      "x": 480,
+      "y": 141
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "RoughnessComposite",
+     "node_position": {
+      "x": 566,
+      "y": 253
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 4
+     },
+     "type": "blend"
+    },
+    {
+     "name": "GrassNormal",
+     "type": "normal_map",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "param0": 9,
+      "param1": 0.3,
+      "param2": 0,
+      "param4": 0
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "SoilRoughnessNoise",
+     "from_port": 0,
+     "to": "SoilRoughnessTone",
+     "to_port": 0
+    },
+    {
+     "from": "SoilRoughnessTone",
+     "from_port": 0,
+     "to": "RoughnessComposite",
+     "to_port": 1
+    },
+    {
+     "from": "GrassRoughnessTone",
+     "from_port": 0,
+     "to": "RoughnessComposite",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "GrassRoughnessTone",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "GrassNormal",
+     "to_port": 0
+    },
+    {
+     "from": "RoughnessComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "GrassNormal",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    }
+   ]
+  }
+ ],
+ "parameters": {},
+ "type": "graph"
+}

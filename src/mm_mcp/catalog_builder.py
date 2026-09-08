@@ -129,6 +129,7 @@ def parse_node(mmg_path: str) -> dict | None:
     outputs = [{"type": o.get("type")} for o in sm.get("outputs", [])]
     parameters = [_parse_param(p) for p in sm.get("parameters", [])]
     return {"type": type_name, "inputs": inputs,
+            "input_template": sm.get("inputs", []), "generic_size": generic_size,
             "outputs": outputs, "parameters": parameters}
 
 

@@ -1,0 +1,1072 @@
+{
+ "connections": [
+  {
+   "from": "basalt_crust",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 0
+  },
+  {
+   "from": "basalt_crust",
+   "from_port": 1,
+   "to": "ember_glow",
+   "to_port": 1
+  },
+  {
+   "from": "ember_glow",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 3
+  },
+  {
+   "from": "ember_glow",
+   "from_port": 2,
+   "to": "basalt_crust",
+   "to_port": 1
+  },
+  {
+   "from": "ember_glow",
+   "from_port": 0,
+   "to": "surface_relief",
+   "to_port": 0
+  },
+  {
+   "from": "surface_relief",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 4
+  },
+  {
+   "from": "surface_relief",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 6
+  },
+  {
+   "from": "surface_relief",
+   "from_port": 2,
+   "to": "Material",
+   "to_port": 2
+  },
+  {
+   "from": "surface_relief",
+   "from_port": 3,
+   "to": "basalt_crust",
+   "to_port": 0
+  },
+  {
+   "from": "surface_relief",
+   "from_port": 4,
+   "to": "ember_glow",
+   "to_port": 0
+  }
+ ],
+ "label": "Graph",
+ "name": "258",
+ "node_position": {
+  "x": 0,
+  "y": 0
+ },
+ "nodes": [
+  {
+   "name": "Material",
+   "node_position": {
+    "x": 944,
+    "y": -30
+   },
+   "parameters": {
+    "albedo_color": {
+     "a": 1,
+     "b": 1,
+     "g": 1,
+     "r": 1,
+     "type": "Color"
+    },
+    "ao_light_affect": 1,
+    "depth_scale": 0.1,
+    "emission_energy": 1.0,
+    "metallic": 0,
+    "normal_scale": 1,
+    "resolution": 1,
+    "roughness": 0.75,
+    "size": 11,
+    "subsurf_scatter_strength": 0
+   },
+   "type": "material"
+  },
+  {
+   "name": "basalt_crust",
+   "label": "Basalt Crust",
+   "type": "graph",
+   "node_position": {
+    "x": 161.4,
+    "y": -107.0
+   },
+   "parameters": {
+    "param0": 5,
+    "param1": {
+     "interpolation": 1,
+     "type": "Gradient",
+     "points": [
+      {
+       "a": 1,
+       "r": 0.04,
+       "g": 0.03,
+       "b": 0.03,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.08,
+       "g": 0.06,
+       "b": 0.05,
+       "pos": 0.5
+      },
+      {
+       "a": 1,
+       "r": 0.12,
+       "g": 0.09,
+       "b": 0.07,
+       "pos": 1.0
+      }
+     ]
+    },
+    "param2": 0.6
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -238.6,
+      "y": -107.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 561.4,
+      "y": -107.0
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -238.6,
+      "y": 93.0
+     },
+     "parameters": {
+      "param0": 5,
+      "param1": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.04,
+         "g": 0.03,
+         "b": 0.03,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.08,
+         "g": 0.06,
+         "b": 0.05,
+         "pos": 0.5
+        },
+        {
+         "a": 1,
+         "r": 0.12,
+         "g": 0.09,
+         "b": 0.07,
+         "pos": 1.0
+        }
+       ]
+      },
+      "param2": 0.6
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Plate size",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "CrustPlates",
+         "widget": "scale_x"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Crust color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "CrustColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param2",
+       "shortdesc": "Crack depth",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "CrustComposite",
+         "widget": "amount"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "CrustPlates",
+     "node_position": {
+      "x": -165,
+      "y": -96.75
+     },
+     "parameters": {
+      "intensity": 0.6,
+      "randomness": 1,
+      "scale_x": 5,
+      "scale_y": 5,
+      "stretch_x": 1,
+      "stretch_y": 1
+     },
+     "type": "voronoi"
+    },
+    {
+     "name": "CrustEdges",
+     "node_position": {
+      "x": 93,
+      "y": -117.75
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 0,
+         "r": 0
+        },
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0.063636,
+         "r": 1
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "ReliefFineUnused",
+     "node_position": {
+      "x": 338,
+      "y": -237.75
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0.200277,
+         "g": 0.378784,
+         "pos": 0.245455,
+         "r": 0.557292
+        },
+        {
+         "a": 1,
+         "b": 0.03776,
+         "g": 0.150513,
+         "pos": 0.645455,
+         "r": 0.25
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "CrustComposite",
+     "node_position": {
+      "x": 541,
+      "y": -82.75
+     },
+     "parameters": {
+      "amount": 0.6,
+      "blend_type": 2
+     },
+     "type": "blend"
+    },
+    {
+     "name": "CrustColor",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.04,
+         "g": 0.03,
+         "b": 0.03,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.08,
+         "g": 0.06,
+         "b": 0.05,
+         "pos": 0.5
+        },
+        {
+         "a": 1,
+         "r": 0.12,
+         "g": 0.09,
+         "b": 0.07,
+         "pos": 1.0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "CrustPlates",
+     "from_port": 1,
+     "to": "CrustEdges",
+     "to_port": 0
+    },
+    {
+     "from": "CrustColor",
+     "from_port": 0,
+     "to": "CrustComposite",
+     "to_port": 1
+    },
+    {
+     "from": "CrustPlates",
+     "from_port": 2,
+     "to": "CrustColor",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "ReliefFineUnused",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "CrustComposite",
+     "to_port": 0
+    },
+    {
+     "from": "CrustComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "CrustEdges",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    }
+   ]
+  },
+  {
+   "name": "ember_glow",
+   "label": "Ember Glow",
+   "type": "graph",
+   "node_position": {
+    "x": 132.0,
+    "y": -6.875
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "type": "Gradient",
+     "points": [
+      {
+       "a": 1,
+       "r": 1.0,
+       "g": 0.42,
+       "b": 0.05,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.7,
+       "g": 0.14,
+       "b": 0.0,
+       "pos": 0.3
+      },
+      {
+       "a": 1,
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "pos": 0.55
+      },
+      {
+       "a": 1,
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "pos": 1.0
+      }
+     ]
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -268.0,
+      "y": -6.875
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 532.0,
+      "y": -6.875
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -268.0,
+      "y": 193.125
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 1.0,
+         "g": 0.42,
+         "b": 0.05,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.7,
+         "g": 0.14,
+         "b": 0.0,
+         "pos": 0.3
+        },
+        {
+         "a": 1,
+         "r": 0.0,
+         "g": 0.0,
+         "b": 0.0,
+         "pos": 0.55
+        },
+        {
+         "a": 1,
+         "r": 0.0,
+         "g": 0.0,
+         "b": 0.0,
+         "pos": 1.0
+        }
+       ]
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Glow color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "GlowColor",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "GlowMask",
+     "node_position": {
+      "x": 264,
+      "y": -13.75
+     },
+     "parameters": {
+      "amount": 0.2,
+      "eps": 0.045,
+      "epsilon": 0
+     },
+     "type": "warp"
+    },
+    {
+     "name": "GlowColor",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 1.0,
+         "g": 0.42,
+         "b": 0.05,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.7,
+         "g": 0.14,
+         "b": 0.0,
+         "pos": 0.3
+        },
+        {
+         "a": 1,
+         "r": 0.0,
+         "g": 0.0,
+         "b": 0.0,
+         "pos": 0.55
+        },
+        {
+         "a": 1,
+         "r": 0.0,
+         "g": 0.0,
+         "b": 0.0,
+         "pos": 1.0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "GlowMask",
+     "from_port": 0,
+     "to": "GlowColor",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "GlowMask",
+     "to_port": 1
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "GlowMask",
+     "to_port": 0
+    },
+    {
+     "from": "GlowMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "GlowColor",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "GlowMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    }
+   ]
+  },
+  {
+   "name": "surface_relief",
+   "label": "Surface Relief",
+   "type": "graph",
+   "node_position": {
+    "x": 311.8519745,
+    "y": 46.3828125
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "type": "Gradient",
+     "points": [
+      {
+       "a": 1,
+       "r": 0.75,
+       "g": 0.75,
+       "b": 0.75,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.75,
+       "g": 0.75,
+       "b": 0.75,
+       "pos": 1.0
+      }
+     ]
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -88.14802550000002,
+      "y": 46.3828125
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 711.8519745,
+      "y": 46.3828125
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgb",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out3",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "out4",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -88.14802550000002,
+      "y": 246.3828125
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.75,
+         "g": 0.75,
+         "b": 0.75,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.75,
+         "g": 0.75,
+         "b": 0.75,
+         "pos": 1.0
+        }
+       ]
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Roughness",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "LavaRoughness",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ReliefNoiseCoarse",
+     "node_position": {
+      "x": -144,
+      "y": 50.25
+     },
+     "parameters": {
+      "iterations": 3,
+      "persistence": 0.5,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "ReliefNoiseFine",
+     "node_position": {
+      "x": 56,
+      "y": -361.75
+     },
+     "parameters": {
+      "iterations": 10,
+      "persistence": 0.9,
+      "scale_x": 2,
+      "scale_y": 2
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "ReliefContrast",
+     "node_position": {
+      "x": 465,
+      "y": 33.25
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 0,
+         "r": 0
+        },
+        {
+         "a": 1,
+         "b": 0.520833,
+         "g": 0.520833,
+         "pos": 1,
+         "r": 0.520833
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "ReliefComposite",
+     "node_position": {
+      "x": 442,
+      "y": 175.25
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 0
+     },
+     "type": "blend"
+    },
+    {
+     "name": "LavaNormal",
+     "node_position": {
+      "x": 706,
+      "y": 95.25
+     },
+     "parameters": {
+      "amount": 0.35,
+      "param0": 11,
+      "param1": 0.99,
+      "param2": 0,
+      "param3": 0,
+      "param4": 1,
+      "size": 2
+     },
+     "type": "normal_map"
+    },
+    {
+     "name": "ReliefRamp",
+     "node_position": {
+      "x": 252,
+      "y": 178.25
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "ReliefHeight",
+     "node_position": {
+      "x": 717.815796,
+      "y": 200.5625
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "LavaRoughness",
+     "type": "colorize",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "type": "Gradient",
+       "points": [
+        {
+         "a": 1,
+         "r": 0.75,
+         "g": 0.75,
+         "b": 0.75,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.75,
+         "g": 0.75,
+         "b": 0.75,
+         "pos": 1.0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "ReliefNoiseCoarse",
+     "from_port": 0,
+     "to": "ReliefContrast",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefRamp",
+     "from_port": 0,
+     "to": "ReliefComposite",
+     "to_port": 1
+    },
+    {
+     "from": "ReliefNoiseFine",
+     "from_port": 0,
+     "to": "ReliefComposite",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefComposite",
+     "from_port": 0,
+     "to": "ReliefHeight",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefHeight",
+     "from_port": 0,
+     "to": "LavaNormal",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefNoiseFine",
+     "from_port": 0,
+     "to": "LavaRoughness",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "ReliefRamp",
+     "to_port": 0
+    },
+    {
+     "from": "LavaNormal",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "ReliefComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "LavaRoughness",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    },
+    {
+     "from": "ReliefNoiseFine",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 3
+    },
+    {
+     "from": "ReliefNoiseCoarse",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 4
+    }
+   ]
+  }
+ ],
+ "parameters": {},
+ "type": "graph"
+}

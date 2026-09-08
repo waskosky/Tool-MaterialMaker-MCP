@@ -1,0 +1,43 @@
+{
+  "candidate": "0.8.0a1",
+  "date": "2026-09-08",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "release_gate": {
+    "command": "python scripts/check_release.py -rs --junitxml=release-contracts.xml",
+    "passed": 218,
+    "skipped": 3,
+    "failed": 0,
+    "skips": [
+      "real MCP SDK unavailable",
+      "native acceptance explicitly gated; native tools unavailable",
+      "Windows-only path case-folding on Linux"
+    ]
+  },
+  "additional_checks": {
+    "compileall": "passed",
+    "javascript_syntax": "passed",
+    "wheel_build": "passed",
+    "wheel_install_no_dependencies": "passed",
+    "wheel_isolated_resource_import": "passed: 53 recipes, packaged native add-on",
+    "browser_logic": "passed with in-process service transport and synthetic renderer"
+  },
+  "not_verified": [
+    "Actual Material Maker/Godot execution",
+    "Native GDScript parsing and object lifetime",
+    "Native artist-tab transaction/rollback/global undo",
+    "Real MCP SDK or client wire protocol",
+    "WebGL three-dimensional shading",
+    "Browser-to-loopback networking in this environment",
+    "Engine imports",
+    "Windows/macOS/native mobile performance",
+    "External GitHub CI execution"
+  ],
+  "browser_evidence": {
+    "screenshot": "browser-synthetic-fixture.png",
+    "renderer": "synthetic fixture; no material visual-quality claim",
+    "webgl": "unavailable; fallback exercised",
+    "network": "administrator policy blocked navigation; separate real HTTP socket tests passed"
+  },
+  "historical_diagnostic": "The historical suite collection log is not a final release-gate report. Some 0.7 expectations intentionally changed."
+}

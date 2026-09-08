@@ -1,0 +1,784 @@
+{
+ "connections": [
+  {
+   "from": "surface_color",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 0
+  },
+  {
+   "from": "lichen_mask",
+   "from_port": 2,
+   "to": "surface_color",
+   "to_port": 0
+  },
+  {
+   "from": "lichen_mask",
+   "from_port": 0,
+   "to": "surface_finish",
+   "to_port": 0
+  },
+  {
+   "from": "lichen_mask",
+   "from_port": 1,
+   "to": "surface_finish",
+   "to_port": 1
+  },
+  {
+   "from": "surface_finish",
+   "from_port": 0,
+   "to": "Material",
+   "to_port": 2
+  },
+  {
+   "from": "surface_finish",
+   "from_port": 1,
+   "to": "Material",
+   "to_port": 4
+  }
+ ],
+ "label": "Graph",
+ "name": "431",
+ "node_position": {
+  "x": 0,
+  "y": 0
+ },
+ "nodes": [
+  {
+   "export_paths": {},
+   "name": "Material",
+   "node_position": {
+    "x": 837,
+    "y": 123
+   },
+   "parameters": {
+    "albedo_color": {
+     "a": 1,
+     "b": 1,
+     "g": 1,
+     "r": 1,
+     "type": "Color"
+    },
+    "ao": 1,
+    "depth_scale": 1,
+    "emission_energy": 1,
+    "metallic": 0,
+    "normal": 1,
+    "roughness": 1,
+    "size": 11,
+    "sss": 0
+   },
+   "type": "material"
+  },
+  {
+   "name": "surface_color",
+   "label": "Surface Color",
+   "type": "graph",
+   "node_position": {
+    "x": 346.0,
+    "y": 74.25
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.3,
+       "g": 0.3,
+       "b": 0.3,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.55,
+       "g": 0.55,
+       "b": 0.55,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    },
+    "param1": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0.2,
+       "g": 0.26,
+       "b": 0.14,
+       "pos": 0.0
+      },
+      {
+       "a": 1,
+       "r": 0.42,
+       "g": 0.5,
+       "b": 0.26,
+       "pos": 1.0
+      }
+     ],
+     "type": "Gradient"
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -54.0,
+      "y": 74.25
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 746.0,
+      "y": 74.25
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -54.0,
+      "y": 274.25
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.3,
+         "g": 0.3,
+         "b": 0.3,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.55,
+         "g": 0.55,
+         "b": 0.55,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      },
+      "param1": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.2,
+         "g": 0.26,
+         "b": 0.14,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.42,
+         "g": 0.5,
+         "b": 0.26,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Stone color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "RockColor",
+         "widget": "gradient"
+        }
+       ]
+      },
+      {
+       "name": "param1",
+       "shortdesc": "Lichen color",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "LichenColor",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "StoneNoise",
+     "node_position": {
+      "x": 86,
+      "y": 147
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.8,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "RockColor",
+     "node_position": {
+      "x": 365,
+      "y": -41
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.3,
+         "g": 0.3,
+         "b": 0.3,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.55,
+         "g": 0.55,
+         "b": 0.55,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "LichenColor",
+     "node_position": {
+      "x": 371,
+      "y": 214
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0.2,
+         "g": 0.26,
+         "b": 0.14,
+         "pos": 0.0
+        },
+        {
+         "a": 1,
+         "r": 0.42,
+         "g": 0.5,
+         "b": 0.26,
+         "pos": 1.0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "AlbedoComposite",
+     "node_position": {
+      "x": 562,
+      "y": -23
+     },
+     "parameters": {
+      "amount": 0.800781,
+      "blend_type": 0
+     },
+     "type": "blend"
+    }
+   ],
+   "connections": [
+    {
+     "from": "StoneNoise",
+     "from_port": 0,
+     "to": "LichenColor",
+     "to_port": 0
+    },
+    {
+     "from": "RockColor",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 0
+    },
+    {
+     "from": "LichenColor",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 1
+    },
+    {
+     "from": "StoneNoise",
+     "from_port": 0,
+     "to": "RockColor",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "AlbedoComposite",
+     "to_port": 2
+    },
+    {
+     "from": "AlbedoComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    }
+   ]
+  },
+  {
+   "name": "lichen_mask",
+   "label": "Lichen Coverage",
+   "type": "graph",
+   "node_position": {
+    "x": 230.0,
+    "y": 20.5
+   },
+   "parameters": {
+    "param0": {
+     "interpolation": 1,
+     "points": [
+      {
+       "a": 1,
+       "r": 0,
+       "g": 0,
+       "b": 0,
+       "pos": 0.35
+      },
+      {
+       "a": 1,
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "pos": 0.35
+      }
+     ],
+     "type": "Gradient"
+    }
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -170.0,
+      "y": 20.5
+     },
+     "parameters": {},
+     "ports": [],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 630.0,
+      "y": 20.5
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out2",
+       "type": "rgba",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -170.0,
+      "y": 220.5
+     },
+     "parameters": {
+      "param0": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.35
+        },
+        {
+         "a": 1,
+         "r": 1,
+         "g": 1,
+         "b": 1,
+         "pos": 0.35
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Coverage",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "LichenMask",
+         "widget": "gradient"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "LichenCoverageNoise",
+     "node_position": {
+      "x": 89,
+      "y": -6
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.9,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "LichenMask",
+     "node_position": {
+      "x": 371,
+      "y": 47
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "r": 0,
+         "g": 0,
+         "b": 0,
+         "pos": 0.35
+        },
+        {
+         "a": 1,
+         "r": 1,
+         "g": 1,
+         "b": 1,
+         "pos": 0.35
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    }
+   ],
+   "connections": [
+    {
+     "from": "LichenCoverageNoise",
+     "from_port": 0,
+     "to": "LichenMask",
+     "to_port": 0
+    },
+    {
+     "from": "LichenMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "LichenMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    },
+    {
+     "from": "LichenMask",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 2
+    }
+   ]
+  },
+  {
+   "name": "surface_finish",
+   "label": "Surface Finish",
+   "type": "graph",
+   "node_position": {
+    "x": 299.0,
+    "y": 206.4
+   },
+   "parameters": {
+    "param0": 0.3
+   },
+   "seed_int": 0,
+   "nodes": [
+    {
+     "name": "gen_inputs",
+     "type": "ios",
+     "node_position": {
+      "x": -101.0,
+      "y": 206.4
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "in0",
+       "type": "f",
+       "group_size": 0
+      },
+      {
+       "name": "in1",
+       "type": "f",
+       "group_size": 0
+      }
+     ],
+     "seed": 0,
+     "seed_locked": true
+    },
+    {
+     "name": "gen_outputs",
+     "type": "ios",
+     "node_position": {
+      "x": 699.0,
+      "y": 206.4
+     },
+     "parameters": {},
+     "ports": [
+      {
+       "name": "out0",
+       "type": "rgba",
+       "group_size": 0
+      },
+      {
+       "name": "out1",
+       "type": "rgb",
+       "group_size": 0
+      }
+     ],
+     "seed": 0
+    },
+    {
+     "name": "gen_parameters",
+     "type": "remote",
+     "node_position": {
+      "x": -101.0,
+      "y": 406.4
+     },
+     "parameters": {
+      "param0": 0.3
+     },
+     "seed": 0,
+     "widgets": [
+      {
+       "name": "param0",
+       "shortdesc": "Relief strength",
+       "label": "",
+       "type": "linked_control",
+       "linked_widgets": [
+        {
+         "node": "LichenNormal",
+         "widget": "param1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "RockRoughnessNoise",
+     "node_position": {
+      "x": 86,
+      "y": 301
+     },
+     "parameters": {
+      "iterations": 8,
+      "persistence": 0.7,
+      "scale_x": 4,
+      "scale_y": 4
+     },
+     "type": "perlin"
+    },
+    {
+     "name": "RockRoughnessTone",
+     "node_position": {
+      "x": 363,
+      "y": 337
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 0.354545,
+         "g": 0.354545,
+         "pos": 0,
+         "r": 0.354545
+        },
+        {
+         "a": 1,
+         "b": 0.745455,
+         "g": 0.745455,
+         "pos": 1,
+         "r": 0.745455
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "LichenRoughnessTone",
+     "node_position": {
+      "x": 480,
+      "y": 141
+     },
+     "parameters": {
+      "gradient": {
+       "interpolation": 1,
+       "points": [
+        {
+         "a": 1,
+         "b": 1,
+         "g": 1,
+         "pos": 0,
+         "r": 1
+        },
+        {
+         "a": 1,
+         "b": 0,
+         "g": 0,
+         "pos": 1,
+         "r": 0
+        }
+       ],
+       "type": "Gradient"
+      }
+     },
+     "type": "colorize"
+    },
+    {
+     "name": "RoughnessComposite",
+     "node_position": {
+      "x": 566,
+      "y": 253
+     },
+     "parameters": {
+      "amount": 0.5,
+      "blend_type": 4
+     },
+     "type": "blend"
+    },
+    {
+     "name": "LichenNormal",
+     "type": "normal_map",
+     "node_position": {
+      "x": 0,
+      "y": 0
+     },
+     "parameters": {
+      "param0": 9,
+      "param1": 0.3,
+      "param2": 0,
+      "param4": 0
+     }
+    }
+   ],
+   "connections": [
+    {
+     "from": "RockRoughnessNoise",
+     "from_port": 0,
+     "to": "RockRoughnessTone",
+     "to_port": 0
+    },
+    {
+     "from": "RockRoughnessTone",
+     "from_port": 0,
+     "to": "RoughnessComposite",
+     "to_port": 1
+    },
+    {
+     "from": "LichenRoughnessTone",
+     "from_port": 0,
+     "to": "RoughnessComposite",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 0,
+     "to": "LichenRoughnessTone",
+     "to_port": 0
+    },
+    {
+     "from": "gen_inputs",
+     "from_port": 1,
+     "to": "LichenNormal",
+     "to_port": 0
+    },
+    {
+     "from": "RoughnessComposite",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 0
+    },
+    {
+     "from": "LichenNormal",
+     "from_port": 0,
+     "to": "gen_outputs",
+     "to_port": 1
+    }
+   ]
+  }
+ ],
+ "parameters": {},
+ "type": "graph"
+}

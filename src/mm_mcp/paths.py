@@ -36,10 +36,12 @@ def reject_path_fragment(name: str) -> str:
     """Return name if it is a bare path component. Raise PathNotAllowed if it
     contains a path separator or equals '..'. Always enforced, independent of
     MM_ALLOWED_ROOTS: a separator or '..' in a 'name' is never legitimate."""
-    seps = [s for s in (os.sep, os.altsep) if s]
+    if not isinstance(name, str):
+        raise PathNotAllowed("name must be a string")
+    seps = ["/", "\\"]
     if any(s in name for s in seps):
         raise PathNotAllowed(
             f"'{name}' must be a bare name with no path separators")
-    if name == "..":
+    if not isinstance(name, str) or not name or name in (".", "..") or ":" in name or any(ord(c) < 32 for c in name):
         raise PathNotAllowed(f"'{name}' is not a valid name")
     return name

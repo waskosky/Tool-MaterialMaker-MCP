@@ -1,6 +1,6 @@
 [project]
 name = "mm-mcp"
-version = "0.7.0"
+version = "0.8.0a1"
 description = "MCP server for authoring and rendering Material Maker node graphs"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -25,10 +25,12 @@ classifiers = [
 dependencies = [
     "mcp>=2,<3",
     "python-dotenv>=1.0.0",
+    "Pillow>=10.4,<13",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0"]
+browser = ["playwright>=1.45,<2"]
 release = ["build>=1.0", "twine>=5.0"]
 
 [project.scripts]
@@ -48,11 +50,14 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-mm_mcp = ["preview_project/*", "play/static/*"]
+mm_mcp = ["preview_project/*", "play/static/*", "data/AUTHORING.md", "data/cookbook/*.md", "data/cookbook/*/*", "data/addons/mm_live/*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
 markers = [
     "integration: tests that launch Godot (slow)",
+    "browser: Chromium UI tests with an explicitly documented test transport",
+    "native: requires an operator-configured Material Maker and Godot installation",
+    "sdk: requires the real MCP SDK",
 ]

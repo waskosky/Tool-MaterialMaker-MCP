@@ -11,9 +11,10 @@ import time
 
 class IdleWatchdog:
     def __init__(self, timeout_s: float, *, clock=time.monotonic, on_expire=None,
-                 poll_s: float | None = None):
+                 poll_s: float | None = None, is_active=None):
         if timeout_s <= 0:
             raise ValueError("timeout_s must be positive")
+        self._is_active = is_active or (lambda: False)
         self._timeout = float(timeout_s)
         self._clock = clock
         self._on_expire = on_expire or self._default_exit
@@ -35,6 +36,9 @@ class IdleWatchdog:
 
     def check(self) -> bool:
         """One poll: fire on_expire and return True if the quiet period elapsed."""
+        if self._is_active():
+            self.touch()
+            return False
         if self.expired():
             self._on_expire(self.idle_seconds())
             return True

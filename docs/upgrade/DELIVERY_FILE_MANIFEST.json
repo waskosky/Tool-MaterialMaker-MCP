@@ -1,0 +1,2511 @@
+{
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 1299,
+      "sha256": "769d7a20d17a55c365e6fe7b7bbc7a33b2531bc76dcd3da70e62b7815f97641f"
+    },
+    {
+      "path": ".github/workflows/release-please.yml",
+      "bytes": 1124,
+      "sha256": "fd62e77df8591ca3b1b7e2387ff48966648c910abf7dfe0094ea6d2a6546ea22"
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "bytes": 1337,
+      "sha256": "aac4929fe40b4969707df2071cfdf5ea809983a7ca50f9c94abf5e96569147cc"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 996,
+      "sha256": "665da71519987d095a872ccb92a6fa03553613101acff40f037db193dc521776"
+    },
+    {
+      "path": ".release-please-manifest.json",
+      "bytes": 19,
+      "sha256": "ef90882b616d2ce90e067edf6373855c1a56eeae8a6d7d49c9f37c57700bdc84"
+    },
+    {
+      "path": ".superpowers/idle-exit-report.md",
+      "bytes": 7824,
+      "sha256": "c7816dbd240d75bc4d27991aa846f1cb09664ca6c176b596cbeb1f450fba5989"
+    },
+    {
+      "path": "CHANGELOG-0.8.md",
+      "bytes": 659,
+      "sha256": "6c839ae776211ded84af07c18f1c071f230e7c4d9efb366d0e13c15e82d2d177"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 39089,
+      "sha256": "29de950ad7ea12d50971c8a2c919ab336d876eb091d931a445e2747bc14a9dfc"
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 4111,
+      "sha256": "5ba61216d38d7ad6dd5746fd3deabe3e4579b2286e4636e08f70bf9f1fe359da"
+    },
+    {
+      "path": "HANDOFF.md",
+      "bytes": 14284,
+      "sha256": "b1fc14e87e1999f866a780777d263047d646463dd2993641b3078d591c95dfb7"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1073,
+      "sha256": "3e7f50dab6871b01f8413e3e269b59001a50f01887462b15d7659877e622fbab"
+    },
+    {
+      "path": "MANIFEST.in",
+      "bytes": 252,
+      "sha256": "1f63151f03ad77da136ec0283bcc15861853a1dec20fbf8910114e6dc6feda4a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6292,
+      "sha256": "5ba8ad18b66db0638febe855e8ee2a1700c214980a8c712ae45d394cff3de2fd"
+    },
+    {
+      "path": "STATUS.md",
+      "bytes": 5428,
+      "sha256": "5dcfa45287e3dae535f7e92fe9e09e3fb9942b60416728b544c36597ede05e99"
+    },
+    {
+      "path": "addons/mm_live/live_server.gd",
+      "bytes": 16646,
+      "sha256": "5e91cf9334a9d3cff0df87abe382304cc53d3f955fc79deb496e39bbe9be7311"
+    },
+    {
+      "path": "cookbook/README.md",
+      "bytes": 1918,
+      "sha256": "7e905daf7d8acd3c0224a19213bc489cc64d033aa86e8eecd78361516ce1baf2"
+    },
+    {
+      "path": "cookbook/ceramic/man02_ceramic_hex_tiles.md",
+      "bytes": 2385,
+      "sha256": "cbb569eb65671ae769366d194d05cdcdc39dcda60c5d86d9a7d90555d8170a9d"
+    },
+    {
+      "path": "cookbook/ceramic/man02_ceramic_hex_tiles.ptex",
+      "bytes": 12629,
+      "sha256": "fecbffbfada7b8feaf9debf05fb35f43f6657d4710eccc6facad1a04634265b0"
+    },
+    {
+      "path": "cookbook/fabrics/f01_woven_denim.md",
+      "bytes": 2393,
+      "sha256": "ed2590907cbcaebe608a34d882429342ad9476980d4ce4421f42a1082f58f97d"
+    },
+    {
+      "path": "cookbook/fabrics/f01_woven_denim.ptex",
+      "bytes": 8586,
+      "sha256": "ebeb820fdc73f776f03a72aed666e5bd51f4ead50b7a2b41aedce22a8e5debb4"
+    },
+    {
+      "path": "cookbook/fabrics/f03_canvas_burlap.md",
+      "bytes": 2408,
+      "sha256": "2f87f9b8cd9bc5f6bf469354d7773ac058a1dbd35abf5248a7a9006209e10ee4"
+    },
+    {
+      "path": "cookbook/fabrics/f03_canvas_burlap.ptex",
+      "bytes": 9021,
+      "sha256": "8b630650676b272ab00f6af7d31f75554feb2dc14cdc0d69fc5e2cb20f9ba214"
+    },
+    {
+      "path": "cookbook/fabrics/f04_wool_knit.md",
+      "bytes": 4539,
+      "sha256": "0de00da393f9d7279afb838e7ac44dc0de1ea1fd83b5ca2222b5503277f254cf"
+    },
+    {
+      "path": "cookbook/fabrics/f04_wool_knit.ptex",
+      "bytes": 9336,
+      "sha256": "6c9628bafb3cd82c20f965371014246013679602e1b76f0764fdb93edcbda4d8"
+    },
+    {
+      "path": "cookbook/fabrics/f05_silk_satin.md",
+      "bytes": 2431,
+      "sha256": "80eb0807a18873d8bfc991bb98e07be8d0f109660cf08b49fb200607ad36415b"
+    },
+    {
+      "path": "cookbook/fabrics/f05_silk_satin.ptex",
+      "bytes": 8983,
+      "sha256": "6875e72edfc427c579e5be28bb0fb3bae42c50ef25cd59ee1cbb723cd4464da8"
+    },
+    {
+      "path": "cookbook/fabrics/f06_velvet.md",
+      "bytes": 3258,
+      "sha256": "bc4097bc6fb76426d1a8386f67ad33723ee36f2194d4f45593ea012e09d4f7b3"
+    },
+    {
+      "path": "cookbook/fabrics/f06_velvet.ptex",
+      "bytes": 9029,
+      "sha256": "5589192f4b8de8481242b38c31a3c62b2ad8179ca95f7b8c538bddd1107bf894"
+    },
+    {
+      "path": "cookbook/fabrics/f07_herringbone_tweed.md",
+      "bytes": 2844,
+      "sha256": "97919a88b88f76bf60738fa91ae6e3106c88114218f4b0192ee399d53ba7f113"
+    },
+    {
+      "path": "cookbook/fabrics/f07_herringbone_tweed.ptex",
+      "bytes": 9495,
+      "sha256": "545de4075e44f195610361deb16f9d9c2c7bc24417b049e4312581a7e95c30c7"
+    },
+    {
+      "path": "cookbook/fabrics/f08_donegal_tweed.md",
+      "bytes": 5223,
+      "sha256": "75ca17edcb34bba10b751b5561fc1b2e2199c7c25800f560a73b7ded8ab804fa"
+    },
+    {
+      "path": "cookbook/fabrics/f08_donegal_tweed.ptex",
+      "bytes": 16120,
+      "sha256": "964983ce163239a7940ba86fad9bba3921cf6438f82e91c07873cf8f31b0cea0"
+    },
+    {
+      "path": "cookbook/glass/gl01_frosted_glass.md",
+      "bytes": 5464,
+      "sha256": "6377bf774fc4b6f689659c5bd7677e38abc469ec103c388e271315df18f54818"
+    },
+    {
+      "path": "cookbook/glass/gl01_frosted_glass.ptex",
+      "bytes": 13440,
+      "sha256": "a1a6d5697285d5d8f69cdf952cdade679428ce41ed5fae1f2d93a96b95c93fbb"
+    },
+    {
+      "path": "cookbook/leather/l01_black_oiled_leather.md",
+      "bytes": 3657,
+      "sha256": "0982930d90a8841163593ca472ee2e6bccf3f700268cf137a9d2aabdd18d5331"
+    },
+    {
+      "path": "cookbook/leather/l01_black_oiled_leather.ptex",
+      "bytes": 9022,
+      "sha256": "36281914861c721136b7ba3da2e6aa0c6195a2a9014d96cf9be250369f206eba"
+    },
+    {
+      "path": "cookbook/leather/l02_distressed_two_tone.md",
+      "bytes": 5916,
+      "sha256": "bee9f025af2fc7a9ee889e234286b0cba0877035f790c4930b4177d7913b05ab"
+    },
+    {
+      "path": "cookbook/leather/l02_distressed_two_tone.ptex",
+      "bytes": 17440,
+      "sha256": "cf516e65e93268ccd6c9d5bdd677cac15b3f886451ec580373e8c98da0061958"
+    },
+    {
+      "path": "cookbook/leather/l03_suede.md",
+      "bytes": 2735,
+      "sha256": "071c61e0bd3185d659dfe2b3e712ca6bf561df0cca78f3c23bf952ef33459de0"
+    },
+    {
+      "path": "cookbook/leather/l03_suede.ptex",
+      "bytes": 9409,
+      "sha256": "6012baf6f0b83a95b8c35be99e286f3b287f03b267134b1e3a281c958d06c672"
+    },
+    {
+      "path": "cookbook/leather/l04_reptile_exotic.md",
+      "bytes": 3706,
+      "sha256": "24c16356550991cb29d7ac4beaa8c5d188bbb8dc53178b85e45466e1022a96c7"
+    },
+    {
+      "path": "cookbook/leather/l04_reptile_exotic.ptex",
+      "bytes": 9611,
+      "sha256": "346c4ee74c87d29b19a4ab08bb7ea213543631e4d24a9c00754cb5e952e7413d"
+    },
+    {
+      "path": "cookbook/leather/l05_quilted_leather.md",
+      "bytes": 7297,
+      "sha256": "13ca5ea81a4f39578e24738f2dfbdf298bceb924709f76f978cde8735eea24e0"
+    },
+    {
+      "path": "cookbook/leather/l05_quilted_leather.ptex",
+      "bytes": 16379,
+      "sha256": "5958991cd190301347162561a2c0ac5e66f6f90a4d53bc3ef3f5bef3199cab2c"
+    },
+    {
+      "path": "cookbook/leather/l06_topstitched_leather.md",
+      "bytes": 6092,
+      "sha256": "6cc145f2f8ad1ae4d6efd5e48b9cae40dc772186a13e4cb03786ad571f5f444b"
+    },
+    {
+      "path": "cookbook/leather/l06_topstitched_leather.ptex",
+      "bytes": 15322,
+      "sha256": "8e4906088f522ee2ae1480791e05e6379df40adf30c6506dbe4b830289deb592"
+    },
+    {
+      "path": "cookbook/metal/m01_weathered_copper.md",
+      "bytes": 2327,
+      "sha256": "59a67ccd9a420d5a6f097bf6448549f071f75502936a5c40f40b7751b4ff50c5"
+    },
+    {
+      "path": "cookbook/metal/m01_weathered_copper.ptex",
+      "bytes": 13474,
+      "sha256": "cb3d53549a81932234151e7459cdfc4fd34eb8705b7905b7b0712a5e8ac5e3b8"
+    },
+    {
+      "path": "cookbook/metal/m02_brushed_aluminum.md",
+      "bytes": 2932,
+      "sha256": "2a70a91b41e3fb3bf25916a643963a77079f79900d8926b27f3f2ac3029b8837"
+    },
+    {
+      "path": "cookbook/metal/m02_brushed_aluminum.ptex",
+      "bytes": 10707,
+      "sha256": "f6dbb42f2561be3bff29421ca2cdf10833f728c9cbcaf1d1adfb2ea00e74795c"
+    },
+    {
+      "path": "cookbook/organics/o01_mossy_forest_floor.md",
+      "bytes": 2468,
+      "sha256": "bd22dadd81374ed499e7aba1a721358d0a41739ad21544bf20b0b89d029653cd"
+    },
+    {
+      "path": "cookbook/organics/o01_mossy_forest_floor.ptex",
+      "bytes": 12061,
+      "sha256": "aa2089dcdd527d5df8b8affe2453ae69331ed728d58318cf0195a176043bc513"
+    },
+    {
+      "path": "cookbook/organics/o03_tree_bark.md",
+      "bytes": 2676,
+      "sha256": "7a6d9f88cbfa80f440f25bd6a500d305d0998301ffbe63f1f04ea3eec9607a85"
+    },
+    {
+      "path": "cookbook/organics/o03_tree_bark.ptex",
+      "bytes": 11097,
+      "sha256": "0d67e62a76688d0a355570e972a5aab107f682d963581d40db63138f7799a2fd"
+    },
+    {
+      "path": "cookbook/organics/o04_snake_scales.md",
+      "bytes": 2818,
+      "sha256": "5330d04f6d8f9553f34c1ad9ca428bc0517ea8773fa329c89e61283a87eed1d9"
+    },
+    {
+      "path": "cookbook/organics/o04_snake_scales.ptex",
+      "bytes": 9195,
+      "sha256": "dfa16502232276cb0d70179fc4b85543144e603cbc7b2b432e68d43fc64a3038"
+    },
+    {
+      "path": "cookbook/organics/o05_coral.md",
+      "bytes": 2584,
+      "sha256": "38701a2554f0e1e4c0a2312149270084dc91e560bc430757d22658327922bb77"
+    },
+    {
+      "path": "cookbook/organics/o05_coral.ptex",
+      "bytes": 9056,
+      "sha256": "4f6825e9cd2ee6223916748915b66880da5d1db119d4280c2fc16fecc4f36efa"
+    },
+    {
+      "path": "cookbook/organics/o06_lichen_crusted_rock.md",
+      "bytes": 3650,
+      "sha256": "923ebc4ec2bc8a2fc7134fb6f92783966c3b8510fb22858a5cb510fff15824c0"
+    },
+    {
+      "path": "cookbook/organics/o06_lichen_crusted_rock.ptex",
+      "bytes": 13076,
+      "sha256": "6a4a022f1d65bfb6368ade865f3d799cac8eec03e57bd6f410ac5969b947118f"
+    },
+    {
+      "path": "cookbook/painted-metal/combo01_rusted_painted_steel.md",
+      "bytes": 3080,
+      "sha256": "2037347fe95111c8e7b186e19f2ea898bae4eacb6497c231fb280b280bbd38d6"
+    },
+    {
+      "path": "cookbook/painted-metal/combo01_rusted_painted_steel.ptex",
+      "bytes": 15770,
+      "sha256": "a46cf1b19ba3fc6ec1ee13dd9a84faef058dc15273d3a421efa3b98393f2aa7f"
+    },
+    {
+      "path": "cookbook/painted-metal/pm01_powder_coat.md",
+      "bytes": 3251,
+      "sha256": "8b8177e228a92c6e087bc20b6ef8b19194cbf473cb8f13a183dd764b18c64b24"
+    },
+    {
+      "path": "cookbook/painted-metal/pm01_powder_coat.ptex",
+      "bytes": 11666,
+      "sha256": "6affaca40ba49cb832bc912729c77efd2b2bce4199620233f01a61307efdda22"
+    },
+    {
+      "path": "cookbook/painted-metal/pm02_automotive_enamel.md",
+      "bytes": 3094,
+      "sha256": "5f913942bdfc18dc1c7141bdce90d72b95a3c432e073eea3d3f9c484ccb38a6a"
+    },
+    {
+      "path": "cookbook/painted-metal/pm02_automotive_enamel.ptex",
+      "bytes": 11668,
+      "sha256": "b84e94fb5fc076fe6b0266a461f159a391a9ff3edf6b1e49f61dce4e9a475834"
+    },
+    {
+      "path": "cookbook/painted-metal/pm03_chipped_paint.md",
+      "bytes": 5345,
+      "sha256": "17aeaa3c95103ff56294fabd249b5d2112d4aeb21aee5f884bdd4915b603c9a5"
+    },
+    {
+      "path": "cookbook/painted-metal/pm03_chipped_paint.ptex",
+      "bytes": 20866,
+      "sha256": "40007e033c7899f037d0853f99d19051675ea282fb41c019e140f0cc434a5049"
+    },
+    {
+      "path": "cookbook/painted-metal/pm04_hammertone.md",
+      "bytes": 2826,
+      "sha256": "9d167144d3cfcd6869f6b2877a95f4d356fe6a36db6ed331069d189726bd2c8c"
+    },
+    {
+      "path": "cookbook/painted-metal/pm04_hammertone.ptex",
+      "bytes": 11660,
+      "sha256": "d8ce0b5906e0561eb0216406e8b8a194b6e1631f8d9a31563c2142a097583c51"
+    },
+    {
+      "path": "cookbook/painted-metal/pm05_scuffed_panel.md",
+      "bytes": 3733,
+      "sha256": "c56b6dfa1c9692db830adab3881d0b307dd75b79db6f8cfcf562bd1d22aa1165"
+    },
+    {
+      "path": "cookbook/painted-metal/pm05_scuffed_panel.ptex",
+      "bytes": 11189,
+      "sha256": "629d9d60159ddbf87e475376c2105f5d5b46ae003ee8b8afc4467a68012d9750"
+    },
+    {
+      "path": "cookbook/plastics/p01_glossy_plastic.md",
+      "bytes": 3720,
+      "sha256": "f689f069e06771ff9d2ff2095812e4b7090376a3e2de8f1237f4e872ab83e6e6"
+    },
+    {
+      "path": "cookbook/plastics/p01_glossy_plastic.ptex",
+      "bytes": 7844,
+      "sha256": "0887259e694a0b5f73dc176381a3d5eccc271a81a7e16b83411cebd240ee6332"
+    },
+    {
+      "path": "cookbook/scifi/sf01_hull_plating.md",
+      "bytes": 2966,
+      "sha256": "850dddfd9a951677f9814e9abbadebebcb57e638cd7804bd8bd1e3518779265a"
+    },
+    {
+      "path": "cookbook/scifi/sf01_hull_plating.ptex",
+      "bytes": 9678,
+      "sha256": "ab4f50dfdc341256b86421f5d2b25fe6fd8e90ec2d287161e5e281fae56f0f0c"
+    },
+    {
+      "path": "cookbook/scifi/sf02_hazard_stripe_panel.md",
+      "bytes": 2508,
+      "sha256": "f8c8f43fd7172757e960751ade21211dfd41d6c1bb3bf343a8a41fe2b32c6910"
+    },
+    {
+      "path": "cookbook/scifi/sf02_hazard_stripe_panel.ptex",
+      "bytes": 9109,
+      "sha256": "e4e56db133c577ff3cf2a4f447412b296ce8710768cc8eb64c85b6b41384bae1"
+    },
+    {
+      "path": "cookbook/scifi/sf03_circuit_board.md",
+      "bytes": 5035,
+      "sha256": "f1775873654c88ee1ebeab854d9a26a15fb561185a6a256a8805833353703d9d"
+    },
+    {
+      "path": "cookbook/scifi/sf03_circuit_board.ptex",
+      "bytes": 16588,
+      "sha256": "6e06a253446fb252be86cc049174887242c727412871d6a272f9594c07b4f52d"
+    },
+    {
+      "path": "cookbook/scifi/sf04_vent_grille_panel.md",
+      "bytes": 2405,
+      "sha256": "699a513ac86642d41ab18294ef936b6fdf5b19c0d5da7cc0b47d4fae4cc1ecaa"
+    },
+    {
+      "path": "cookbook/scifi/sf04_vent_grille_panel.ptex",
+      "bytes": 8432,
+      "sha256": "b8d151b47b30eee08c2365136d9f1540e82497a02926207b84f3dd68b9992b4c"
+    },
+    {
+      "path": "cookbook/stone/s02_gray_granite.md",
+      "bytes": 3329,
+      "sha256": "7dd71834d210f4876a94bddcfb741e5bee4e454f158cfdfe0e669971d9998095"
+    },
+    {
+      "path": "cookbook/stone/s02_gray_granite.ptex",
+      "bytes": 12426,
+      "sha256": "effe6d82e27434956125d04825bf39b82c96fd36fd67b2bb10a2517ddf43b770"
+    },
+    {
+      "path": "cookbook/stone/s04_scattered_river_stones.md",
+      "bytes": 4428,
+      "sha256": "50911ea914b8fc52fa2fb96aa1c2d9b092c2c3aed2b023903d4a0c6f1fffc25c"
+    },
+    {
+      "path": "cookbook/stone/s04_scattered_river_stones.ptex",
+      "bytes": 21542,
+      "sha256": "5326a1ff4d01e8651b1e8cb880bb0c3ec0670ae52753428e0f6f2494a733bd7f"
+    },
+    {
+      "path": "cookbook/stone/s05_hex_stone_tile.md",
+      "bytes": 4224,
+      "sha256": "8a7e209ebadd9efbbd7ac1dd6c0d71787b50dfa81ab730e32aa6443532cfb5bb"
+    },
+    {
+      "path": "cookbook/stone/s05_hex_stone_tile.ptex",
+      "bytes": 17550,
+      "sha256": "5987bd775c55a3a32d213a57d11d00508dd55e9bd37d7518471f234fe13c414e"
+    },
+    {
+      "path": "cookbook/stone/s06_river_pebbles.md",
+      "bytes": 3951,
+      "sha256": "40af6147bc02bb23525904ea5958c5f1cc74ae3ef842827dfaa610f9cadfbcfd"
+    },
+    {
+      "path": "cookbook/stone/s06_river_pebbles.ptex",
+      "bytes": 15350,
+      "sha256": "afabb5171957a622f25705f545e7f824b576e97673e45b99281a89344f2bbef4"
+    },
+    {
+      "path": "cookbook/stone/s07_cobblestone.md",
+      "bytes": 4993,
+      "sha256": "3038d8751fd49466e397d3b794a5910959e50c8e322d733851ce1e9c3ed38bae"
+    },
+    {
+      "path": "cookbook/stone/s07_cobblestone.ptex",
+      "bytes": 15268,
+      "sha256": "f56be5d841620018bf2367043cdf1ac864c9f995dc1def8144a82fddbc39c3a0"
+    },
+    {
+      "path": "cookbook/stone/s08_dry_stone_wall.md",
+      "bytes": 4433,
+      "sha256": "b3696c32eb06ef214d7a5601f6a406668b04974f9cdd0c1fdc45439c0a3b605b"
+    },
+    {
+      "path": "cookbook/stone/s08_dry_stone_wall.ptex",
+      "bytes": 15259,
+      "sha256": "b3284b8f533f8b2f24e6a99e28beb0ec7bbfa3a6344c549ac76a0092e25464b4"
+    },
+    {
+      "path": "cookbook/stone/s09_ashlar_wall.md",
+      "bytes": 4965,
+      "sha256": "b4b33b976355ac9dd762039b8bc81fcf8bfbab45bb5411ff3d8951c64f92cd3c"
+    },
+    {
+      "path": "cookbook/stone/s09_ashlar_wall.ptex",
+      "bytes": 17024,
+      "sha256": "92d85f51c3d1169728defd79391282b343ddc9772c2d2feb95a380c2164d3179"
+    },
+    {
+      "path": "cookbook/stone/s10_flagstone.md",
+      "bytes": 3904,
+      "sha256": "bdd495e2dce744e8fe284b17cee4155922e8cd1531df1ce75703d4fd4b5e38a0"
+    },
+    {
+      "path": "cookbook/stone/s10_flagstone.ptex",
+      "bytes": 16670,
+      "sha256": "4413c639512e2a1c9f2015c1d4db7c97e387544b07ef785b5a055467250a6753"
+    },
+    {
+      "path": "cookbook/stone/s11_marble.md",
+      "bytes": 4801,
+      "sha256": "1f23a3c728a03bb18e45ab0eec6b3715b5d9466987d286db582df20378797799"
+    },
+    {
+      "path": "cookbook/stone/s11_marble.ptex",
+      "bytes": 11883,
+      "sha256": "d4f8e186bc3cbabb97235336e8b81fe38127fdda28e5b09166d5a758a1aff124"
+    },
+    {
+      "path": "cookbook/terrain/t01_sand_dunes.md",
+      "bytes": 3309,
+      "sha256": "62c61c1796edf266286ed7d1512fc827ffea291e5499651550045f37b8e63d0a"
+    },
+    {
+      "path": "cookbook/terrain/t01_sand_dunes.ptex",
+      "bytes": 11413,
+      "sha256": "66ada2f1daed001798bd44769870eca4d163e5bcd1cdaecfd8206c27d985aa70"
+    },
+    {
+      "path": "cookbook/terrain/t02_fresh_snow.md",
+      "bytes": 2731,
+      "sha256": "1bdfe4cbc2fa0d429e1e1c60f34c7f69958eadc9aa536e721e68e12bd73c2c06"
+    },
+    {
+      "path": "cookbook/terrain/t02_fresh_snow.ptex",
+      "bytes": 11311,
+      "sha256": "505d1b8fb4ee14b6298a1784724969dcfe8c4495f5ccb22dc8cb210cacdc9312"
+    },
+    {
+      "path": "cookbook/terrain/t03_gravel.md",
+      "bytes": 2547,
+      "sha256": "596f576f62cf8e1864c4ec9471d22f1259db789e9ee30754bf0aa005433c9aa7"
+    },
+    {
+      "path": "cookbook/terrain/t03_gravel.ptex",
+      "bytes": 12344,
+      "sha256": "f93ecaeda6723440b696c8cd38fd58807f6ac025d8c0ee47c9c9d0d97c13a802"
+    },
+    {
+      "path": "cookbook/terrain/t04_grass_field.md",
+      "bytes": 3392,
+      "sha256": "475ea4b9594f37f72725b6ef9a896e0f80a17b7acf6e882c03ba62c559bfcc01"
+    },
+    {
+      "path": "cookbook/terrain/t04_grass_field.ptex",
+      "bytes": 13118,
+      "sha256": "8bccee1bf7b5142bb599bddf7cbba6bdbcc3fd128aa3b7694e7e343523ce661b"
+    },
+    {
+      "path": "cookbook/terrain/t05_cracked_ice.md",
+      "bytes": 4019,
+      "sha256": "6cefb4647bdafea9fbdae25293e7a0e61c8ff5fc1f14b23c639dd9267a94814c"
+    },
+    {
+      "path": "cookbook/terrain/t05_cracked_ice.ptex",
+      "bytes": 14365,
+      "sha256": "55586ad2539ea25bf49966bcf39e2841c8b986283149660f94d1f9cf0977b6de"
+    },
+    {
+      "path": "cookbook/terrain/t06_cooled_lava.md",
+      "bytes": 4778,
+      "sha256": "2b3f54145e670cec34fa542c1bd112ba8e1d849f737ebec9ff440c607a501b8c"
+    },
+    {
+      "path": "cookbook/terrain/t06_cooled_lava.ptex",
+      "bytes": 18028,
+      "sha256": "405df0203077d8ec5ef27a502293443935dc37e39d9bafd09e74399ae5eef62d"
+    },
+    {
+      "path": "cookbook/terrain/t07_forest_floor.md",
+      "bytes": 2637,
+      "sha256": "92f2cf92b92810a7f1c0483dc1d53e8931da0dba2025afba2b1e02b3cd63c48a"
+    },
+    {
+      "path": "cookbook/terrain/t07_forest_floor.ptex",
+      "bytes": 10112,
+      "sha256": "d2714e8c8016d2ff09bc74705f4cec4e45bf28ebe2598b410b7576ea1f9d7a4b"
+    },
+    {
+      "path": "cookbook/terrain/t08_riverbed_pebbles.md",
+      "bytes": 3210,
+      "sha256": "f2451563082501bc8d60d0dafb38b848a606ec6c70d8f647bf3b1b332182cd2d"
+    },
+    {
+      "path": "cookbook/terrain/t08_riverbed_pebbles.ptex",
+      "bytes": 14740,
+      "sha256": "a28638c39db4b4ea8ac6bb83d10eb26dbd5aa7fb95be5a6e2407f70f079677dd"
+    },
+    {
+      "path": "cookbook/wood/w03_painted_wood_siding.md",
+      "bytes": 4156,
+      "sha256": "52764e3415840e639a3d96e764d31f92eb74577d1ceb7574caf4318b982ed4da"
+    },
+    {
+      "path": "cookbook/wood/w03_painted_wood_siding.ptex",
+      "bytes": 14301,
+      "sha256": "2ba3465cd3d2171aed6e47e4d15ea0d468d10bc145496151021a8de3b69b0657"
+    },
+    {
+      "path": "cookbook/wood/w04_driftwood_gray.md",
+      "bytes": 2559,
+      "sha256": "f272f2c1dd809ae70c3fce41a0e69f2dde990e411d58304b3b75fb29e8e432ec"
+    },
+    {
+      "path": "cookbook/wood/w04_driftwood_gray.ptex",
+      "bytes": 10770,
+      "sha256": "8ff084a915a449752a94f50c59b3a1c7d8ccfe21f0a20cdb497dcebccda362ab"
+    },
+    {
+      "path": "cookbook/wood/w05_dark_walnut.md",
+      "bytes": 2671,
+      "sha256": "8063d6a3ed0ffcf648d5888455f5b276f60d9ba572f3cf1763cdea6f118b294e"
+    },
+    {
+      "path": "cookbook/wood/w05_dark_walnut.ptex",
+      "bytes": 10770,
+      "sha256": "ea842306f29c33c48e4ffdfa884be1a6531fc3b042d0714626ec03fd7a1af8d5"
+    },
+    {
+      "path": "docs/AUTHORING.md",
+      "bytes": 24012,
+      "sha256": "7f5164a5302298db1bdc4ad450b751fb64825567b5a66e41cb0052bdebc027e6"
+    },
+    {
+      "path": "docs/DEBUG_SWATCHES.md",
+      "bytes": 7936,
+      "sha256": "c176fd876c70fa22ef06385a8fd06495a52bb7521ec8125211087822a574235a"
+    },
+    {
+      "path": "docs/NORTH_STAR.md",
+      "bytes": 5312,
+      "sha256": "39c6314d22985ef58e860766cc254f8e9ecc336347748e671c8efaab5227cc70"
+    },
+    {
+      "path": "docs/PLAN.md",
+      "bytes": 2837,
+      "sha256": "c952b21619bc23bce3c0e664d6eabe866103b2112d41837511a193902e3688a4"
+    },
+    {
+      "path": "docs/evidence/phase3/2026-08-26-baseline.md",
+      "bytes": 15390,
+      "sha256": "bda2a8164ddc7d759a30acce788edc4a6c0308a6385cb9342fd527976f123bd1"
+    },
+    {
+      "path": "docs/evidence/phase3/2026-08-26-iter1.md",
+      "bytes": 25911,
+      "sha256": "a916239266ce4f00b47fb3e3a94da89696a506e5da60768a689f096e8cbff7cd"
+    },
+    {
+      "path": "docs/evidence/phase3/README.md",
+      "bytes": 1589,
+      "sha256": "0f2e1023dd3b27057bd928da9780752c2183b85da3eeb809f4effc3cd6bfe3b8"
+    },
+    {
+      "path": "docs/evidence/phase3/freeze-rule.md",
+      "bytes": 1019,
+      "sha256": "8853fae78533d5a7e2f5b48d35a34deef3257c8d3f204089d90e9a8dc2aa2494"
+    },
+    {
+      "path": "docs/evidence/phase3/test_set.json",
+      "bytes": 7828,
+      "sha256": "81741ff56badea0494514276ce5cba0930aebd77a6467334cd7cdcd1211b3743"
+    },
+    {
+      "path": "docs/images/cookbook-ceramic/man02_ceramic_hex_tiles.png",
+      "bytes": 56736,
+      "sha256": "a386f34eb4570230a77c7388b7422e9ddec0fc26ea3ba2600952b7d801132031"
+    },
+    {
+      "path": "docs/images/cookbook-contact-sheet.png",
+      "bytes": 1657166,
+      "sha256": "4c3f84a46d4374fb8ec50831406ff305295f326deb1bcce5db3aa6d714955508"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f01_woven_denim.png",
+      "bytes": 62135,
+      "sha256": "8d7d01ae5b0b3027e4f78dbea728e6fb05cab7eb3c249b673a986c16f0a12e8f"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f03_canvas_burlap.png",
+      "bytes": 48124,
+      "sha256": "712053606138c74695ca0b997b15ed25c11c7384bd4fce96ddfe3bd24f8279e0"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f04_wool_knit.png",
+      "bytes": 21508,
+      "sha256": "369083348bacf99dc9f0a9c0d6130c434e7e4c5023e58ec05f5f0b22044ad06a"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f05_silk_satin.png",
+      "bytes": 82390,
+      "sha256": "557950a7ab31a250b73bec7dfc69be773acb13b8ce5351e58d033222c5d74d06"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f06_velvet.png",
+      "bytes": 150273,
+      "sha256": "24a9d23d6ecb5fae3aa41c1d9256b268a2ed1090e5d224214b1f2e587a3ecf59"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f07_herringbone_tweed.png",
+      "bytes": 42045,
+      "sha256": "ee8949c99e0466104c5acc060e25304495f63f0898c2f6f64dafb7921d778a7c"
+    },
+    {
+      "path": "docs/images/cookbook-fabrics/f08_donegal_tweed.png",
+      "bytes": 56100,
+      "sha256": "1ebeac170f2f8b0000fa597e24ec96b8c23892edcb233f68d19f39b6feacb2fe"
+    },
+    {
+      "path": "docs/images/cookbook-glass/gl01_frosted_glass.png",
+      "bytes": 539209,
+      "sha256": "04ff56f7a5e5365a8b1acdc0410f6222b955de08fd93c1ad6243e10c324f4eed"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l01_black_oiled_leather.png",
+      "bytes": 94842,
+      "sha256": "6193e1753bbca00a3d8f6e5efc8f1896ef307988236dbd0db597744d2b9519a4"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l02_distressed_two_tone.png",
+      "bytes": 219994,
+      "sha256": "4876ba920375c7c15a6fcc25c93553cf4fd7193cc3e10dc096b45bfc14df3e37"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l03_suede.png",
+      "bytes": 215783,
+      "sha256": "3e1d34d29afb2f1ba8e349a27858f1ebbbbb4878846083e481b1bb8e198b6fb7"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l04_reptile_exotic.png",
+      "bytes": 103848,
+      "sha256": "e2858be8fcdd1e956b8cad2a781ab3aa30f6f95c9f49d81dc1e5763d57d7babc"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l05_quilted_leather.png",
+      "bytes": 90510,
+      "sha256": "953505632a7c17a5002e4fb6fd83287ec14affec89de8c28bd9748de7f5e1c65"
+    },
+    {
+      "path": "docs/images/cookbook-leather/l06_topstitched_leather.png",
+      "bytes": 131422,
+      "sha256": "f72b21a76620129029d622d1f814fa4e65e5a0ad1d7d86d29a86b40cdce6aa54"
+    },
+    {
+      "path": "docs/images/cookbook-metal/m01_weathered_copper.png",
+      "bytes": 402904,
+      "sha256": "e3809403122b625e06ca3a48ceff56a52840ac91b5c0a9a84128cf6d0fa7953d"
+    },
+    {
+      "path": "docs/images/cookbook-metal/m02_brushed_aluminum.png",
+      "bytes": 93596,
+      "sha256": "fccad09874f08ac5806d86dbb90df5fec70329fab77272fbede1724e0fb080c6"
+    },
+    {
+      "path": "docs/images/cookbook-organics/o01_mossy_forest_floor.png",
+      "bytes": 305700,
+      "sha256": "1fad1a16796332a7f1c5bd838d93fe5479b62d9968e24e5268e970023fd10ca0"
+    },
+    {
+      "path": "docs/images/cookbook-organics/o03_tree_bark.png",
+      "bytes": 179945,
+      "sha256": "2aa926b52ece3f3b0304593f192e8bce98e5cc6120cb55fd1f44e194d7260688"
+    },
+    {
+      "path": "docs/images/cookbook-organics/o04_snake_scales.png",
+      "bytes": 148599,
+      "sha256": "26456b3605d417c97f1b955d81699466fb66a3b4023c3a4cca02c20b6523afd8"
+    },
+    {
+      "path": "docs/images/cookbook-organics/o05_coral.png",
+      "bytes": 356011,
+      "sha256": "336478948c795c757b295657c56a2ddb36866c06c328330432f0ef12d6a92187"
+    },
+    {
+      "path": "docs/images/cookbook-organics/o06_lichen_crusted_rock.png",
+      "bytes": 263388,
+      "sha256": "561808ff27e8392b1dc4ed36141355fa9422a1dc71e12a63d822f9c81bfc7ef6"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/combo01_rusted_painted_steel.png",
+      "bytes": 311211,
+      "sha256": "155da4a99b42ce550490f890a5e1b1846f68b20a8619156ef38089885cba0ef7"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/pm01_powder_coat.png",
+      "bytes": 229574,
+      "sha256": "705647524674cab2ded5dc5c0894177b746a88ededaedbbce264dfd8b7ccf722"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/pm02_automotive_enamel.png",
+      "bytes": 153861,
+      "sha256": "3e45b6497596adddf211dbdaa93a136c00d1dfdfdd95005d9a983bcdc7cf390c"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/pm03_chipped_paint.png",
+      "bytes": 79216,
+      "sha256": "b6226eb9880340a7ed34e0e6dd7607fe423da98ae3088c2bc8d322a11c27aa14"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/pm04_hammertone.png",
+      "bytes": 153535,
+      "sha256": "3fc55ef2318b05eb6c321a3304f3a6df6044d7b2d705109d12b8646b457bd6f4"
+    },
+    {
+      "path": "docs/images/cookbook-painted-metal/pm05_scuffed_panel.png",
+      "bytes": 44526,
+      "sha256": "6970ef5141c100282016737f615edbf3936af6919fa6d3812b9e8c0bc1fefe94"
+    },
+    {
+      "path": "docs/images/cookbook-plastics/p01_glossy_plastic.png",
+      "bytes": 24111,
+      "sha256": "d2540289a0765c28354eeb76baf833e8327b84425ddd1e6e2dbef4a37c6aaf73"
+    },
+    {
+      "path": "docs/images/cookbook-scifi/sf01_hull_plating.png",
+      "bytes": 61160,
+      "sha256": "cddccfc1defa61df7d53098809bf9b4e13194e1f83b3ad73be5e87a02c2051a0"
+    },
+    {
+      "path": "docs/images/cookbook-scifi/sf02_hazard_stripe_panel.png",
+      "bytes": 9962,
+      "sha256": "74f46eac73298974eea786ec7a3c7e3cd3e7c46ce30016216a8a818cd73f0769"
+    },
+    {
+      "path": "docs/images/cookbook-scifi/sf03_circuit_board.png",
+      "bytes": 44147,
+      "sha256": "4429331813ae8661a6dfc51f565fef9fe7acfc14c762fca3c945a7324fd83a78"
+    },
+    {
+      "path": "docs/images/cookbook-scifi/sf04_vent_grille_panel.png",
+      "bytes": 9941,
+      "sha256": "0f983d59f2a0917d50939b0c73d1d9fbd952a66119a013fc97f4b0326dc4932e"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s02_gray_granite.png",
+      "bytes": 201006,
+      "sha256": "6fb6ff16e3156b370fe2eddaa47bf70d6a70aa1c3ace209f3048bd4d3ff7b593"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s04_scattered_river_stones.png",
+      "bytes": 123432,
+      "sha256": "0ed4473992d89d702a8e9d30e8edf1f6dc30ca146a6486560738b9a8b1dd571d"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s05_hex_stone_tile.png",
+      "bytes": 218199,
+      "sha256": "6b27bd71de9602ab3c29deb1c7d936f3e0802af04ee3ac9bafcbaccdf2cf5a0d"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s06_river_pebbles.png",
+      "bytes": 179409,
+      "sha256": "ad84e82d962eecfb8d62836326292c85be8ecec8956a0dcc75c227d675c68478"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s07_cobblestone.png",
+      "bytes": 237360,
+      "sha256": "85b7e6115310f8698a501ce5b9044bf824bb67a52600a82a7b03c30d5b8d1179"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s08_dry_stone_wall.png",
+      "bytes": 260277,
+      "sha256": "78f7a71e52e6c269f8675402aac5a65612ab0172e9158dd71e2785b54a15e8fc"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s09_ashlar_wall.png",
+      "bytes": 295692,
+      "sha256": "2419398c4a41848c649742084be520e953f452832be388da43365186d6085189"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s10_flagstone.png",
+      "bytes": 184663,
+      "sha256": "e91a3ef56c876f7758113967220171586aa54d0150f1dccb48892d18e6dfec82"
+    },
+    {
+      "path": "docs/images/cookbook-stone/s11_marble.png",
+      "bytes": 221243,
+      "sha256": "d94ff8c4e2b2735782ba0c10ad0f60c5e4f819fdcb02ce5312b38e4ad89a9b2d"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t01_sand_dunes.png",
+      "bytes": 138050,
+      "sha256": "ace433226aefef113b9e27b34714aed2e412981af57ba17195305cd66d6abb7e"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t02_fresh_snow.png",
+      "bytes": 102864,
+      "sha256": "49deaff93e67a55a0d6ecc888edbdfd3272d4cf64a88e2f703a029fd35a7fec4"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t03_gravel.png",
+      "bytes": 64377,
+      "sha256": "f0d81d3d1e8ffa273cd1e7137276f54e626826560e73077bc0656ff264bf1896"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t04_grass_field.png",
+      "bytes": 205798,
+      "sha256": "decc18ee17a1b3724ad920f3eafb369cab458c7ee1db36f31bdfbd71c98e696b"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t05_cracked_ice.png",
+      "bytes": 121777,
+      "sha256": "d213ea280f9a272e7fb79ee6286e94a093ff1aa79feac0dd13bf6b5b76cc1ce0"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t06_cooled_lava.png",
+      "bytes": 61715,
+      "sha256": "fc25884ffcf07bee60c9f3e9d5bb4d180be60ab87df988ae5f1ae029ded61c5f"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t07_forest_floor.png",
+      "bytes": 216161,
+      "sha256": "beb6279525b8dbc5e8f1a0980923cd860f1bdffa7607d4c6c529ae27bd6abc88"
+    },
+    {
+      "path": "docs/images/cookbook-terrain/t08_riverbed_pebbles.png",
+      "bytes": 110128,
+      "sha256": "b514a49615a550b48ad3a3c2baca0987ef17434305ddf0f5115da1afcf0538fb"
+    },
+    {
+      "path": "docs/images/cookbook-wood/w03_painted_wood_siding.png",
+      "bytes": 158918,
+      "sha256": "9131757378ce28fab7da847c1d8ddddd6a79c0fd4b4e920aed904ab7301aedca"
+    },
+    {
+      "path": "docs/images/cookbook-wood/w04_driftwood_gray.png",
+      "bytes": 164948,
+      "sha256": "7fa9b4d469432eb4344775c48f445547b9fe03c5a77aad7891dd80beb5f18e48"
+    },
+    {
+      "path": "docs/images/cookbook-wood/w05_dark_walnut.png",
+      "bytes": 150344,
+      "sha256": "3e38122953eea0ba4f65688f35cdff05d097ef656a40252b69fc98e36411725f"
+    },
+    {
+      "path": "docs/images/gallery/bricks_grayson_edit.png",
+      "bytes": 623033,
+      "sha256": "6fcde531cb2879f83e1dedba6b1a26cfeb559bdbcb698d1f96a962676e3fa25c"
+    },
+    {
+      "path": "docs/images/gallery/f01_woven_denim.png",
+      "bytes": 484847,
+      "sha256": "3abfeb21fcb1267402f05ab4a77202f8eccec8ff034f923657a8c768051bf759"
+    },
+    {
+      "path": "docs/images/gallery/m02_brushed_aluminum.png",
+      "bytes": 985077,
+      "sha256": "ec96894f88b7567c2d69d005c3029d14e5b76889c5ef80d29156f6501512e2f6"
+    },
+    {
+      "path": "docs/images/gallery/man02_ceramic_hex_tiles.png",
+      "bytes": 630615,
+      "sha256": "0ca16ebd5b1914bfc8fbe632ab9c927a28994ec002cc546a633d4a713594bf40"
+    },
+    {
+      "path": "docs/images/gallery/o01_mossy_forest_floor.png",
+      "bytes": 697277,
+      "sha256": "22c2c82cf37deefe9f8db021a13a42dde110128aab1bd8912db7028eb47244b1"
+    },
+    {
+      "path": "docs/images/gallery/o03_tree_bark.png",
+      "bytes": 671707,
+      "sha256": "d230cbe50661a25f0ea3c240b87a69c3370aa60666f39260605e074e63852a0a"
+    },
+    {
+      "path": "docs/images/gallery/s02_gray_granite.png",
+      "bytes": 494796,
+      "sha256": "7d29441041ec08a9b4ee447b2183bb694d7dda983a550a6d5833a64a5e7615e1"
+    },
+    {
+      "path": "docs/images/gallery/w05_dark_walnut.png",
+      "bytes": 797756,
+      "sha256": "754dac909753c99f31d0ca438be9bf1412cde5fec2396d64ef5abcdd7026b921"
+    },
+    {
+      "path": "docs/images/hero.png",
+      "bytes": 1387032,
+      "sha256": "d31b4b0d6ae3eb38f99db029a3e3823c9adecc7a5a7650df7d19b416fc2c3389"
+    },
+    {
+      "path": "docs/images/noise-gallery/cross-family.png",
+      "bytes": 182324,
+      "sha256": "0db60784cb1c672dac3eaa910e8ff88c0ea01c4677168f8c4095512341ae6e3d"
+    },
+    {
+      "path": "docs/images/noise-gallery/fbm-bases.png",
+      "bytes": 264329,
+      "sha256": "e0a38b3e23e2313bbce49fe7fa526f4e7c9562933c581a482d7f4d862c8ff70d"
+    },
+    {
+      "path": "docs/social-preview.png",
+      "bytes": 915760,
+      "sha256": "3cbe3a28cbb4d64368de906534501d8358c760755b80dd88a786ca267984b588"
+    },
+    {
+      "path": "docs/superpowers/README.md",
+      "bytes": 988,
+      "sha256": "ae577b20de517d9357e74ba765a95c5feff041766351bd848de491c0ad0ad0c9"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-25-material-maker-mcp-phase1-2.md",
+      "bytes": 40632,
+      "sha256": "1405ab1aaf4a49ae2f5ae5748a09858b70de88efba8772b7b4689cedf80dbe09"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-26-material-maker-mcp-phase3.md",
+      "bytes": 8072,
+      "sha256": "8f7e384dae82e7f753500b9fc38d92ec8f25b810736d8191d972ff37cfa9dacc"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-26-phase5-overlay-builder.md",
+      "bytes": 20800,
+      "sha256": "d965feeebbf3181f144802a3df174adc3da1eb4b62b1b5a4833b942ff80279d0"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-27-connect-or-launch-readiness-race.md",
+      "bytes": 21849,
+      "sha256": "72f4c10d92f1fb2e2fec2708bb0fec9ab9736d8553c6982c0eb3bbb9c0bdbb42"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-27-phase5-addon-skeleton.md",
+      "bytes": 34990,
+      "sha256": "684385e75c5c7489d2704f07d8b098e366ef4a547eb4fec1b26138a074dc665d"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-27-phase5-mcp-tool-surface.md",
+      "bytes": 37379,
+      "sha256": "69bcf799b3c71c318d78b69cb0d5229d6824c1a5f0f0e41a308aef7170df714a"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-27-phase5-mutating-commands.md",
+      "bytes": 42119,
+      "sha256": "3bb00b73f956ba2f152fa88c01a4a728facc235927d1fdef6e04044c1faf1f4e"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-30-phase4-hardening.md",
+      "bytes": 35456,
+      "sha256": "dab68bcad5d4133603d419bcd548b7c245dde75afabb271aa88fc5efed6a9259"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-03-author-helpers-donor-vendor.md",
+      "bytes": 31824,
+      "sha256": "996e0c2b3d299de82f2f4ed356a4e72108b0aa7efd7cef37a125c25da68f7fb6"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-03-cookbook-as-data.md",
+      "bytes": 36091,
+      "sha256": "742739f6ba514f599a2d42a352a5c68347a2f42ae24fdbdd167ac9b81239c8d5"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-04-authoring-split.md",
+      "bytes": 23174,
+      "sha256": "c1707a3dabe8a919290158917626ef23ce7401903b9f883d59de16f0b8d4c994"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-04-cookbook-subgraph-retrofit.md",
+      "bytes": 33688,
+      "sha256": "0f174f27a90d8da2b21c12ed90d287060d5c385c27a8146c72cadcaf1bed3bfa"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-04-live-load.md",
+      "bytes": 31039,
+      "sha256": "190aba70921fd5971be9c66da0932b6be203b615cda22e74bf2839aee4da537b"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-04-play-surface.md",
+      "bytes": 57093,
+      "sha256": "be41c7dbc9a60b8071d2291b24b77d5e3f46f27f6f61340143d545ab89dea7a2"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-05-fold-examples-into-cookbook.md",
+      "bytes": 68081,
+      "sha256": "4c113f1a03493db8b20728feee3dd4e1df7f97179a954a821014f60034393b61"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-05-quality-package-and-phase3-archive.md",
+      "bytes": 38691,
+      "sha256": "2e22d38e75aaa1909e2df8603df2ed7394e43356e35558ccfdb8623d9a76e365"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-06-role-named-nodes.md",
+      "bytes": 56555,
+      "sha256": "a588cb358fbedc089873b1fb0288f8baa959953b5604d4e690605bead9ca60dd"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-25-material-maker-mcp-design.md",
+      "bytes": 8259,
+      "sha256": "02357c1490ad407aef057a2cf4bb57d5bf2c20972e005ba91edc8384d8f8e2dd"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-26-live-control-addon-design.md",
+      "bytes": 16195,
+      "sha256": "941e2515df930479ab644978df56f9aa9cfe7c967eb3f7ade0ec4c86b7373b7d"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-08-30-phase4-hardening-design.md",
+      "bytes": 13497,
+      "sha256": "1ebb9814ddf92418c057fe6f04d62eca587b4df84615d9328bb8eeb12aeb7853"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-03-cookbook-as-data-design.md",
+      "bytes": 4764,
+      "sha256": "e360d21ee00bb8400013a19a3a9bceb0d3a8017fff0921f60b64fbf46c3f95c2"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-03-vendor-donor-examples-design.md",
+      "bytes": 7604,
+      "sha256": "bdd36e74f479239b736f8c857c79ff3466e1d3440ed15017b0bcfe09ca338fc0"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-04-cookbook-subgraph-retrofit-design.md",
+      "bytes": 10079,
+      "sha256": "9108f68f323d9632ee856d67231975cbc700f3e9d3bc54a21f3bcdf7d88a6e5c"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-04-live-load-design.md",
+      "bytes": 14481,
+      "sha256": "57161ba592ae1d0a096f033d3a9e672d9bc904629638f4e1ba83a28b7e6a3202"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-04-play-surface-design.md",
+      "bytes": 16053,
+      "sha256": "c17dc70a9f6e1742d937e5f8260cbe9828122f0231dc4fcec5d018141066ac8e"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-05-quality-package-and-phase3-archive-design.md",
+      "bytes": 4484,
+      "sha256": "39ae1860a601782eb3c5b9db41276f79786aad6bb24329710bf9b75d67618b4c"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-06-role-named-nodes-design.md",
+      "bytes": 5804,
+      "sha256": "18e418191c509107619d296e56a9c30e72df7fc28442fa6ccb88ebce26b325da"
+    },
+    {
+      "path": "docs/upgrade/ARCHITECTURE.md",
+      "bytes": 5997,
+      "sha256": "0841590043697e643c29f04382beeea8422e4eb074eea0cc81a6e75d22988603"
+    },
+    {
+      "path": "docs/upgrade/CHANGE_MAP.md",
+      "bytes": 4698,
+      "sha256": "2f1de9dbf33e82f509240b90946540b28f777e160b9138f08ba86a1335e8a097"
+    },
+    {
+      "path": "docs/upgrade/DECISIONS.md",
+      "bytes": 3866,
+      "sha256": "74f2605dc7e096149efd8d72860072752c18fd4adf2d820b0c706e89497b6b49"
+    },
+    {
+      "path": "docs/upgrade/MIGRATION.md",
+      "bytes": 5168,
+      "sha256": "4523099941fe1b8f952b850890c330482dcca5d5ef53c9f3112da696a0764339"
+    },
+    {
+      "path": "docs/upgrade/PROVENANCE.md",
+      "bytes": 2592,
+      "sha256": "ff3ffc355800fe42e51caf56df23147387ec2d91beb76dd2ad7108f253c4b39d"
+    },
+    {
+      "path": "docs/upgrade/README-0.7.0.md",
+      "bytes": 16501,
+      "sha256": "f75c6c7b28e737c7ce25c78dc50d83ef2de503bf82e66b6c0990265d0c1f7615"
+    },
+    {
+      "path": "docs/upgrade/REVIEW_INPUT.md",
+      "bytes": 15898,
+      "sha256": "cbd9da840fcb509fc80230a9c95bc6d0118cec5483ff1daca0c3a109afe8b819"
+    },
+    {
+      "path": "docs/upgrade/SECURITY.md",
+      "bytes": 4048,
+      "sha256": "c0c0ff5c4564c20cd55227a9ae31c2771fb654def835f466c24496215fcd6825"
+    },
+    {
+      "path": "docs/upgrade/START_HERE.md",
+      "bytes": 4227,
+      "sha256": "23bc1315a6878f09d6fbbcb6693fe51872e1cf68890f0fb89dda4bba7e8943ba"
+    },
+    {
+      "path": "docs/upgrade/STATUS.md",
+      "bytes": 3640,
+      "sha256": "b6a8a85df3ffccc8326d2ed4550199d3e727f4356e97cc04eb6b3fdad543492f"
+    },
+    {
+      "path": "docs/upgrade/TESTING.md",
+      "bytes": 6953,
+      "sha256": "23c3d62b3ace5d8315dd91075f1aea89d91cb1d96f8033d03b9448523e5b8985"
+    },
+    {
+      "path": "docs/upgrade/TOOLS.md",
+      "bytes": 6609,
+      "sha256": "0dc6f2866964bc57b520a489b8e0c5e59630dd7adcdb0dfaad97ae9fe8b49bb4"
+    },
+    {
+      "path": "docs/upgrade/WORKFLOWS.md",
+      "bytes": 5972,
+      "sha256": "0ebe567f63c8fe28a0f94e3bdfb75cf68bd5c3c3da2e4d5a17d969d442855098"
+    },
+    {
+      "path": "docs/upgrade/baseline-provenance.json",
+      "bytes": 402,
+      "sha256": "a40b975fad3014cc21dea83ecfa0c818c3d896f05f422cbfa4b8f9715083892b"
+    },
+    {
+      "path": "docs/upgrade/legacy-test-workflow.yml.txt",
+      "bytes": 1807,
+      "sha256": "2be4d5033e6e955bbde9c8bdc04fe450683304bf0416a1d6e59989a53544de8a"
+    },
+    {
+      "path": "evidence/README.md",
+      "bytes": 605,
+      "sha256": "886c39cdf7472681505f8c59e8abc46f8a141c41f3e4ad1aa118c56890a518ac"
+    },
+    {
+      "path": "evidence/browser-logic.log",
+      "bytes": 98,
+      "sha256": "a564a9c89571adfb9d8eed4fb5c6512d523ff8ba55f083b662b778276ae458b1"
+    },
+    {
+      "path": "evidence/browser-network-policy-diagnostic.log",
+      "bytes": 4534,
+      "sha256": "e9dbe3cdb36d87a7d3f5c3027ab79b21bdb6392945279250e52b3026f4411721"
+    },
+    {
+      "path": "evidence/browser-synthetic-fixture.png",
+      "bytes": 106226,
+      "sha256": "4e97eb4f30a3babb491bd72f13f398a7e7cac8bc32c6f679e7e4f1169debca6f"
+    },
+    {
+      "path": "evidence/execution-summary.json",
+      "bytes": 1717,
+      "sha256": "f70909738113287f61903578b336cbfdf498479301a2a6daf7707eee88542df4"
+    },
+    {
+      "path": "evidence/historical-collection-diagnostic.log",
+      "bytes": 93876,
+      "sha256": "ef087a8f2289f95c4382db7439113b6fcfd18139e03e3926873c64bfb1a6f316"
+    },
+    {
+      "path": "evidence/release-contracts.xml",
+      "bytes": 26256,
+      "sha256": "d9a797e9f6fbfbc22e81f8e662eaa5c7cce271c981866d9529c134e0e0e30fd7"
+    },
+    {
+      "path": "evidence/release-gate.log",
+      "bytes": 788,
+      "sha256": "46ece2a610da6ed5a133382edf5e604dd4834fdf08e1779d8a0435bdda8d1e3c"
+    },
+    {
+      "path": "evidence/wheel-build.log",
+      "bytes": 32564,
+      "sha256": "aaa1928b818da6708f5d01bfe5071d491c9162337e5dfbf2cf30166755299dc2"
+    },
+    {
+      "path": "evidence/wheel-install.log",
+      "bytes": 388,
+      "sha256": "ffa1956e2f91c18e00cf396a7cdffd7b3e29bb4e22731d8d8315d509113bf9a5"
+    },
+    {
+      "path": "play.bat",
+      "bytes": 590,
+      "sha256": "23bda89d5061bd1ff03c1ac118463d849e3a33af43d37e908c652c3862fdb959"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 2167,
+      "sha256": "408cd7888391bfd123ea3ceb4ed13953f3f1ecd2f56b565d0204373b684a6394"
+    },
+    {
+      "path": "quality/README.md",
+      "bytes": 4290,
+      "sha256": "b91b39793bbf8978a9e7df9cc60bfdf656e56b1e7d604ba8ca30c65afea3903a"
+    },
+    {
+      "path": "quality/__init__.py",
+      "bytes": 518,
+      "sha256": "d07e6e807a5d72f254608bb54317fe8727eb1759168264f9b72228df5cdb6c15"
+    },
+    {
+      "path": "quality/_make_previews.py",
+      "bytes": 1271,
+      "sha256": "2f31e593b17bbe3eede2d5f16c018acd06ad83308cf8be69ad41ecb2d407a758"
+    },
+    {
+      "path": "quality/author.py",
+      "bytes": 22644,
+      "sha256": "a037d9e8ec88f925c66b17dd666e25ac02750baae5bdcf774d2f5b1927b70756"
+    },
+    {
+      "path": "quality/author_helpers.py",
+      "bytes": 14501,
+      "sha256": "02f79467173695bfcfb30cfc53575b24c1c29f35279da1aa452394b19e52c976"
+    },
+    {
+      "path": "quality/contact_sheet.py",
+      "bytes": 2545,
+      "sha256": "53a2e98e042e2e6e5b86bafc4a12f502d50c0fd316052dd3a0a5db9837bf3674"
+    },
+    {
+      "path": "quality/cookbook_ceramic.py",
+      "bytes": 3470,
+      "sha256": "dc563fc63883a14d42fc14841480d345c0828dc09685c6dd66b93df99629d8ad"
+    },
+    {
+      "path": "quality/cookbook_fabrics.py",
+      "bytes": 22877,
+      "sha256": "a32264e83d17e4163a15d432ba4ff767da93f7998ff1f11d6a3c72ef8973ba99"
+    },
+    {
+      "path": "quality/cookbook_glass.py",
+      "bytes": 6366,
+      "sha256": "807e8adb90c110abd05bd8709653785e9ee9372d1ef6a13b9d3e5f92bebe6e14"
+    },
+    {
+      "path": "quality/cookbook_leather.py",
+      "bytes": 31201,
+      "sha256": "2a81cd7469e9bfb3c0631f28a463c2a1caddaa5f2c34c2c4cd1d94d7f8720360"
+    },
+    {
+      "path": "quality/cookbook_metal.py",
+      "bytes": 6053,
+      "sha256": "eccf99db5bcfece8e5f43898be0edecb77207f8dd0a998361af82a340a98f6fe"
+    },
+    {
+      "path": "quality/cookbook_organics.py",
+      "bytes": 15901,
+      "sha256": "88df9b78e6ce2860b8e6f009cf17033bbbf650a072af968f00eb3470e9fff861"
+    },
+    {
+      "path": "quality/cookbook_painted_metal.py",
+      "bytes": 28364,
+      "sha256": "2b8a2ef3ecb9b8ecf49a06064c453b7a2a9e9dce3757cb17f8e7d21d8989c171"
+    },
+    {
+      "path": "quality/cookbook_plastics.py",
+      "bytes": 4940,
+      "sha256": "164acd97cfd5a480ca4282f59f735eeee9287e5a39eb47cc863a8c0c8b7702ae"
+    },
+    {
+      "path": "quality/cookbook_scifi.py",
+      "bytes": 20738,
+      "sha256": "8443ef167564892e987772e01fc2f72489dc2d4be4f986f309e00b2ae5dabb7b"
+    },
+    {
+      "path": "quality/cookbook_stone.py",
+      "bytes": 48050,
+      "sha256": "3acb1ef1412865bdb9d472fa04c8b75a33bf9bf6018a0a57f8db69953d3f4466"
+    },
+    {
+      "path": "quality/cookbook_terrain.py",
+      "bytes": 32210,
+      "sha256": "117a327c18e80cc739907a27dd034568e2df3700938679a79985f585ce952d0d"
+    },
+    {
+      "path": "quality/cookbook_wood.py",
+      "bytes": 12100,
+      "sha256": "e12fde2d5cf063ae9738bffbb49240ef4de33248b64b40051659b3aedc95e9c3"
+    },
+    {
+      "path": "quality/debug_swatches.py",
+      "bytes": 23420,
+      "sha256": "fc38705a17fe8887ad7bc61052869b2aab3d34d5440a24960c0769d9b267a11b"
+    },
+    {
+      "path": "quality/donors/README.md",
+      "bytes": 1100,
+      "sha256": "2c03b78219df9d4e1f1e12a684cf1eaf6fc1dade1ec9d1f67ffbe13a2632e895"
+    },
+    {
+      "path": "quality/donors/beehive.ptex",
+      "bytes": 5133,
+      "sha256": "79dd2d4b7351439ba26d9b5200ffdb358999ebcf65b9be2cd848e31fd26b0b30"
+    },
+    {
+      "path": "quality/donors/crocodile_skin.ptex",
+      "bytes": 3504,
+      "sha256": "c392cdc55324c05cdb13a658d44adb4171bae83e843745ece4ddc0fe9026ea27"
+    },
+    {
+      "path": "quality/donors/dry_earth.ptex",
+      "bytes": 5696,
+      "sha256": "2b228b8240627925bb79c8daab2b97df0aa5c54534ca2c99698c2a908d64ba60"
+    },
+    {
+      "path": "quality/donors/metal_pattern_2.ptex",
+      "bytes": 2808,
+      "sha256": "7d7094a185adf7c464c4f080afa953dbacaf8b2c08775a270592b135a70ed65a"
+    },
+    {
+      "path": "quality/donors/rock.ptex",
+      "bytes": 4883,
+      "sha256": "e4844de85b276dbd789e0629179bc5907d393465c02ec36995e94b3afd6710cb"
+    },
+    {
+      "path": "quality/donors/rusted_metal.ptex",
+      "bytes": 4913,
+      "sha256": "aae741225c6abfe724c8c870ca2bc76f2816a0af41d2cadc41ffce812392bf63"
+    },
+    {
+      "path": "quality/donors/stone_wall.ptex",
+      "bytes": 9115,
+      "sha256": "32ef1d71952d860d52a1db65c8eb9ed12af556b06e896baedfb602fe13286e85"
+    },
+    {
+      "path": "quality/donors/wood.ptex",
+      "bytes": 5174,
+      "sha256": "885d2a084df8e54db25e96a951854a01e21bae0b9c510e4576eb92607fd31c9d"
+    },
+    {
+      "path": "quality/donors/wooden_floor.ptex",
+      "bytes": 4125,
+      "sha256": "a7b0496fc334cc7731e488de3a59939d471221ad710232feb94cb4c875db680b"
+    },
+    {
+      "path": "quality/naming.py",
+      "bytes": 3639,
+      "sha256": "a0f318f7011205886ebdd8ffd7cf82e45f28c39c9ef5793bb817beae94611b08"
+    },
+    {
+      "path": "quality/noise_gallery.py",
+      "bytes": 5851,
+      "sha256": "93d5ec1b09203a25724dcb5970bea4e90db4801379e180efd69e26e399846bfa"
+    },
+    {
+      "path": "quality/pngread.py",
+      "bytes": 3802,
+      "sha256": "7021c24ce3b7cd57e59ec0102d5d1c9f38344eb7679f17da3b5033a36a95b8c0"
+    },
+    {
+      "path": "quality/promote_cookbook.py",
+      "bytes": 5611,
+      "sha256": "707ece0cb7b4258cf059bd406d52b3ec0732a15995e9d5589ad7c3be83b55453"
+    },
+    {
+      "path": "quality/render_compare.py",
+      "bytes": 1362,
+      "sha256": "62802c3e7b6586d64aa85204b48ea4522a5d3bf524136474455250e85b90e78f"
+    },
+    {
+      "path": "quality/render_cookbook.py",
+      "bytes": 2093,
+      "sha256": "c15e26dc2ec42a973c394e4f314b37754beaebb4b11aa7058ebfb57bba5e1b13"
+    },
+    {
+      "path": "quality/render_one.py",
+      "bytes": 1858,
+      "sha256": "964a549efbc28e1bb26ded66d59a6d8440bfabb3ffe27aeeffb3b37dc5e2936a"
+    },
+    {
+      "path": "quality/render_tracked.py",
+      "bytes": 4246,
+      "sha256": "4111cc5f76115b2af992330e12f8ed199125dc0c0f32e6665977d6a14f1a32df"
+    },
+    {
+      "path": "release-please-config.json",
+      "bytes": 329,
+      "sha256": "4d05f7e8bcec1f36f49a27de68a40339b33e750e7a791e1ed299271eff860dae"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 45,
+      "sha256": "6fb0d0077751136c701cc71a294cf0bd04ebb3e86c65ca02a0664ed166ea9567"
+    },
+    {
+      "path": "saved_graphs/bricks_grayson_edit.ptex",
+      "bytes": 22276,
+      "sha256": "74044be4e451a73284e698211f2f8ddf328265b71d57c1bb9ba98e26996c05cb"
+    },
+    {
+      "path": "saved_graphs/bricks_grayson_edit.ptex.mmcr",
+      "bytes": 10195,
+      "sha256": "4c4599f6030bbb1b9bf29263946dee4128378d95bc963651423d2f8e4cec2fe9"
+    },
+    {
+      "path": "saved_graphs/crate_pine_mcp_authored.ptex",
+      "bytes": 13772,
+      "sha256": "c8a392e5fd257c4e6f576e7bdcd4bee14382d264e73c5c23d96a4d306e61b125"
+    },
+    {
+      "path": "saved_graphs/natural_stone_grayson_edit.ptex",
+      "bytes": 19562,
+      "sha256": "1ff1f912ef0c1adeee214797d4b53143e7c381da08b8356b458df59af084c456"
+    },
+    {
+      "path": "saved_graphs/natural_stone_grayson_edit.ptex.mmcr",
+      "bytes": 10231,
+      "sha256": "7e5e308f1c05b29a1b90d128b96e565b71a7f3ffe1314afa548b39e932324379"
+    },
+    {
+      "path": "scripts/build_distribution.py",
+      "bytes": 505,
+      "sha256": "bbc3e61c0a67177dde2f66ba9ad2894cd8803e30d159741caf0a1a33df21b4e6"
+    },
+    {
+      "path": "scripts/check_release.py",
+      "bytes": 956,
+      "sha256": "3fd0d9c8eba8a68810afa5d796bc38a16980751bb600ac9fcb23655b896cbe2f"
+    },
+    {
+      "path": "scripts/configure.py",
+      "bytes": 1651,
+      "sha256": "bc5babb492d1a2227d6d13c27cd5c4d348894dcba9f2ab2e2adc4c5f9435e450"
+    },
+    {
+      "path": "scripts/native_smoke.py",
+      "bytes": 2684,
+      "sha256": "a5bd66e95275569d1f0995886f2370616cdd67550671a6b2905d3683c46867bf"
+    },
+    {
+      "path": "scripts/sync_package_data.py",
+      "bytes": 1779,
+      "sha256": "7de4784b2a7b83db954f843dfd541d0f671043e874f52b2f56fbdf35fc416992"
+    },
+    {
+      "path": "smoke/smoke.ps1",
+      "bytes": 2602,
+      "sha256": "113b7a55fc9fc4310ba69884d6d67d209e0dffb6fe543fa8c19ae499459f7775"
+    },
+    {
+      "path": "smoke/smoke_mcp.py",
+      "bytes": 842,
+      "sha256": "661c411bf9f55b75ca3f35408e75f7f12f5b81b4b7594074c3393d0695fcb4a4"
+    },
+    {
+      "path": "src/mm_mcp/__init__.py",
+      "bytes": 1545,
+      "sha256": "35f7562e1bede18546af22b57eb734c15116315e1b6886ee829f6fc69b211c24"
+    },
+    {
+      "path": "src/mm_mcp/activity.py",
+      "bytes": 586,
+      "sha256": "00fd3d92c32f99ce2f503f49c23d1cdb73cb765aba97947152f205e7b8744e81"
+    },
+    {
+      "path": "src/mm_mcp/artifacts.py",
+      "bytes": 6728,
+      "sha256": "ab0e8e7ef1c96eff21b502f85edb1d6d07e94346f3627d38cea3df5ddf1e2b56"
+    },
+    {
+      "path": "src/mm_mcp/builds.py",
+      "bytes": 13914,
+      "sha256": "99d89ae33f3556ab1efc8226712a3c7b8c8abbbd8fd3eebca02bd75f9f331d48"
+    },
+    {
+      "path": "src/mm_mcp/catalog_builder.py",
+      "bytes": 6838,
+      "sha256": "7a857d55ffe3e412939fb9e0baad380df17acdb8042292fcdef7c6809402264c"
+    },
+    {
+      "path": "src/mm_mcp/composition.py",
+      "bytes": 5070,
+      "sha256": "686dbd2c1aae4f555bfc853372b6eca6ad155563e3a61255782612e649a3fa9b"
+    },
+    {
+      "path": "src/mm_mcp/config.py",
+      "bytes": 6561,
+      "sha256": "013f8e4e8466832131d749d8819e215034f6085787b2d51ed935e58d6e7b2f27"
+    },
+    {
+      "path": "src/mm_mcp/cookbook.py",
+      "bytes": 1536,
+      "sha256": "5aa38bdd2b57bbf19116ebeb6a2844d72031fee29107a72b7958b3bb1dfcfd43"
+    },
+    {
+      "path": "src/mm_mcp/core.py",
+      "bytes": 4665,
+      "sha256": "823ff8cc432b3845b1dfe8bdbd42a2793a8da55917143cfa2ed06461db917b22"
+    },
+    {
+      "path": "src/mm_mcp/data/AUTHORING.md",
+      "bytes": 24012,
+      "sha256": "7f5164a5302298db1bdc4ad450b751fb64825567b5a66e41cb0052bdebc027e6"
+    },
+    {
+      "path": "src/mm_mcp/data/addons/mm_live/live_server.gd",
+      "bytes": 16646,
+      "sha256": "5e91cf9334a9d3cff0df87abe382304cc53d3f955fc79deb496e39bbe9be7311"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/README.md",
+      "bytes": 1918,
+      "sha256": "7e905daf7d8acd3c0224a19213bc489cc64d033aa86e8eecd78361516ce1baf2"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.md",
+      "bytes": 2385,
+      "sha256": "cbb569eb65671ae769366d194d05cdcdc39dcda60c5d86d9a7d90555d8170a9d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/ceramic/man02_ceramic_hex_tiles.ptex",
+      "bytes": 12629,
+      "sha256": "fecbffbfada7b8feaf9debf05fb35f43f6657d4710eccc6facad1a04634265b0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f01_woven_denim.md",
+      "bytes": 2393,
+      "sha256": "ed2590907cbcaebe608a34d882429342ad9476980d4ce4421f42a1082f58f97d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f01_woven_denim.ptex",
+      "bytes": 8586,
+      "sha256": "ebeb820fdc73f776f03a72aed666e5bd51f4ead50b7a2b41aedce22a8e5debb4"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.md",
+      "bytes": 2408,
+      "sha256": "2f87f9b8cd9bc5f6bf469354d7773ac058a1dbd35abf5248a7a9006209e10ee4"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f03_canvas_burlap.ptex",
+      "bytes": 9021,
+      "sha256": "8b630650676b272ab00f6af7d31f75554feb2dc14cdc0d69fc5e2cb20f9ba214"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f04_wool_knit.md",
+      "bytes": 4539,
+      "sha256": "0de00da393f9d7279afb838e7ac44dc0de1ea1fd83b5ca2222b5503277f254cf"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f04_wool_knit.ptex",
+      "bytes": 9336,
+      "sha256": "6c9628bafb3cd82c20f965371014246013679602e1b76f0764fdb93edcbda4d8"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f05_silk_satin.md",
+      "bytes": 2431,
+      "sha256": "80eb0807a18873d8bfc991bb98e07be8d0f109660cf08b49fb200607ad36415b"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f05_silk_satin.ptex",
+      "bytes": 8983,
+      "sha256": "6875e72edfc427c579e5be28bb0fb3bae42c50ef25cd59ee1cbb723cd4464da8"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f06_velvet.md",
+      "bytes": 3258,
+      "sha256": "bc4097bc6fb76426d1a8386f67ad33723ee36f2194d4f45593ea012e09d4f7b3"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f06_velvet.ptex",
+      "bytes": 9029,
+      "sha256": "5589192f4b8de8481242b38c31a3c62b2ad8179ca95f7b8c538bddd1107bf894"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.md",
+      "bytes": 2844,
+      "sha256": "97919a88b88f76bf60738fa91ae6e3106c88114218f4b0192ee399d53ba7f113"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f07_herringbone_tweed.ptex",
+      "bytes": 9495,
+      "sha256": "545de4075e44f195610361deb16f9d9c2c7bc24417b049e4312581a7e95c30c7"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.md",
+      "bytes": 5223,
+      "sha256": "75ca17edcb34bba10b751b5561fc1b2e2199c7c25800f560a73b7ded8ab804fa"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/fabrics/f08_donegal_tweed.ptex",
+      "bytes": 16120,
+      "sha256": "964983ce163239a7940ba86fad9bba3921cf6438f82e91c07873cf8f31b0cea0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/glass/gl01_frosted_glass.md",
+      "bytes": 5464,
+      "sha256": "6377bf774fc4b6f689659c5bd7677e38abc469ec103c388e271315df18f54818"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/glass/gl01_frosted_glass.ptex",
+      "bytes": 13440,
+      "sha256": "a1a6d5697285d5d8f69cdf952cdade679428ce41ed5fae1f2d93a96b95c93fbb"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l01_black_oiled_leather.md",
+      "bytes": 3657,
+      "sha256": "0982930d90a8841163593ca472ee2e6bccf3f700268cf137a9d2aabdd18d5331"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l01_black_oiled_leather.ptex",
+      "bytes": 9022,
+      "sha256": "36281914861c721136b7ba3da2e6aa0c6195a2a9014d96cf9be250369f206eba"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l02_distressed_two_tone.md",
+      "bytes": 5916,
+      "sha256": "bee9f025af2fc7a9ee889e234286b0cba0877035f790c4930b4177d7913b05ab"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l02_distressed_two_tone.ptex",
+      "bytes": 17440,
+      "sha256": "cf516e65e93268ccd6c9d5bdd677cac15b3f886451ec580373e8c98da0061958"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l03_suede.md",
+      "bytes": 2735,
+      "sha256": "071c61e0bd3185d659dfe2b3e712ca6bf561df0cca78f3c23bf952ef33459de0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l03_suede.ptex",
+      "bytes": 9409,
+      "sha256": "6012baf6f0b83a95b8c35be99e286f3b287f03b267134b1e3a281c958d06c672"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l04_reptile_exotic.md",
+      "bytes": 3706,
+      "sha256": "24c16356550991cb29d7ac4beaa8c5d188bbb8dc53178b85e45466e1022a96c7"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l04_reptile_exotic.ptex",
+      "bytes": 9611,
+      "sha256": "346c4ee74c87d29b19a4ab08bb7ea213543631e4d24a9c00754cb5e952e7413d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l05_quilted_leather.md",
+      "bytes": 7297,
+      "sha256": "13ca5ea81a4f39578e24738f2dfbdf298bceb924709f76f978cde8735eea24e0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l05_quilted_leather.ptex",
+      "bytes": 16379,
+      "sha256": "5958991cd190301347162561a2c0ac5e66f6f90a4d53bc3ef3f5bef3199cab2c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l06_topstitched_leather.md",
+      "bytes": 6092,
+      "sha256": "6cc145f2f8ad1ae4d6efd5e48b9cae40dc772186a13e4cb03786ad571f5f444b"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/leather/l06_topstitched_leather.ptex",
+      "bytes": 15322,
+      "sha256": "8e4906088f522ee2ae1480791e05e6379df40adf30c6506dbe4b830289deb592"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/metal/m01_weathered_copper.md",
+      "bytes": 2327,
+      "sha256": "59a67ccd9a420d5a6f097bf6448549f071f75502936a5c40f40b7751b4ff50c5"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/metal/m01_weathered_copper.ptex",
+      "bytes": 13474,
+      "sha256": "cb3d53549a81932234151e7459cdfc4fd34eb8705b7905b7b0712a5e8ac5e3b8"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/metal/m02_brushed_aluminum.md",
+      "bytes": 2932,
+      "sha256": "2a70a91b41e3fb3bf25916a643963a77079f79900d8926b27f3f2ac3029b8837"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/metal/m02_brushed_aluminum.ptex",
+      "bytes": 10707,
+      "sha256": "f6dbb42f2561be3bff29421ca2cdf10833f728c9cbcaf1d1adfb2ea00e74795c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.md",
+      "bytes": 2468,
+      "sha256": "bd22dadd81374ed499e7aba1a721358d0a41739ad21544bf20b0b89d029653cd"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o01_mossy_forest_floor.ptex",
+      "bytes": 12061,
+      "sha256": "aa2089dcdd527d5df8b8affe2453ae69331ed728d58318cf0195a176043bc513"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o03_tree_bark.md",
+      "bytes": 2676,
+      "sha256": "7a6d9f88cbfa80f440f25bd6a500d305d0998301ffbe63f1f04ea3eec9607a85"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o03_tree_bark.ptex",
+      "bytes": 11097,
+      "sha256": "0d67e62a76688d0a355570e972a5aab107f682d963581d40db63138f7799a2fd"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o04_snake_scales.md",
+      "bytes": 2818,
+      "sha256": "5330d04f6d8f9553f34c1ad9ca428bc0517ea8773fa329c89e61283a87eed1d9"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o04_snake_scales.ptex",
+      "bytes": 9195,
+      "sha256": "dfa16502232276cb0d70179fc4b85543144e603cbc7b2b432e68d43fc64a3038"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o05_coral.md",
+      "bytes": 2584,
+      "sha256": "38701a2554f0e1e4c0a2312149270084dc91e560bc430757d22658327922bb77"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o05_coral.ptex",
+      "bytes": 9056,
+      "sha256": "4f6825e9cd2ee6223916748915b66880da5d1db119d4280c2fc16fecc4f36efa"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.md",
+      "bytes": 3650,
+      "sha256": "923ebc4ec2bc8a2fc7134fb6f92783966c3b8510fb22858a5cb510fff15824c0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/organics/o06_lichen_crusted_rock.ptex",
+      "bytes": 13076,
+      "sha256": "6a4a022f1d65bfb6368ade865f3d799cac8eec03e57bd6f410ac5969b947118f"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.md",
+      "bytes": 3080,
+      "sha256": "2037347fe95111c8e7b186e19f2ea898bae4eacb6497c231fb280b280bbd38d6"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/combo01_rusted_painted_steel.ptex",
+      "bytes": 15770,
+      "sha256": "a46cf1b19ba3fc6ec1ee13dd9a84faef058dc15273d3a421efa3b98393f2aa7f"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.md",
+      "bytes": 3251,
+      "sha256": "8b8177e228a92c6e087bc20b6ef8b19194cbf473cb8f13a183dd764b18c64b24"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm01_powder_coat.ptex",
+      "bytes": 11666,
+      "sha256": "6affaca40ba49cb832bc912729c77efd2b2bce4199620233f01a61307efdda22"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.md",
+      "bytes": 3094,
+      "sha256": "5f913942bdfc18dc1c7141bdce90d72b95a3c432e073eea3d3f9c484ccb38a6a"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm02_automotive_enamel.ptex",
+      "bytes": 11668,
+      "sha256": "b84e94fb5fc076fe6b0266a461f159a391a9ff3edf6b1e49f61dce4e9a475834"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.md",
+      "bytes": 5345,
+      "sha256": "17aeaa3c95103ff56294fabd249b5d2112d4aeb21aee5f884bdd4915b603c9a5"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm03_chipped_paint.ptex",
+      "bytes": 20866,
+      "sha256": "40007e033c7899f037d0853f99d19051675ea282fb41c019e140f0cc434a5049"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm04_hammertone.md",
+      "bytes": 2826,
+      "sha256": "9d167144d3cfcd6869f6b2877a95f4d356fe6a36db6ed331069d189726bd2c8c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm04_hammertone.ptex",
+      "bytes": 11660,
+      "sha256": "d8ce0b5906e0561eb0216406e8b8a194b6e1631f8d9a31563c2142a097583c51"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.md",
+      "bytes": 3733,
+      "sha256": "c56b6dfa1c9692db830adab3881d0b307dd75b79db6f8cfcf562bd1d22aa1165"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/painted-metal/pm05_scuffed_panel.ptex",
+      "bytes": 11189,
+      "sha256": "629d9d60159ddbf87e475376c2105f5d5b46ae003ee8b8afc4467a68012d9750"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/plastics/p01_glossy_plastic.md",
+      "bytes": 3720,
+      "sha256": "f689f069e06771ff9d2ff2095812e4b7090376a3e2de8f1237f4e872ab83e6e6"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/plastics/p01_glossy_plastic.ptex",
+      "bytes": 7844,
+      "sha256": "0887259e694a0b5f73dc176381a3d5eccc271a81a7e16b83411cebd240ee6332"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf01_hull_plating.md",
+      "bytes": 2966,
+      "sha256": "850dddfd9a951677f9814e9abbadebebcb57e638cd7804bd8bd1e3518779265a"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf01_hull_plating.ptex",
+      "bytes": 9678,
+      "sha256": "ab4f50dfdc341256b86421f5d2b25fe6fd8e90ec2d287161e5e281fae56f0f0c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.md",
+      "bytes": 2508,
+      "sha256": "f8c8f43fd7172757e960751ade21211dfd41d6c1bb3bf343a8a41fe2b32c6910"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf02_hazard_stripe_panel.ptex",
+      "bytes": 9109,
+      "sha256": "e4e56db133c577ff3cf2a4f447412b296ce8710768cc8eb64c85b6b41384bae1"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf03_circuit_board.md",
+      "bytes": 5035,
+      "sha256": "f1775873654c88ee1ebeab854d9a26a15fb561185a6a256a8805833353703d9d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf03_circuit_board.ptex",
+      "bytes": 16588,
+      "sha256": "6e06a253446fb252be86cc049174887242c727412871d6a272f9594c07b4f52d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.md",
+      "bytes": 2405,
+      "sha256": "699a513ac86642d41ab18294ef936b6fdf5b19c0d5da7cc0b47d4fae4cc1ecaa"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/scifi/sf04_vent_grille_panel.ptex",
+      "bytes": 8432,
+      "sha256": "b8d151b47b30eee08c2365136d9f1540e82497a02926207b84f3dd68b9992b4c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s02_gray_granite.md",
+      "bytes": 3329,
+      "sha256": "7dd71834d210f4876a94bddcfb741e5bee4e454f158cfdfe0e669971d9998095"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s02_gray_granite.ptex",
+      "bytes": 12426,
+      "sha256": "effe6d82e27434956125d04825bf39b82c96fd36fd67b2bb10a2517ddf43b770"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s04_scattered_river_stones.md",
+      "bytes": 4428,
+      "sha256": "50911ea914b8fc52fa2fb96aa1c2d9b092c2c3aed2b023903d4a0c6f1fffc25c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s04_scattered_river_stones.ptex",
+      "bytes": 21542,
+      "sha256": "5326a1ff4d01e8651b1e8cb880bb0c3ec0670ae52753428e0f6f2494a733bd7f"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s05_hex_stone_tile.md",
+      "bytes": 4224,
+      "sha256": "8a7e209ebadd9efbbd7ac1dd6c0d71787b50dfa81ab730e32aa6443532cfb5bb"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s05_hex_stone_tile.ptex",
+      "bytes": 17550,
+      "sha256": "5987bd775c55a3a32d213a57d11d00508dd55e9bd37d7518471f234fe13c414e"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s06_river_pebbles.md",
+      "bytes": 3951,
+      "sha256": "40af6147bc02bb23525904ea5958c5f1cc74ae3ef842827dfaa610f9cadfbcfd"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s06_river_pebbles.ptex",
+      "bytes": 15350,
+      "sha256": "afabb5171957a622f25705f545e7f824b576e97673e45b99281a89344f2bbef4"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s07_cobblestone.md",
+      "bytes": 4993,
+      "sha256": "3038d8751fd49466e397d3b794a5910959e50c8e322d733851ce1e9c3ed38bae"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s07_cobblestone.ptex",
+      "bytes": 15268,
+      "sha256": "f56be5d841620018bf2367043cdf1ac864c9f995dc1def8144a82fddbc39c3a0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s08_dry_stone_wall.md",
+      "bytes": 4433,
+      "sha256": "b3696c32eb06ef214d7a5601f6a406668b04974f9cdd0c1fdc45439c0a3b605b"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s08_dry_stone_wall.ptex",
+      "bytes": 15259,
+      "sha256": "b3284b8f533f8b2f24e6a99e28beb0ec7bbfa3a6344c549ac76a0092e25464b4"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s09_ashlar_wall.md",
+      "bytes": 4965,
+      "sha256": "b4b33b976355ac9dd762039b8bc81fcf8bfbab45bb5411ff3d8951c64f92cd3c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s09_ashlar_wall.ptex",
+      "bytes": 17024,
+      "sha256": "92d85f51c3d1169728defd79391282b343ddc9772c2d2feb95a380c2164d3179"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s10_flagstone.md",
+      "bytes": 3904,
+      "sha256": "bdd495e2dce744e8fe284b17cee4155922e8cd1531df1ce75703d4fd4b5e38a0"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s10_flagstone.ptex",
+      "bytes": 16670,
+      "sha256": "4413c639512e2a1c9f2015c1d4db7c97e387544b07ef785b5a055467250a6753"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s11_marble.md",
+      "bytes": 4801,
+      "sha256": "1f23a3c728a03bb18e45ab0eec6b3715b5d9466987d286db582df20378797799"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/stone/s11_marble.ptex",
+      "bytes": 11883,
+      "sha256": "d4f8e186bc3cbabb97235336e8b81fe38127fdda28e5b09166d5a758a1aff124"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t01_sand_dunes.md",
+      "bytes": 3309,
+      "sha256": "62c61c1796edf266286ed7d1512fc827ffea291e5499651550045f37b8e63d0a"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t01_sand_dunes.ptex",
+      "bytes": 11413,
+      "sha256": "66ada2f1daed001798bd44769870eca4d163e5bcd1cdaecfd8206c27d985aa70"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t02_fresh_snow.md",
+      "bytes": 2731,
+      "sha256": "1bdfe4cbc2fa0d429e1e1c60f34c7f69958eadc9aa536e721e68e12bd73c2c06"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t02_fresh_snow.ptex",
+      "bytes": 11311,
+      "sha256": "505d1b8fb4ee14b6298a1784724969dcfe8c4495f5ccb22dc8cb210cacdc9312"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t03_gravel.md",
+      "bytes": 2547,
+      "sha256": "596f576f62cf8e1864c4ec9471d22f1259db789e9ee30754bf0aa005433c9aa7"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t03_gravel.ptex",
+      "bytes": 12344,
+      "sha256": "f93ecaeda6723440b696c8cd38fd58807f6ac025d8c0ee47c9c9d0d97c13a802"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t04_grass_field.md",
+      "bytes": 3392,
+      "sha256": "475ea4b9594f37f72725b6ef9a896e0f80a17b7acf6e882c03ba62c559bfcc01"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t04_grass_field.ptex",
+      "bytes": 13118,
+      "sha256": "8bccee1bf7b5142bb599bddf7cbba6bdbcc3fd128aa3b7694e7e343523ce661b"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t05_cracked_ice.md",
+      "bytes": 4019,
+      "sha256": "6cefb4647bdafea9fbdae25293e7a0e61c8ff5fc1f14b23c639dd9267a94814c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t05_cracked_ice.ptex",
+      "bytes": 14365,
+      "sha256": "55586ad2539ea25bf49966bcf39e2841c8b986283149660f94d1f9cf0977b6de"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t06_cooled_lava.md",
+      "bytes": 4778,
+      "sha256": "2b3f54145e670cec34fa542c1bd112ba8e1d849f737ebec9ff440c607a501b8c"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t06_cooled_lava.ptex",
+      "bytes": 18028,
+      "sha256": "405df0203077d8ec5ef27a502293443935dc37e39d9bafd09e74399ae5eef62d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t07_forest_floor.md",
+      "bytes": 2637,
+      "sha256": "92f2cf92b92810a7f1c0483dc1d53e8931da0dba2025afba2b1e02b3cd63c48a"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t07_forest_floor.ptex",
+      "bytes": 10112,
+      "sha256": "d2714e8c8016d2ff09bc74705f4cec4e45bf28ebe2598b410b7576ea1f9d7a4b"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.md",
+      "bytes": 3210,
+      "sha256": "f2451563082501bc8d60d0dafb38b848a606ec6c70d8f647bf3b1b332182cd2d"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/terrain/t08_riverbed_pebbles.ptex",
+      "bytes": 14740,
+      "sha256": "a28638c39db4b4ea8ac6bb83d10eb26dbd5aa7fb95be5a6e2407f70f079677dd"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w03_painted_wood_siding.md",
+      "bytes": 4156,
+      "sha256": "52764e3415840e639a3d96e764d31f92eb74577d1ceb7574caf4318b982ed4da"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w03_painted_wood_siding.ptex",
+      "bytes": 14301,
+      "sha256": "2ba3465cd3d2171aed6e47e4d15ea0d468d10bc145496151021a8de3b69b0657"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w04_driftwood_gray.md",
+      "bytes": 2559,
+      "sha256": "f272f2c1dd809ae70c3fce41a0e69f2dde990e411d58304b3b75fb29e8e432ec"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w04_driftwood_gray.ptex",
+      "bytes": 10770,
+      "sha256": "8ff084a915a449752a94f50c59b3a1c7d8ccfe21f0a20cdb497dcebccda362ab"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w05_dark_walnut.md",
+      "bytes": 2671,
+      "sha256": "8063d6a3ed0ffcf648d5888455f5b276f60d9ba572f3cf1763cdea6f118b294e"
+    },
+    {
+      "path": "src/mm_mcp/data/cookbook/wood/w05_dark_walnut.ptex",
+      "bytes": 10770,
+      "sha256": "ea842306f29c33c48e4ffdfa884be1a6531fc3b042d0714626ec03fd7a1af8d5"
+    },
+    {
+      "path": "src/mm_mcp/doctor.py",
+      "bytes": 7683,
+      "sha256": "7fbb3d878e3c77116b5ead3c42660d056426094b1284a1af23135ec0c6e1642f"
+    },
+    {
+      "path": "src/mm_mcp/graph.py",
+      "bytes": 1498,
+      "sha256": "65d7990c2297ee651163a96570679184c9583abbbe44ed8716f2159f1e848204"
+    },
+    {
+      "path": "src/mm_mcp/idle.py",
+      "bytes": 2174,
+      "sha256": "e73a2fb1db911d8845563811847b76ec8170f1f31bc6e77893a3af383175bb05"
+    },
+    {
+      "path": "src/mm_mcp/inspect.py",
+      "bytes": 1055,
+      "sha256": "b1a8c660dedcd167708aa176764a140ed73e90b50e2d21c2eecda67a9dea0148"
+    },
+    {
+      "path": "src/mm_mcp/jobs.py",
+      "bytes": 5871,
+      "sha256": "96e9a9abad867f95851c6d2fe6f139530c64c1b75ef901a332a9119a5571270b"
+    },
+    {
+      "path": "src/mm_mcp/live.py",
+      "bytes": 27408,
+      "sha256": "93cd0e090989408d752234fb26a74e7a37a63c2ee78a6f4f42ac391dbcb39f2c"
+    },
+    {
+      "path": "src/mm_mcp/mesh_masks.py",
+      "bytes": 8910,
+      "sha256": "7ca27cb8db0b46678e0c763af38c1c218f2fc20e48f4df3ac67f46b17e133822"
+    },
+    {
+      "path": "src/mm_mcp/overlay.py",
+      "bytes": 7920,
+      "sha256": "8355f2091bf48e2c044910170e2ec75a3ece9395aa2c2521d037649a3bbea6ac"
+    },
+    {
+      "path": "src/mm_mcp/paths.py",
+      "bytes": 1939,
+      "sha256": "c7640df30cda4ca740cbe6d5fa67e3e5c6d1da96dc1142eafd09ef326c005715"
+    },
+    {
+      "path": "src/mm_mcp/play/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/mm_mcp/play/api.py",
+      "bytes": 1874,
+      "sha256": "b7d2352c57cfd4679e25e8026aebfba20929100c0c35f4b5337a9f749dbb4935"
+    },
+    {
+      "path": "src/mm_mcp/play/renderer.py",
+      "bytes": 769,
+      "sha256": "6ba357fddb14cef4b6b16605630af20de2b627084496a8918c7b716b9f432db2"
+    },
+    {
+      "path": "src/mm_mcp/play/server.py",
+      "bytes": 13727,
+      "sha256": "68cc173dd3f1df35cf6952045b34b33c115672b0c2da7cff3492c7bd94abf607"
+    },
+    {
+      "path": "src/mm_mcp/play/sliders.py",
+      "bytes": 6914,
+      "sha256": "3868e07048883a25bb3a36b6aabd4f1c9840b1346490ac6a57220d85eb0939c1"
+    },
+    {
+      "path": "src/mm_mcp/play/static/VENDOR.md",
+      "bytes": 567,
+      "sha256": "e6f81a9b6343e4fb513ff7b51ab5034178ce4d8cb1df7241916803450a9ee669"
+    },
+    {
+      "path": "src/mm_mcp/play/static/app.js",
+      "bytes": 19634,
+      "sha256": "3d4394986571bc0e50c519b40fba050dde8f7de7626fc1f7e58a6b9362b629cd"
+    },
+    {
+      "path": "src/mm_mcp/play/static/index.html",
+      "bytes": 3505,
+      "sha256": "98e256b665f3049aafd3f873e3526034690f43b0a8c39911ec9e66f1895ad303"
+    },
+    {
+      "path": "src/mm_mcp/play/static/style.css",
+      "bytes": 2793,
+      "sha256": "0b34394b2f520635ece418fb1a22e836bc8b121e916e8b80a834e1cf07add5c4"
+    },
+    {
+      "path": "src/mm_mcp/play/static/three.min.js",
+      "bytes": 603445,
+      "sha256": "9274bbcec8d96168626c732b5d31c775aa8cfb7eaa0599bec0c175908a2c1ce2"
+    },
+    {
+      "path": "src/mm_mcp/policy.py",
+      "bytes": 4289,
+      "sha256": "f1e4f8f410ad3f260a6230e61539e2184801f17d6155e2b883ebb069f61295eb"
+    },
+    {
+      "path": "src/mm_mcp/preview.py",
+      "bytes": 2977,
+      "sha256": "4b9ea5ed0d53bc3fa7b1fb596d436a336ded86a832db0e0535b963fe07ba05db"
+    },
+    {
+      "path": "src/mm_mcp/preview_project/preview.gd",
+      "bytes": 7769,
+      "sha256": "610e50fbce537ec779f6deff16c2be165ff2f0ffa9fe8c16388af1d352d67f6e"
+    },
+    {
+      "path": "src/mm_mcp/preview_project/preview.tscn",
+      "bytes": 157,
+      "sha256": "621116f1f2c2384bb8f06b26e3e6d8672070e78386058f689b7ad5e6ea5a3a1a"
+    },
+    {
+      "path": "src/mm_mcp/preview_project/project.godot",
+      "bytes": 570,
+      "sha256": "7d77055c56d3965c1fc4189e4097ea68b7cc0af67a88bcc8796aae44e9060c64"
+    },
+    {
+      "path": "src/mm_mcp/recipes.py",
+      "bytes": 10617,
+      "sha256": "ecae57e5a26cad2e10800acac266c7ec5d04e90599566df1dae035b17bc82761"
+    },
+    {
+      "path": "src/mm_mcp/render.py",
+      "bytes": 10692,
+      "sha256": "aafdefd545e28c2a73e90e4bbcaea2421715d3283efe935c05a44115bca93faf"
+    },
+    {
+      "path": "src/mm_mcp/server.py",
+      "bytes": 23522,
+      "sha256": "2c55f7817541f75c21ec85adb97641dcd52aa19157795b0891bf638f414a21f6"
+    },
+    {
+      "path": "src/mm_mcp/service.py",
+      "bytes": 11112,
+      "sha256": "fa9c6b9ec8a05b0668bc02d34b81594fcf49ae157a7fd10b2f942f0ff4dbdae1"
+    },
+    {
+      "path": "src/mm_mcp/tools.py",
+      "bytes": 10749,
+      "sha256": "d562a129993adbfe6509a4695ca6f403cce834fbef220e97fa35040f66d5b0db"
+    },
+    {
+      "path": "src/mm_mcp/transactions.py",
+      "bytes": 13027,
+      "sha256": "ef4a56673094693743a23c361d9cb43b77711df6e4ba9a613f07158ef9086dba"
+    },
+    {
+      "path": "src/mm_mcp/validator.py",
+      "bytes": 8633,
+      "sha256": "80c0b4e0a91a0cb40fbc011f88aee85b9a65a4568f2ee49b34324fddfd34402b"
+    },
+    {
+      "path": "tests/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/test_author_helpers.py",
+      "bytes": 8519,
+      "sha256": "5b5ac8deb5de2baae88ec4f715a108aee5c66797bfd028e67f95954bbdb632cd"
+    },
+    {
+      "path": "tests/test_author_helpers_rename.py",
+      "bytes": 5136,
+      "sha256": "822f1c1774fd03011bcac2bd86d7d2725e2493028515a24cb673d2d5ca32c569"
+    },
+    {
+      "path": "tests/test_catalog_build.py",
+      "bytes": 2056,
+      "sha256": "e2e545c1495629e98b9bc89b55c5fcae40e9da9f7181c2b489fbb6feeeda91b9"
+    },
+    {
+      "path": "tests/test_catalog_parse.py",
+      "bytes": 2925,
+      "sha256": "4c1a19819e77f063f1e6f3447f52e494bfb500c3033c6c842fdc99488d4954f3"
+    },
+    {
+      "path": "tests/test_config.py",
+      "bytes": 4528,
+      "sha256": "c145647bc4c8cc1044ef6a319d71e4e4c1e35dfd1a44b26ed10ecaa2193e9107"
+    },
+    {
+      "path": "tests/test_cookbook.py",
+      "bytes": 1800,
+      "sha256": "e0f2522efb552f4b7e8bdd9e7412a3ac68090c59bb95a2aaced16afe305cdf99"
+    },
+    {
+      "path": "tests/test_cookbook_builders_signature.py",
+      "bytes": 1109,
+      "sha256": "a6f3986e553b73192a6bd1d2d6dddb694abdb4292160bd039c36705b795c8f5a"
+    },
+    {
+      "path": "tests/test_cookbook_card_table_gate.py",
+      "bytes": 786,
+      "sha256": "fc9a6238375319e199fa40226507a834da440ee1eddeae16d82841f10f855ecc"
+    },
+    {
+      "path": "tests/test_cookbook_gate.py",
+      "bytes": 2346,
+      "sha256": "ae3ea618332ed0e8aa2fa2b35572cc46b96cdf5e27f8a574064f370645317719"
+    },
+    {
+      "path": "tests/test_cookbook_naming_gate.py",
+      "bytes": 813,
+      "sha256": "d974f288d95a3cff2e131b5523690584a16e93dd02eb80792f4d867bbcb12b42"
+    },
+    {
+      "path": "tests/test_cookbook_subgraph_gate.py",
+      "bytes": 946,
+      "sha256": "392052b348fc1a6b16c6f63ccd3cbb60d745dacfff4cdddf3b79743dbbee3fb6"
+    },
+    {
+      "path": "tests/test_debug_swatches.py",
+      "bytes": 4098,
+      "sha256": "5a53e7cdadc5309d1a2cf2f015d09f14259d9fcea339dcd1855503c0b89b3723"
+    },
+    {
+      "path": "tests/test_doctor.py",
+      "bytes": 8431,
+      "sha256": "c68a0f4dafefec02b64af7a7dc09e0dd83c92c874068b1a1c1154bdf53a32855"
+    },
+    {
+      "path": "tests/test_donors.py",
+      "bytes": 2519,
+      "sha256": "477331760d17333c1f1db8bdaaee82920869507f13e1e4410a1e2075abcd3ee1"
+    },
+    {
+      "path": "tests/test_examples_gate.py",
+      "bytes": 1049,
+      "sha256": "9ff026e3283dc6c37db292d66fad5cf5f9df379baf3594451717332026baa8bc"
+    },
+    {
+      "path": "tests/test_graph.py",
+      "bytes": 3554,
+      "sha256": "f060f3fc4ecd3f44c9c8d27c8c2903dac10820296d0d13705c9efb6ed72ba7ee"
+    },
+    {
+      "path": "tests/test_guide_resource.py",
+      "bytes": 1183,
+      "sha256": "be11347d6b483103ad349175a57a0b82f0517fe4f4bb15cb4df9ebe1b6bce44f"
+    },
+    {
+      "path": "tests/test_idle.py",
+      "bytes": 1979,
+      "sha256": "8d3e13b8b804ddd5e3be7ec5ed32631e875c487af8ffe62c53cb40cb2d5543a4"
+    },
+    {
+      "path": "tests/test_inspect.py",
+      "bytes": 1166,
+      "sha256": "c23aa838cbbf85b276ea2eadf19fbcfc2580996f1c170d23387a9596d7c897aa"
+    },
+    {
+      "path": "tests/test_live.py",
+      "bytes": 40687,
+      "sha256": "b3d6a6fb35f80f8d06cf93a70c7f35a2c98eee6dcf339e76db7950454497fab8"
+    },
+    {
+      "path": "tests/test_naming.py",
+      "bytes": 3270,
+      "sha256": "4ef352195925a72cea1aeeee4026a622ceabfac52b8a5788be801886a53a0f2c"
+    },
+    {
+      "path": "tests/test_overlay.py",
+      "bytes": 15775,
+      "sha256": "b8c6ab0544edaa400f0b0d935bea21d8a2e9940cae530461a7df216298f123cd"
+    },
+    {
+      "path": "tests/test_paths.py",
+      "bytes": 2201,
+      "sha256": "d4df0b6dddc4870b468620ce5c0a81777dfc4bf5d448d77fa921fa0ad3e90823"
+    },
+    {
+      "path": "tests/test_phase3_evidence.py",
+      "bytes": 1787,
+      "sha256": "28cf70d0ab92e8cca10e09a7c005b168199c9f2860a71fdcfe3681540571459c"
+    },
+    {
+      "path": "tests/test_play_api.py",
+      "bytes": 3532,
+      "sha256": "b00e0d4aebb0baf5848ee72ced5e0d427e082690b5f649439f8b51ed5496e723"
+    },
+    {
+      "path": "tests/test_play_renderer.py",
+      "bytes": 5950,
+      "sha256": "5a39359a6136a66e7668635cbc8118df5a5d0f381d61b9589f1e745fe02242ae"
+    },
+    {
+      "path": "tests/test_play_server.py",
+      "bytes": 6031,
+      "sha256": "5b017582120bedf29b050ac9103c3dda75f9e8cd61ceb6f76f2f7f3eacac854d"
+    },
+    {
+      "path": "tests/test_play_sliders.py",
+      "bytes": 4984,
+      "sha256": "439a58a3fad4a2792999a383a904d64c11a45491630e92a1569da7b3f8a7a3a9"
+    },
+    {
+      "path": "tests/test_preview.py",
+      "bytes": 3854,
+      "sha256": "1fd3b8630543f93c5fc35291187646827c3a31cb5626ec7824bfe56f7f0b9a97"
+    },
+    {
+      "path": "tests/test_promote_cookbook.py",
+      "bytes": 6890,
+      "sha256": "8f6b6e1eeaa6c3fa56949f1cc5778119e1dcdaf84647ca12cc05d8760f0a03b0"
+    },
+    {
+      "path": "tests/test_quality_package.py",
+      "bytes": 1977,
+      "sha256": "ec4a119153926572e929f394190e05213e39108e5c8a6fa3dddba73c02955531"
+    },
+    {
+      "path": "tests/test_readme_counts.py",
+      "bytes": 2083,
+      "sha256": "34666ab497324b0fcb33cbd7a009bbca5a3ee01e3274863cd9f7d2c12515d87f"
+    },
+    {
+      "path": "tests/test_render.py",
+      "bytes": 13552,
+      "sha256": "a154e37f1b5873ee35f0a9ed3712f4a6f01bc2a5b7221bded6302921760538e8"
+    },
+    {
+      "path": "tests/test_render_compare.py",
+      "bytes": 683,
+      "sha256": "5dd09c3d49a02090805036f43b41d71057d5087894f5507612af0b6952f46136"
+    },
+    {
+      "path": "tests/test_render_tracked.py",
+      "bytes": 4148,
+      "sha256": "ea57540fa4559128388ce02ee99bf7f473e1767a97f2786cd68dca0551c13baa"
+    },
+    {
+      "path": "tests/test_server_idle.py",
+      "bytes": 6994,
+      "sha256": "da54da1fd6067072339f54fc1d459100a34d9d32115ad4d2636959ebaab06b89"
+    },
+    {
+      "path": "tests/test_server_live.py",
+      "bytes": 31589,
+      "sha256": "8b3c038fdd7ed48478531a3e261d55bdab60910f198ae464a929335ba1aafb86"
+    },
+    {
+      "path": "tests/test_server_tools.py",
+      "bytes": 12723,
+      "sha256": "65c8e955f47b4895f13592042fd23aec4d5f466bd19544c9191b7c379357a073"
+    },
+    {
+      "path": "tests/test_validator.py",
+      "bytes": 8127,
+      "sha256": "6dd80a1633064f7458b410bf12c151e136a462ba3d776fc56c1f7d491e747b5b"
+    },
+    {
+      "path": "tests/upgrade/conftest.py",
+      "bytes": 4755,
+      "sha256": "ccbda42741a9a63bc237c86729ecf23fd7342b131ea59b371b77e509b1e4ad30"
+    },
+    {
+      "path": "tests/upgrade/test_additional.py",
+      "bytes": 7886,
+      "sha256": "b56574098562da8dbdcf64dd3d43d92ea711cd39c709dc7bc357e018fdccd9d9"
+    },
+    {
+      "path": "tests/upgrade/test_browser.py",
+      "bytes": 6883,
+      "sha256": "b29507f0c93c89a68040fbaf1c95266eb27e4179ddbe28554e52fb239f44c720"
+    },
+    {
+      "path": "tests/upgrade/test_builds.py",
+      "bytes": 5635,
+      "sha256": "b96b1d3636e14b28fff86425d1ef510a38cf9508a58c18ce1b632a7117b24ecd"
+    },
+    {
+      "path": "tests/upgrade/test_config_policy.py",
+      "bytes": 746,
+      "sha256": "e9c0a192e253db6088eaaa20e5ba864285686e2426c5397a1cb19983ce14f206"
+    },
+    {
+      "path": "tests/upgrade/test_contracts.py",
+      "bytes": 7535,
+      "sha256": "b90b447f9ca2d247e095270c175b8a39e534d1f8137da74c15930be5cf611bec"
+    },
+    {
+      "path": "tests/upgrade/test_distribution.py",
+      "bytes": 552,
+      "sha256": "06593f708cda4c8fc7860c3cfd5351295f131d44aadfd9684707445dacc060b8"
+    },
+    {
+      "path": "tests/upgrade/test_http.py",
+      "bytes": 3599,
+      "sha256": "fd2171ad8ef1142d235e280013dc39be40034554e4d9cf05323894c9c305957d"
+    },
+    {
+      "path": "tests/upgrade/test_optional_integration.py",
+      "bytes": 863,
+      "sha256": "0bb4f355a1ccfde76937113eb3cfba1f8a4811daad6d7d424062a67883a69a58"
+    }
+  ],
+  "patch_validation": "Applied to pristine uploaded baseline; exact file-byte comparison passed.",
+  "note": "This manifest is not self-hashed."
+}

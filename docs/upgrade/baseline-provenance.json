@@ -1,0 +1,8 @@
+{
+  "baseline_upload": "Tool-MaterialMaker-MCP-main.zip",
+  "baseline_upload_sha256": "ba24704ae52035886f1a4ddf932dc756315b444c8117778d069a176c5842651b",
+  "baseline_upstream_commit": "b41b65c612557a7da35a045091199058c0f76abb",
+  "material_maker_pin": "ad19fcf0ee34a7caf74df709dc4de7112f0d467d",
+  "candidate_version": "0.8.0a1",
+  "local_baseline_commit": "bffd3405901377da0134ad3cb84f4936d83ccdba"
+}

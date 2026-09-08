@@ -1,0 +1,69 @@
+F....................................................................... [ 79%]
+...................                                                      [100%]
+=================================== FAILURES ===================================
+_____________ test_browser_edit_render_export_matches_shared_state _____________
+
+http_service = (<mm_mcp.play.server._StrictThreadingHTTPServer object at 0x7fe269ab0ad0>, 'fixture-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', <mm_mcp.service.MaterialService object at 0x7fe269defe00>)
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_browser_edit_render_expor0')
+
+    @pytest.mark.browser
+    def test_browser_edit_render_export_matches_shared_state(http_service,tmp_path):
+        sync=pytest.importorskip('playwright.sync_api')
+        executable=os.environ.get('MM_TEST_CHROMIUM') or shutil.which('chromium') or shutil.which('google-chrome')
+        if not executable:pytest.skip('Chromium executable unavailable; set MM_TEST_CHROMIUM')
+        server,token,app=http_service;errors=[]
+        with sync.sync_playwright() as pw:
+            browser=pw.chromium.launch(executable_path=executable,headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+            page=browser.new_page(viewport={'width':1440,'height':1050},accept_downloads=True)
+            page.on('pageerror',lambda e:errors.append(str(e)))
+>           page.goto(f'http://127.0.0.1:{server.server_address[1]}/#token={token}')
+
+tests/upgrade/test_browser.py:23:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/opt/pyvenv/lib/python3.13/site-packages/playwright/sync_api/_generated.py:9050: in goto
+    self._sync(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_page.py:552: in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_frame.py:153: in goto
+    await self._channel.send(
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <playwright._impl._connection.Connection object at 0x7fe269b62270>
+cb = <function Channel.send.<locals>.<lambda> at 0x7fe2690f9760>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:36181/#token=fixture-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+E           Call log:
+E             - navigating to "http://127.0.0.1:36181/#token=fixture-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", waiting until "load"
+
+/opt/pyvenv/lib/python3.13/site-packages/playwright/_impl/_connection.py:559: Error
+=============================== warnings summary ===============================
+tests/upgrade/test_browser.py:13
+  /mnt/data/mm_work/Tool-MaterialMaker-MCP-main/tests/upgrade/test_browser.py:13: PytestUnknownMarkWarning: Unknown pytest.mark.browser - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.browser
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/upgrade/test_browser.py::test_browser_edit_render_export_matches_shared_state - playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:36181/#token=fixture-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Call log:
+  - navigating to "http://127.0.0.1:36181/#token=fixture-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", waiting until "load"
+1 failed, 90 passed, 1 warning in 9.45s

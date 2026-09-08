@@ -6,7 +6,7 @@
 
 Gate ledger. Three states only: ✅ verified · 🔌 wired · ⬜ not started.
 
-_Last updated: 2026-09-06 (idle-exit)._
+_Last updated: 2026-09-08 (0.8.0a1 local integration)._
 
 **How to read this file (rule adopted 2026-09-05, teardown #3):** each cell holds
 the state, one line of what it is, and a pointer to where the evidence lives
@@ -15,7 +15,22 @@ go in `HANDOFF.md`'s session log or `git log`, never into a cell. If a row
 needs more than three lines to explain, the explanation belongs in a doc the
 row points at.
 
-## Phases
+## Current 0.8 alpha
+
+| Component or gate | State | Evidence |
+| --- | --- | --- |
+| Shared service, build/export and portable authoring contracts | ✅ verified | 232 passed, 1 Windows-only skip; [local integration](docs/upgrade/INTEGRATION.md). |
+| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all documented tools; `tests/test_readme_counts.py`. |
+| Packaged resources and wheel installation | ✅ verified | Isolated wheel import finds cookbook, guide and add-on; [local integration](docs/upgrade/INTEGRATION.md). |
+| Browser request ordering | ✅ verified | Three focused Node cases; `tests/upgrade/test_browser_state.py`. |
+| Native bridge, renderer, WebGL viewer and engine imports | 🔌 wired | Implemented; local native acceptance deferred. `docs/upgrade/TESTING.md`. |
+| Expanded CI and release publication | 🔌 wired | Workflow updated; external runners and publication not invoked. |
+
+The following ledger records the **0.7 baseline's historical gates**, not a
+certification of the changed 0.8 native paths. For current capability boundaries,
+see [upgrade status](docs/upgrade/STATUS.md).
+
+## Historical 0.7 phases
 
 | Phase | Description | Gate | State | Evidence |
 |---|---|---|---|---|
@@ -26,7 +41,7 @@ row points at.
 | 4 | Public packaging | Installable, config-driven, doctored, cross-platform | 🔌 | Installable + `mm-mcp --check` + CI + release-please done (`docs/superpowers/specs/2026-08-30-phase4-hardening-design.md`). macOS/Linux unverified, no machine. PyPI on hold (GitHub-clone route). |
 | 5 | Live-control | Hands-on session watching nodes appear live | ✅ | 2026-08-28 hands-on. `docs/superpowers/specs/2026-08-26-live-control-addon-design.md`; `tests/test_live.py`, `tests/test_server_live.py` |
 
-## Components
+## Historical 0.7 components
 
 | Component | State | What it is / evidence |
 |---|---|---|
