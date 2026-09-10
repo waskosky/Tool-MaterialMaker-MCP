@@ -1,24 +1,44 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Material Workshop</title><link rel="stylesheet" href="/static/style.css"></head>
-<body><header><h1>Material Workshop</h1><span id="capabilities">Connecting to local service…</span><button id="setup-open">Setup &amp; repair</button></header>
-<div id="layout"><aside><h2>Recipe library</h2><input id="search" type="search" placeholder="Search material, structure, or recipe" aria-label="Search recipes">
-<label><input id="favorites-only" type="checkbox"> Favorites only</label><div id="gallery"></div>
-<h2>Shared projects</h2><button id="refresh-projects">Refresh projects</button><select id="projects" aria-label="Open project"><option value="">Select a project</option></select></aside>
-<main><div class="toolbar"><label>Shape <select id="shape"><option>sphere</option><option>plane</option><option>cube</option></select></label>
-<label>Lighting <select id="lighting"><option>studio</option><option>grazing</option><option>soft</option></select></label>
-<label>Tile repeat <input id="repeat" type="number" min="1" max="32" value="1" step="1"></label>
-<label>Height as bump <input id="height-toggle" type="checkbox"></label><button id="pin">Pin comparison</button><button id="compare">Compare pinned</button></div>
-<div id="viewport" aria-label="3D material preview"></div><p class="hint">Drag to orbit. Scroll to zoom. This viewer previews opaque baseline channels; native engine appearance requires separate verification.</p>
-<div id="status" role="status" aria-live="polite">Open a recipe to begin.</div><div id="evidence"></div><img id="comparison" alt="Pinned material channel comparisons" hidden></main>
-<section id="editor"><h2 id="material-name">No project selected</h2><p id="revision"></p><div class="toolbar"><button id="undo">Undo</button><button id="redo">Redo</button><button id="reset">Reset controls</button><button id="refresh">Reload shared state</button></div>
-<div id="sliders"></div><div id="build-settings"><label>Resolution <select id="size"><option>128</option><option selected>256</option><option>512</option><option>1024</option><option>2048</option></select></label>
-<label>Package <select id="target"><option>generic</option><option>godot</option><option>roblox</option><option>unity</option><option>unreal</option></select></label>
-<label>Tile size (meters) <input id="physical-size" type="number" min="0.001" max="100000" value="1" step="0.1"></label>
-<button id="render">Build material</button><button id="cancel" disabled>Cancel</button><button id="download" disabled>Download verified build</button></div>
-<details><summary>Recipe variations and snapshots</summary><p>Lock controls above, then enter explicit numeric ranges keyed by control ID.</p>
-<textarea id="ranges" rows="4" aria-label="Variation ranges" placeholder='{"dune_ripples/param0": [5, 15]}'>{}</textarea>
-<label>Family seed <input id="family-seed" type="number" value="1" step="1"></label><button id="family">Build six recipe variants</button><pre id="family-result"></pre>
-<input id="snapshot-name" placeholder="Snapshot name" aria-label="Snapshot name"><button id="snapshot">Save snapshot</button><button id="restore">Restore snapshot</button>
-<input id="recipe-name" placeholder="New personal recipe name" aria-label="Personal recipe name"><button id="save-recipe">Save personal recipe</button></details></section></div>
-<script src="/static/three.min.js"></script><script src="/static/setup.js"></script><script src="/static/app.js"></script></body></html>
+<body>
+<header><div class="brand"><span class="brand-mark" aria-hidden="true">◈</span><div><h1>Material Workshop</h1><span id="capabilities">Connecting to your workspace…</span></div></div><button id="setup-open" disabled>Setup &amp; repair</button></header>
+<div id="layout">
+  <aside id="library">
+    <div class="section-heading"><div><p class="eyebrow">Start with a material</p><h2>Recipe library</h2></div><span id="recipe-count" class="badge"></span></div>
+    <input id="search" type="search" placeholder="Find a material…" aria-label="Search recipes">
+    <div class="library-filters"><select id="category" aria-label="Recipe category"><option value="">All categories</option></select><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorites</label></div>
+    <div id="gallery" aria-label="Recipes"></div><p id="gallery-empty" class="hint" hidden>No recipes match. Try another search or category.</p>
+    <div class="shared-projects"><div class="section-heading"><h2>Your projects</h2><button id="refresh-projects" class="quiet">Refresh</button></div><select id="projects" aria-label="Open project"><option value="">Open a saved project…</option></select><p class="hint">Edits are saved as you work. Your assistant can use these same projects.</p></div>
+  </aside>
+  <main>
+    <div class="section-heading"><div><p class="eyebrow">Material preview</p><h2 id="preview-title">Make something tactile</h2></div><span id="preview-kind" class="badge" hidden></span></div>
+    <div class="toolbar viewer-tools"><label>Shape <select id="shape"><option>sphere</option><option>plane</option><option>cube</option></select></label><label>Light <select id="lighting"><option>studio</option><option>grazing</option><option>soft</option></select></label><label>Repeat <input id="repeat" type="number" min="1" max="32" value="1" step="1"></label><label><input id="height-toggle" type="checkbox"> Height as bump</label></div>
+    <div id="viewport-shell"><div id="viewport" aria-label="3D material preview"></div><div id="welcome"><span aria-hidden="true">◈</span><h3>Pick a recipe. Make it yours.</h3><p>Choose a material from the library, then shape it with the controls.</p><button id="welcome-setup" hidden>Connect the renderer</button></div></div>
+    <div class="preview-footer"><span id="preview-note" class="hint">Drag to orbit · Scroll to zoom</span><div class="toolbar"><button id="pin" disabled>Pin preview</button><button id="compare" disabled>Compare pins (0)</button></div></div>
+    <div id="status" role="status" aria-live="polite">Choose a recipe to begin.</div><button id="retry" hidden>Retry build</button><details id="status-details" hidden><summary>Error details</summary><pre id="status-detail-text"></pre></details>
+    <details class="channel-section"><summary>Texture channels <span class="hint">Albedo, normal and surface data</span></summary><div id="evidence"></div><p class="hint">The viewer shows baseline opaque channels. Review appearance in your target engine before using the material there.</p></details>
+    <section id="variations" class="work-panel">
+      <div class="section-heading"><div><p class="eyebrow">Explore a direction</p><h2>Material variations</h2></div><span id="family-progress" class="badge"></span></div>
+      <p id="family-hint" class="hint">Choose a recipe to explore variations of its controls.</p>
+      <details id="family-settings"><summary>Choose what varies</summary><div id="range-controls"></div></details>
+      <div class="toolbar family-toolbar"><label>Variants <input id="family-count" type="number" value="6" min="2" max="12" step="1"></label><label>Seed <input id="family-seed" type="number" value="1" min="0" max="2147483647" step="1"></label><button id="family" class="primary" disabled>Build variations</button><button id="family-cancel" disabled>Cancel pending</button></div>
+      <div id="family-cards" aria-label="Material variations"></div>
+    </section>
+    <section id="comparison-panel" class="work-panel" hidden><div class="section-heading"><h2>Pinned materials</h2><button id="clear-pins">Clear pins</button></div><p class="hint">Albedo comparison of completed builds. Labels below follow image order, left to right.</p><img id="comparison" alt="Pinned material albedo comparisons" hidden><ol id="comparison-labels" class="hint"></ol></section>
+  </main>
+  <section id="editor">
+    <p class="eyebrow">Editable material</p><h2 id="material-name">Your next material</h2><p id="editor-hint" class="hint">Open a recipe to begin editing. Every change is saved in your workspace.</p>
+    <fieldset id="project-fields" disabled>
+      <div class="toolbar history-tools"><button id="undo">Undo</button><button id="redo">Redo</button><button id="reset">Reset</button><button id="refresh">Reload</button></div>
+      <div id="sliders"></div>
+      <details class="project-details"><summary>Project details</summary><p id="revision" class="hint"></p></details>
+      <section id="build-settings"><h2>Preview &amp; export</h2><div class="settings-grid"><label>Resolution <select id="size"><option>128</option><option selected>256</option><option>512</option><option>1024</option><option>2048</option></select></label><label>Package <select id="target"><option>generic</option><option>godot</option><option>roblox</option><option>unity</option><option>unreal</option></select></label></div><label>Tile size in meters <input id="physical-size" type="number" min="0.001" max="100000" value="1" step="any"></label><div class="toolbar"><button id="render" class="primary">Build preview</button><button id="cancel" disabled>Cancel</button></div><button id="download" disabled>Download material</button><p class="hint">Includes textures and the editable .ptex source.</p></section>
+      <details id="snapshots-panel"><summary>Saved versions <span id="snapshot-count" class="badge">0</span></summary><div class="inline-form"><input id="snapshot-name" placeholder="Name this version…" aria-label="Snapshot name" maxlength="120"><button id="snapshot">Save</button></div><div id="snapshot-list"></div></details>
+      <details id="personal-panel"><summary>Keep as a personal recipe</summary><p class="hint">Save the current controls as a new recipe in your library.</p><input id="recipe-name" placeholder="Give it a name…" aria-label="Personal recipe name" maxlength="100"><button id="save-recipe">Save personal recipe</button></details>
+    </fieldset>
+  </section>
+</div>
+<script src="/static/three.min.js"></script><script src="/static/setup.js"></script><script src="/static/library.js"></script><script src="/static/variations.js"></script><script src="/static/app.js"></script>
+</body></html>

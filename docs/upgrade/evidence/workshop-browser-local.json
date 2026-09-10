@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-10",
+  "environment": "macOS 15.7.1, Python 3.12.13, Playwright 1.62.0, Chromium 1234, SwiftShader WebGL",
+  "browser": {
+    "command": "MM_TEST_CHROMIUM=<Chromium executable> MM_REQUIRE_WEBGL_TEST=1 .venv/bin/python -m pytest tests/upgrade/test_browser.py -q",
+    "result": "3 passed in 56.13s",
+    "transport": "Actual authenticated loopback HTTP adapter with the production content security policy",
+    "renderer": "Explicitly labelled injected_test_double: synthetic PNGs; never native verified",
+    "checks": [
+      "Automatic preview, typed edit, shared revision conflict, exact graph download",
+      "Typed ranges and locks, seeded three-candidate family, inspect and compare pins",
+      "Use exact candidate without rebaking, preserve target and physical tile size in export",
+      "Personal recipe preview reuse, search and favorites, shared projects and snapshot restore",
+      "Setup save, check, test cancellation and missing-catalog first selection resume",
+      "WebGL canvas and decoded channel images; desktop 1440x1050 and mobile viewport 390x844 without horizontal overflow"
+    ],
+    "local_logs": "/Users/macuser/games/temp/workshop-browser-grrh60jv"
+  },
+  "real_cookbook": [
+    {
+      "mode": "first-launch",
+      "recipes": 53,
+      "terrain_recipes": 8,
+      "catalog_nodes": 0,
+      "projects": 0,
+      "native_builds_started": 0,
+      "browser_errors": []
+    },
+    {
+      "mode": "catalog-only",
+      "recipes": 53,
+      "terrain_recipes": 8,
+      "catalog_nodes": 392,
+      "projects": 1,
+      "native_builds_started": 0,
+      "browser_errors": []
+    }
+  ],
+  "screenshots": [
+    "workshop-desktop-test.png",
+    "workshop-mobile-test.png",
+    "workshop-setup-test.png",
+    "workshop-cookbook.png"
+  ],
+  "limits": "Browser interactions and rendering of synthetic maps passed. Cookbook browsing used real recipe files and, separately, the pinned 392-node native catalog, with no native jobs. Native material appearance, successful native baking, exported source reopening, target engine imports and physical mobile devices were not certified.",
+  "state_regressions": {
+    "command": ".venv/bin/python -m pytest tests/upgrade/test_browser_state.py -q",
+    "result": "21 passed in 3.27s",
+    "scope": "Stale job, family, collection and project continuations; serialized history/restore and same-project control refresh across export setting changes."
+  }
+}

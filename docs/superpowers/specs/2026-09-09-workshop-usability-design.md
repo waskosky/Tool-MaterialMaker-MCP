@@ -66,7 +66,7 @@ checks and installation links, never session tokens or unrelated environment val
 
 Setup responses expose `settings: {godot_binary, project_path}`, `settings_file`,
 `overrides` keyed by setting name, `detected: {godot_binaries, project_paths}`,
-`checks: [{name, ok, detail}]`, `native_render_configured`,
+`checks: [{name, ok, detail}]`, `catalog_available`, `native_render_configured`,
 `native_render_verified_this_session`, `last_render_error`, and
 `install: {godot_url, material_maker_url}`. A check describes actual path/version
 findings; successful path checks alone never mark a native render verified.
@@ -108,3 +108,7 @@ preview. First previews use 256 pixels. Build failures expose a retry action; ca
 show real queued/running/completed/cancelled states. Completed candidates can be
 pinned for channel comparison or saved as personal recipes through an editable
 project. Technical IDs remain available in optional details.
+
+If the native catalog is unavailable, choosing a recipe opens setup and remembers
+that selection. Saving a usable catalog resumes authoring through the ordinary
+validated project interface. Browsing the library never requires a native bake.

@@ -178,6 +178,7 @@ def setup_status(app, check=False):
             'settings_file': str(settings_path()), 'overrides': dict(cfg.native_overrides),
             'detected': detected, 'checks': checks,
             'native_render_configured': caps['native_render_configured'],
+            'catalog_available': caps['catalog_available'],
             'native_render_verified_this_session': caps['native_render_verified_this_session'],
             'last_render_error': caps['last_render_error'], 'install': dict(INSTALL),
             'busy': app._build_running or app.jobs.active(), 'injected_test_renderer': app.render_fn is not None}
