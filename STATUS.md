@@ -29,7 +29,7 @@ row points at.
 | Successful native baking, source reopen and engine imports | 🔌 wired | Local Vulkan compute compiler blocker; `docs/upgrade/TESTING.md`. |
 | Native editor writes and intended assistant-host acceptance | 🔌 wired | Separate native/host checks remain; native writes disabled by default. |
 | Packaged resources, wheel and metadata | ✅ verified | 109 resource files match, wheel and metadata checks pass; [integration record](docs/upgrade/INTEGRATION.md). |
-| Integration branch CI | 🔌 wired | Portable three-OS, distribution and real HTTP browser jobs configured; awaiting this push. |
+| Integration branch CI | ✅ verified | Linux, Windows, macOS, distribution and browser jobs pass; [CI evidence](docs/upgrade/evidence/workshop-origin-ci.json). |
 | Alpha release publication | ⬜ not started | Version 0.8.0a1 remains a development candidate; release workflow disabled on the fork. |
 
 The following ledger records the **0.7 baseline's historical gates**, not a

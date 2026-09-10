@@ -156,3 +156,16 @@ passed, but native material appearance, successful bake/cache/export, exported g
 reopening and target-engine imports remain unverified. Browser test maps are labelled
 `injected_test_double` and cannot mark setup as native verified. Complete those
 acceptance steps on a compatible graphics setup using [TESTING](TESTING.md).
+
+### Origin verification
+
+[GitHub CI run 34508320825](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825)
+passed all five jobs at `a19f968`: portable contracts on Linux, Windows and macOS,
+plus browser and distribution checks. The initial run exposed two Windows test
+fixture issues, corrected with native path comparison and explicit UTF-8 encoding;
+60 focused local cases then passed before the successful rerun. See the
+[CI record](evidence/workshop-origin-ci.json).
+
+The milestone is pushed to `origin/integration/next`. The fork's `main` remained at
+`902903b2e35914829670fbdb8518609ff08b9611` throughout publication. Further upstream
+work remains paused, and the fork's release workflow remains disabled.

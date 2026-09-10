@@ -27,8 +27,8 @@ remain unchanged. The alpha version stays 0.8.0a1; no release or deployment was 
 Local portable gate: **377 passed, 1 Windows-only skip, 4 deselected**. Real HTTP/CSP
 browser acceptance: **3 passed**, with WebGL required and explicitly synthetic maps;
 21 focused Node state cases also passed. Wheel build and metadata checks passed.
-The actual SDK registers 42 tools. See the integration record for installation and
-CI evidence. The repository `.venv` uses Python 3.12.13 and MCP SDK 2.2.0.
+The actual SDK registers 42 tools. GitHub CI passes on Linux, Windows and macOS,
+with separate browser and distribution jobs; [CI evidence](docs/upgrade/evidence/workshop-origin-ci.json). The repository `.venv` uses Python 3.12.13 and MCP SDK 2.2.0.
 
 ## Next work
 

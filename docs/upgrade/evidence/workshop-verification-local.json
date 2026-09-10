@@ -57,5 +57,12 @@
     "passed": 37,
     "seconds": 2.03,
     "scope": "Native path and decoded dotenv assertions made platform independent after final review."
-  }
+  },
+  "post_ci_windows_fixtures": {
+    "passed": 60,
+    "seconds": 7.65,
+    "command": ".venv/bin/python -m pytest tests/upgrade/test_session.py tests/upgrade/test_visual_workflow.py -q",
+    "scope": "Portable workspace path comparison and explicit UTF-8 fixture encoding."
+  },
+  "origin_ci": "workshop-origin-ci.json"
 }

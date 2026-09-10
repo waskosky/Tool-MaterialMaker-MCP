@@ -82,7 +82,7 @@ Files: `.github/workflows/test.yml`, `README.md`, relevant setup documentation,
 - [x] Run the portable release gate, resource synchronization check, JavaScript syntax
   checks, wheel build/metadata check, and focused browser suite. Avoid a broad legacy
   test campaign or engine certifications in this milestone.
-- [ ] Review the final diff, commit changes, push `origin integration/next`, verify
+- [x] Review the final diff, commit changes, push `origin integration/next`, verify
   remote branch and CI status, and report outcomes with remaining practical limits.
 
 Native acceptance stopped at a reproducible local Vulkan compute compiler failure.

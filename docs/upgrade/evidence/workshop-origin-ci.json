@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-10",
+  "branch": "integration/next",
+  "commit": "a19f968a14d804a3b03935998698a8f7260bb49d",
+  "run_id": 34508320825,
+  "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "distribution",
+      "conclusion": "success",
+      "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825/job/102975872766",
+      "startedAt": "2026-09-10T17:27:26Z",
+      "completedAt": "2026-09-10T17:27:48Z"
+    },
+    {
+      "name": "contracts (ubuntu-latest, 3.13)",
+      "conclusion": "success",
+      "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825/job/102975872950",
+      "startedAt": "2026-09-10T17:27:25Z",
+      "completedAt": "2026-09-10T17:28:05Z"
+    },
+    {
+      "name": "browser",
+      "conclusion": "success",
+      "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825/job/102975872958",
+      "startedAt": "2026-09-10T17:27:25Z",
+      "completedAt": "2026-09-10T17:28:43Z"
+    },
+    {
+      "name": "contracts (macos-latest, 3.13)",
+      "conclusion": "success",
+      "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825/job/102975873053",
+      "startedAt": "2026-09-10T17:27:31Z",
+      "completedAt": "2026-09-10T17:28:49Z"
+    },
+    {
+      "name": "contracts (windows-latest, 3.13)",
+      "conclusion": "success",
+      "url": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34508320825/job/102975873205",
+      "startedAt": "2026-09-10T17:27:26Z",
+      "completedAt": "2026-09-10T17:29:24Z"
+    }
+  ],
+  "limits": "Portable three-OS contracts, wheel metadata and actual HTTP/CSP browser with required SwiftShader WebGL and synthetic maps. No native GPU bake, source reopening or engine import certification.",
+  "earlier_run": {
+    "run_id": 34507907049,
+    "result": "Windows found two test fixture portability issues: case-sensitive workspace string comparison and platform-default text encoding. Both corrected in this passing commit."
+  }
+}
