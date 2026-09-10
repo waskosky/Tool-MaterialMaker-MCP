@@ -1,6 +1,8 @@
 # High-level tool reference
 
-These 24 functions are registered by `tools.register`. The actual source is authoritative.
+These 24 shared functions are registered by `tools.register`, alongside 10 batch
+and 8 live tools. Setup, session discovery, thumbnails and snapshot listing are
+browser HTTP routes; they do not add MCP tools. The actual source is authoritative.
 
 Core results return an `ok` flag and structured error codes. Native/live tools remain separate. The image tool returns the official SDK image helper, not only a local path. Real SDK/client acceptance remains required.
 
@@ -58,7 +60,8 @@ List the browser/MCP workspace projects, including their current revisions.
 material_project_get(project_id: 'str') -> 'dict'
 ```
 
-Read the complete graph, current revision, hash and exposed controls.
+Read the complete graph, current revision, hash, exposed controls and originating
+`recipe_id` (`null` for an imported project without recipe provenance).
 
 ## material_project_patch
 
@@ -98,7 +101,19 @@ Restore a named snapshot as a new, undoable revision.
 material_build(request: 'dict') -> 'dict'
 ```
 
-Build a recipe_id or project_id+revision, with size/target/values/seed/physical_size_m. Prefer jobs for long bakes.
+Build exactly one source: `recipe_id` (or its legacy `material_id` alias),
+`project_id` plus its current `revision`, or a raw `graph`. Options include `size`,
+`target`, `values`, `seed`, `physical_size_m` and the boolean `force`. Prefer jobs
+for long bakes; `material_job_submit` accepts the same build request.
+
+Only raw graph requests accept `source_dir`. It must name an existing absolute
+directory within an approved asset root. Recognized `%PROJECT_PATH%/…` asset
+references need that explicit origin; ordinary relative asset paths remain
+ambiguous even when `source_dir` is supplied. `res://` resolves against the native
+Material Maker source, and approved absolute asset paths are also accepted. Asset
+paths remain bounded by the configured roots plus the native source directory,
+and their content hashes participate in build identity. The renderer receives a
+rewritten copy while the exported source preserves the original references.
 
 ## material_job_submit
 
@@ -143,10 +158,12 @@ Write a verified ZIP into workspace/exports. It contains only that build's exact
 ## material_variation_family
 
 ```python
-material_variation_family(recipe_id: 'str', count: 'int' = 6, seed: 'int' = 1, ranges: 'dict | None' = None, locked: 'list | None' = None, values: 'dict | None' = None, build: 'bool' = False, size: 'int' = 256, target: 'str' = 'generic') -> 'dict'
+material_variation_family(recipe_id: 'str', count: 'int' = 6, seed: 'int' = 1, ranges: 'dict | None' = None, locked: 'list | None' = None, values: 'dict | None' = None, build: 'bool' = False, size: 'int' = 256, target: 'str' = 'generic', physical_size_m: 'float' = 1) -> 'dict'
 ```
 
-Create deterministic recipe variations from explicit ranges, preserving locked controls.
+Create deterministic recipe variations from explicit ranges, preserving locked
+controls. With `build=True`, queued candidates retain `size`, `target` and
+`physical_size_m` (default 1 metre).
 
 ## material_world_context
 
@@ -233,4 +250,33 @@ Handle `REVISION_CONFLICT` by rereading, `VALIDATION_FAILED` by inspecting diagn
 
 ## HTTP adapter
 
-Browser calls require the session token. The actual route dispatch in `play/server.py` covers materials, projects, patches, history, snapshots, jobs, builds/files, export, families, context, comparison, recipes and mesh masks. Use the shared Python service or MCP interface for integration rather than scraping browser DOM.
+Browser API calls require `X-MM-Token`. Launcher session discovery can instead use
+the authenticated challenge/proof protocol implemented in `play/session.py`.
+The adapter enforces loopback Host/Origin checks and a content security policy.
+
+| Method and route | Purpose |
+| --- | --- |
+| `GET /api/capabilities` | Shared features and native rendering state. |
+| `GET /api/setup` | Effective native paths, overrides, settings location and configuration state. |
+| `POST /api/setup` | Save native defaults and apply effective paths while the queue is idle. |
+| `POST /api/setup/check` | Discover native paths and check current configuration; body is `{}`. |
+| `POST /api/setup/verify` | Queue a small native verification build; body is `{}`. Inspect or cancel its job through the jobs routes. |
+| `GET /api/session` | Authenticated workspace/session identity for launcher reuse. |
+| `GET /api/materials`, `GET /api/material/{recipe_id}` | Search recipes or describe one recipe and its controls. |
+| `GET /api/projects`, `GET /api/projects/{project_id}` | List projects or read current graph state and recipe origin. |
+| `POST /api/projects` | Instantiate an editable project from a recipe. |
+| `POST /api/patch`, `POST /api/history` | Revisioned edits, undo and redo. |
+| `GET /api/projects/{project_id}/snapshots` | List saved snapshots. |
+| `POST /api/snapshot`, `POST /api/restore` | Save a named snapshot or restore it as a new revision. |
+| `POST /api/render`, `POST /api/jobs` | Build synchronously or queue a bounded build. |
+| `GET /api/jobs/{job_id}`, `POST /api/jobs/{job_id}/cancel` | Read job state or request cancellation. |
+| `GET /api/builds/{build_id}` | Read a verified completed manifest. |
+| `GET /api/builds/{build_id}/thumbnail.png` | Read an authenticated thumbnail from a completed build. |
+| `GET /api/builds/{build_id}/files/{filename}` | Read an artifact from that exact build. |
+| `GET /api/export?build_id={build_id}` | Download the verified build ZIP. |
+| `POST /api/family`, `POST /api/context` | Create variations or apply explicit world-context bindings. |
+| `POST /api/compare`, `GET /api/comparisons/{filename}` | Create or read a comparison image. |
+| `POST /api/recipes/save`, `POST /api/mesh-masks` | Save a personal recipe or build bounded mesh masks. |
+
+Use the shared Python service or MCP interface for integrations. The actual route
+dispatch in `play/server.py` defines the browser adapter contract.
