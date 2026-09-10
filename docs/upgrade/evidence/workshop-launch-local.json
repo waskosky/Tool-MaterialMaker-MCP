@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-10",
+  "platform": "macOS",
+  "check": "Real source launcher session reuse and shutdown in an isolated workspace",
+  "command": ".venv/bin/python scripts/launch.py --no-open",
+  "first_server_listened": true,
+  "second_launch_reused_existing_session": true,
+  "second_launch_exit_code": 0,
+  "first_launch_exit_code_after_interrupt": 0,
+  "private_discovery_record_removed_after_shutdown": true,
+  "native_render_test": false,
+  "windows_launcher_execution_verified": false
+}

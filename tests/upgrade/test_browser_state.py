@@ -6,8 +6,11 @@ import subprocess
 import pytest
 
 
-@pytest.mark.parametrize('phase', ['complete', 'cancelled', 'submission'])
-def test_stale_build_response_cannot_replace_current_selection(phase):
+@pytest.mark.parametrize('phase, preferences', [
+    ('complete', '[]'), ('cancelled', '[]'), ('submission', '[]'),
+    ('complete', '{broken'), ('complete', '{"wrong":"shape"}'),
+])
+def test_stale_build_response_cannot_replace_current_selection(phase, preferences):
     node = shutil.which('node')
     if node is None:
         pytest.skip('Node.js is needed for the lightweight frontend state check')
@@ -15,10 +18,10 @@ def test_stale_build_response_cannot_replace_current_selection(phase):
     harness = r'''
 const fs = require('fs'), vm = require('vm'), assert = require('node:assert/strict');
 const source = fs.readFileSync(process.argv[1], 'utf8').split('$("search").oninput')[0];
-const phase = process.argv[2], fields = new Map();
+const phase = process.argv[2], preferences = process.argv[3], fields = new Map();
 const context = {
   URLSearchParams, location: {hash: ''},
-  sessionStorage: {getItem() {return null;}}, localStorage: {getItem() {return null;}},
+  sessionStorage: {getItem() {return null;}}, localStorage: {getItem() {return preferences;}},
   document: {getElementById(id) {
     if (!fields.has(id)) fields.set(id, {
       value: ({size:'32', target:'generic', 'physical-size':'1'})[id] || '',
@@ -57,6 +60,6 @@ vm.createContext(context); vm.runInContext(source, context);
                           downloadDisabled:true, cancelDisabled:false});
 })().catch(error => {console.error(error); process.exitCode = 1;});
 '''
-    result = subprocess.run([node, '-e', harness, str(source), phase],
+    result = subprocess.run([node, '-e', harness, str(source), phase, preferences],
                             capture_output=True, text=True, timeout=10)
     assert result.returncode == 0, result.stdout + result.stderr

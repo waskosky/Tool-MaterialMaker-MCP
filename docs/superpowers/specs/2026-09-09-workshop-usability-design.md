@@ -75,3 +75,36 @@ The frontend owns setup-panel presentation. The Python setup/session helpers own
 discovery, persistence, identity checks and configuration refresh. Source launchers
 use a small standard-library bootstrap helper so an existing virtualenv without
 pip can still be repaired, and ordinary launches do not reinstall dependencies.
+
+## Visual workflow interface contract
+
+Recipe IDs and existing service fields remain stable. Gallery records add
+`display_name`, `description`, and `thumbnail` (null or
+`{build_id, url, renderer_kind}`). Titles and descriptions come from guide text or
+explicit metadata. A thumbnail is the last completed build associated with that
+recipe, including an edited project derived from it; the UI labels this as a last
+build, not a certified default appearance. Its authenticated URL is
+`/api/builds/{build_id}/thumbnail.png`. Artifact verification precedes image use;
+corrupt or missing builds do not break the gallery or produce a replacement image.
+
+`GET /api/projects/{project_id}` adds the originating `recipe_id`, when known, so a
+reopened project can generate variations. It does not expose code approval records.
+`GET /api/projects/{project_id}/snapshots` returns `{ok, project_id, snapshots}` with
+each snapshot's `name` and `revision`. Snapshot names are bounded human-readable
+labels, with no filesystem interpretation.
+
+Family requests retain their existing structure and add `physical_size_m`, which
+is carried into every candidate build. Family submission either returns all job
+IDs or leaves no newly queued, untracked work when queue capacity is insufficient.
+The client captures recipe, values, locks, ranges and build settings together.
+Changing projects or replacing a family cancels its unfinished jobs and ignores
+late responses. Choosing a candidate creates an editable project with its exact
+values. A cached candidate preview is selected only after its graph hash matches
+that project and its captured build settings are restored.
+
+The gallery and controls use separate debounce timers. Parameter edits, history and
+snapshot restoration invalidate the current download before requesting a fresh
+preview. First previews use 256 pixels. Build failures expose a retry action; cards
+show real queued/running/completed/cancelled states. Completed candidates can be
+pinned for channel comparison or saved as personal recipes through an editable
+project. Technical IDs remain available in optional details.

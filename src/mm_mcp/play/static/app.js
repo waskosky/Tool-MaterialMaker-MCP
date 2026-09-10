@@ -7,7 +7,14 @@ const token = sessionStorage.getItem("mm.token") || "";
 let current = null, recipeId = null, initialValues = {}, locked = new Set();
 let selectedBuild = null, activeJob = null, generation = 0, queue = Promise.resolve(), timer = null;
 let comparisonURL = null, evidenceURLs = [], pinned = [], models = [];
-const favorites = new Set(JSON.parse(localStorage.getItem("mm.favorites") || "[]"));
+let setupPanel = null;
+function storedList(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value.filter(item => typeof item === "string") : [];
+  } catch (_) { return []; }
+}
+const favorites = new Set(storedList("mm.favorites"));
 function status(text, error = false) { $("status").textContent = text; $("status").classList.toggle("error", error); }
 async function request(path, body, raw = false) {
   const headers = {"X-MM-Token": token};
@@ -239,4 +246,14 @@ $("family").onclick=action(async()=>{await queue;if(!recipeId)throw new Error("O
 $("snapshot").onclick=action(async()=>{await queue;if(!current)return;await request("/api/snapshot",{project_id:current.project_id,name:$("snapshot-name").value});status("Named snapshot saved.");});
 $("restore").onclick=action(async()=>{await queue;if(!current)return;invalidate();await request("/api/restore",{project_id:current.project_id,name:$("snapshot-name").value,expected_revision:current.revision});await refreshProject();status("Snapshot restored as a new revision.");});
 $("save-recipe").onclick=action(async()=>{await queue;if(!current)return;const result=await request("/api/recipes/save",{project_id:current.project_id,name:$("recipe-name").value});await gallery();status("Personal recipe saved: "+JSON.stringify(result));});
-(async()=>{initViewer();try{const caps=await request("/api/capabilities");$("capabilities").textContent=caps.native_render_configured?"Local workspace · native render configured, not yet verified":"Local workspace · "+(caps.render_configuration_error||"Native render not configured");await gallery();await projects();}catch(e){status(e.message,true);}})();
+(async()=>{
+  initViewer();
+  try {
+    setupPanel = new window.WorkshopSetup(request, async () => {
+      $("capabilities").textContent = "Local workspace · " + setupPanel.label();
+    });
+    $("setup-open").onclick = () => setupPanel.show();
+    await setupPanel.load();
+    await gallery(); await projects();
+  } catch(e) { status(e.message, true); }
+})();

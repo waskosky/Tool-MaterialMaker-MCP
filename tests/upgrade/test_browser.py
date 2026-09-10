@@ -1,18 +1,20 @@
-"""Real Chromium + in-process service adapter, with a synthetic PNG baker.
+"""Real Chromium and the authenticated HTTP adapter, with a synthetic PNG baker.
 
-The real HTTP adapter is tested separately. This verifies browser logic and either WebGL availability or its fallback.
-It does not certify WebGL shading, browser networking, or native rendering.
+This exercises browser networking and either WebGL availability or its fallback.
+It does not certify native Material Maker rendering or engine appearance.
 """
-import io
 import json
 import os
-from pathlib import Path
+import re
 import shutil
+import threading
+import time
 import zipfile
+from pathlib import Path
 import pytest
 
 @pytest.mark.browser
-def test_browser_inprocess_edit_export_matches_shared_state(http_service,tmp_path):
+def test_browser_http_edit_export_matches_shared_state(http_service,tmp_path):
     sync=pytest.importorskip('playwright.sync_api')
     executable=os.environ.get('MM_TEST_CHROMIUM') or shutil.which('chromium') or shutil.which('google-chrome')
     if not executable:pytest.skip('Chromium executable unavailable; set MM_TEST_CHROMIUM')
@@ -21,69 +23,30 @@ def test_browser_inprocess_edit_export_matches_shared_state(http_service,tmp_pat
         browser=pw.chromium.launch(executable_path=executable,headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
         page=browser.new_page(viewport={'width':1440,'height':1050},accept_downloads=True)
         page.on('pageerror',lambda e:errors.append(str(e)))
-        # The runner blocks browser network navigation by administrator policy.
-        # Do not change that policy. Exercise the same UI through an in-process
-        # test adapter instead; the actual HTTP contract has independent tests.
-        import base64
-        from urllib.parse import urlsplit,parse_qs
-        from mm_mcp.core import ServiceError
-        from mm_mcp.play.sliders import derive_sliders
-        def transport(path,method,body):
-            parts=urlsplit(path);route=parts.path;query=parse_qs(parts.query)
-            try:
-                if method=='GET':
-                    if route=='/api/capabilities':result=app.capabilities()
-                    elif route=='/api/materials':result={'ok':True,'materials':app.recipes.search((query.get('q') or [''])[0],limit=100)}
-                    elif route=='/api/projects':result={'ok':True,'projects':app.graphs.list()}
-                    elif route.startswith('/api/projects/'):
-                        result=app.graphs.read(route.rsplit('/',1)[1]);result['controls']=derive_sliders(result['graph'],app.catalog)
-                    elif route.startswith('/api/jobs/'):result=app.jobs.get(route.rsplit('/',1)[1])
-                    elif '/files/' in route:
-                        _,_,_,bid,_,name=route.split('/')
-                        return {'status':200,'base64':base64.b64encode(app.builds.artifact(bid,name).read_bytes()).decode(),'mime':'image/png'}
-                    elif route=='/api/export':
-                        return {'status':200,'base64':base64.b64encode(app.builds.export(query['build_id'][0])).decode(),'mime':'application/zip'}
-                    else:raise ServiceError('NOT_FOUND','Unsupported test adapter route.')
-                else:
-                    if route=='/api/projects':result=app.instantiate(body['recipe_id'])
-                    elif route=='/api/patch':result=app.patch(**body)
-                    elif route=='/api/jobs':result=app.jobs.submit(body)
-                    elif route.endswith('/cancel'):result=app.jobs.cancel(route.split('/')[-2])
-                    else:raise ServiceError('NOT_FOUND','Unsupported test adapter route.')
-                return {'status':200,'json':result}
-            except ServiceError as exc:return {'status':409 if 'CONFLICT' in exc.code else 400,'json':exc.result()}
-        page.expose_function('fixtureTransport',transport)
-        static=Path(__file__).resolve().parents[2]/'src/mm_mcp/play/static'
-        html=(static/'index.html').read_text()
-        import re
-        html=re.sub(r'<script[^>]*src=[^>]+></script>','',html)
-        html=re.sub(r'<link[^>]*>','',html)
-        page.set_content(html)
-        page.add_style_tag(content=(static/'style.css').read_text())
-        page.evaluate("""() => {
-            for (const name of ['localStorage','sessionStorage']) {
-              const data={}; Object.defineProperty(window,name,{value:{getItem:k=>data[k]||null,setItem:(k,v)=>data[k]=v}});
-            }
-            window.fetch=async (path,options={})=>{
-              const out=await window.fixtureTransport(path,options.method||'GET',options.body?JSON.parse(options.body):null);
-              const body=out.base64?Uint8Array.from(atob(out.base64),c=>c.charCodeAt(0)):JSON.stringify(out.json);
-              return new Response(body,{status:out.status,headers:{'Content-Type':out.mime||'application/json'}});
-            };
-        }""")
-        page.add_script_tag(content=(static/'three.min.js').read_text())
-        page.add_script_tag(content=(static/'app.js').read_text())
+        # Exercise the real loopback adapter, including authenticated fetches,
+        # CSP, setup and artifact routes. The baker remains explicitly synthetic.
+        page.goto(f'http://127.0.0.1:{server.server_address[1]}/#token={token}')
+        page.locator('#setup-open').click()
+        sync.expect(page.locator('#setup-state')).to_have_text('Test renderer')
+        assert page.locator('#setup-verify').is_disabled()
+        assert page.locator('#setup-godot').input_value() == app.cfg.godot_binary
+        setup_screenshot = os.environ.get('MM_SETUP_BROWSER_EVIDENCE')
+        if setup_screenshot:
+            page.screenshot(path=setup_screenshot, full_page=True)
+        page.locator('#setup-close').click()
         page.locator('.recipe-row button').first.click()
-        page.wait_for_function("document.getElementById('material-name').textContent === 'fixture'")
+        sync.expect(page.locator('#material-name')).to_have_text('fixture')
         page.locator('#size').select_option('128')
         row=page.locator('.control').filter(has=page.locator('code',has_text='surface/param0'))
         number=row.locator('input[type=number]');number.fill('13');number.dispatch_event('change')
-        page.wait_for_function("!document.getElementById('download').disabled",timeout=20000)
+        sync.expect(page.locator('#download')).to_be_enabled(timeout=20000)
         assert page.locator('#evidence img').count()>=3
         if os.environ.get('MM_REQUIRE_WEBGL_TEST')=='1':
             assert page.locator('#viewport canvas').count()==1, page.locator('#viewport').inner_text()
         else:
             assert page.locator('#viewport canvas').count()==1 or 'WebGL context' in page.locator('#viewport').inner_text()
-        page.wait_for_function("[...document.querySelectorAll('#evidence img')].every(img=>img.naturalWidth>0)")
+        for item in page.locator('#evidence img').all():
+            item.evaluate('image => image.decode()')
         with page.expect_download() as event:page.locator('#download').click()
         downloaded=event.value;destination=tmp_path/'download.zip';downloaded.save_as(destination)
         with zipfile.ZipFile(destination) as z:
@@ -97,7 +60,68 @@ def test_browser_inprocess_edit_export_matches_shared_state(http_service,tmp_pat
         app.patch(pid,revision,[{'op':'set_controls','values':{'surface/param0':18}}],'external-client')
         number=page.locator('.control').filter(has=page.locator('code',has_text='surface/param0')).locator('input[type=number]')
         number.fill('14');number.dispatch_event('change')
-        page.wait_for_function("document.getElementById('status').classList.contains('error')")
+        sync.expect(page.locator('#status')).to_have_class(re.compile(r'\berror\b'))
         assert app.graphs.read(pid)['revision']==revision+1
         assert page.locator('#download').is_disabled()
+        browser.close()
+
+
+@pytest.mark.browser
+def test_browser_setup_save_check_and_cancel(http_service, tmp_path, monkeypatch):
+    """Real HTTP/UI setup with a version probe and cancellable worker double.
+
+    The double never returns a native manifest. This verifies configuration and
+    cancellation interactions, and deliberately cannot certify a native render.
+    """
+    sync = pytest.importorskip('playwright.sync_api')
+    executable = os.environ.get('MM_TEST_CHROMIUM') or shutil.which('chromium') or shutil.which('google-chrome')
+    if not executable:
+        pytest.skip('Chromium executable unavailable; set MM_TEST_CHROMIUM')
+    from mm_mcp.core import ServiceError
+    import mm_mcp.setup as setup
+    server, token, app = http_service
+    settings_file = tmp_path / 'settings.json'
+    monkeypatch.setenv('MM_SETTINGS_FILE', str(settings_file))
+    monkeypatch.setenv('MM_DOTENV', str(tmp_path / 'absent.env'))
+    monkeypatch.delenv('MM_GODOT_BINARY', raising=False)
+    monkeypatch.delenv('MM_PROJECT_PATH', raising=False)
+    (Path(app.cfg.project_path) / 'project.godot').write_text('config_version=5\n')
+    monkeypatch.setattr(setup, 'discover_native', lambda: {
+        'godot_binaries': [app.cfg.godot_binary], 'project_paths': [app.cfg.project_path]})
+    monkeypatch.setattr(setup, 'version_check', lambda cfg: {
+        'name': 'Godot version', 'ok': True, 'detail': 'Simulated version probe for this UI test.'})
+    app.render_fn = None
+    entered = threading.Event()
+    def waiting_render(request, cancel):
+        assert request == {'recipe_id': 't01_sand_dunes', 'size': 128, 'target': 'generic', 'force': True}
+        entered.set()
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            if cancel():
+                raise ServiceError('CANCELLED', 'Test worker stopped.')
+            time.sleep(.02)
+        raise AssertionError('Browser did not cancel its test worker.')
+    monkeypatch.setattr(app, '_build', waiting_render)
+    with sync.sync_playwright() as pw:
+        browser = pw.chromium.launch(executable_path=executable, headless=True,
+            args=['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
+        page = browser.new_page(viewport={'width':1100, 'height':1000})
+        page.goto(f'http://127.0.0.1:{server.server_address[1]}/#token={token}')
+        page.locator('#setup-open').click()
+        sync.expect(page.locator('#setup-state')).to_have_text('Ready to test')
+        page.locator('#setup-check').click()
+        sync.expect(page.locator('#setup-message')).to_contain_text('Detected installations')
+        page.locator('#setup-save').click()
+        sync.expect(page.locator('#setup-message')).to_contain_text('Setup saved')
+        assert json.loads(settings_file.read_text()) == {
+            'godot_binary': str(Path(app.cfg.godot_binary).resolve()),
+            'project_path': str(Path(app.cfg.project_path).resolve())}
+        # Being configured but not yet verified must still allow the first test.
+        page.locator('#setup-verify').click()
+        assert entered.wait(5)
+        sync.expect(page.locator('#setup-cancel')).to_be_enabled()
+        page.locator('#setup-cancel').click()
+        sync.expect(page.locator('#setup-message')).to_contain_text('Test cancelled', timeout=10000)
+        sync.expect(page.locator('#setup-verify')).to_be_enabled()
+        assert not app.capabilities()['native_render_verified_this_session']
         browser.close()
