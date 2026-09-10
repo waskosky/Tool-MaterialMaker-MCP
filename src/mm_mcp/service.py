@@ -1,17 +1,19 @@
 """One application service used by the browser and MCP adapters."""
 from __future__ import annotations
 import json
+import logging
 from pathlib import Path
 import threading
 from mm_mcp.config import load_config, require_valid
 from mm_mcp.catalog_builder import build_catalog
-from mm_mcp.core import ServiceError, atomic_json, digest, identifier, finite
+from mm_mcp.core import ServiceError, atomic_json, digest, identifier, finite, resolution
 from mm_mcp.validator import validate_graph
 from mm_mcp.transactions import GraphStore
 from mm_mcp.recipes import RecipeLibrary, variations, bind_world_context
 from mm_mcp.composition import compose_layers
 from mm_mcp.builds import BuildStore, TARGETS
 from mm_mcp.jobs import JobQueue
+from mm_mcp.thumbnails import ThumbnailStore
 from mm_mcp.artifacts import contact_sheet, image_metrics
 from mm_mcp.policy import graph_dependencies, code_hashes
 
@@ -28,6 +30,7 @@ class MaterialService:
         self.graphs=GraphStore(self.root,self.catalog)
         self.recipes=RecipeLibrary(self.cfg.cookbook_dir,self.root/'recipes',self.catalog)
         self.builds=BuildStore(self.root/'builds',self.cfg,self.catalog)
+        self.thumbnails=ThumbnailStore(self.root,self.builds,self._project_origin)
         self.render_fn=render_fn
         self.jobs=JobQueue(self.root,self.build)
         # Recover persisted work for both MCP and browser clients, including a
@@ -63,9 +66,30 @@ class MaterialService:
         graph,provenance=self.recipes.instantiate(recipe_id,values)
         trusted=self._recipe_trust(provenance,graph)
         self._validated(graph,'import',trusted=trusted)
-        result=self.graphs.create(graph,title or recipe_id)
+        result=self.graphs.create(graph,title or self.recipes.describe(recipe_id)['display_name'])
         atomic_json(self.root/'provenance'/f"{result['project_id']}.json", {**provenance, 'approved_code_hashes': sorted(code_hashes(graph)) if trusted else []})
+        return self.read_project(result['project_id'])
+    def _project_origin(self,project_id):
+        path=self.root/'provenance'/f"{identifier(project_id)}.json"
+        if not path.is_file():
+            return {}
+        origin=json.loads(path.read_text())
+        return {key:origin[key] for key in ('recipe_id','recipe_version') if key in origin}
+    def read_project(self,project_id):
+        from mm_mcp.play.sliders import derive_sliders
+        result=self.graphs.read(project_id)
+        result['controls']=derive_sliders(result['graph'],self.catalog)
+        result['recipe_id']=self._project_origin(project_id).get('recipe_id')
         return result
+    def materials(self,query='',category='',limit=100):
+        materials=self.recipes.search(query,category=category,limit=limit)
+        for material in materials:
+            try:
+                material['thumbnail']=self.thumbnails.for_recipe(material['id'],material['recipe_version'])
+            except Exception:
+                # Optional preview indexing must not make the recipe library unavailable.
+                material['thumbnail']=None
+        return {'ok':True,'materials':materials}
     def _recipe_trust(self,provenance,graph):
         if provenance['source']=='cookbook':
             return True
@@ -131,7 +155,8 @@ class MaterialService:
             project=self.graphs.read(request['project_id'])
             if type(request.get('revision')) is not int or request.get('revision')!=project['revision']:
                 raise ServiceError('REVISION_CONFLICT','Build requires the current project revision.',actual_revision=project['revision'])
-            graph=project['graph']; name=project['project_id']; provenance={'project_id':name,'revision':project['revision']}
+            graph=project['graph']; name=project['project_id']
+            provenance={**self._project_origin(name),'project_id':name,'revision':project['revision']}
             if values:
                 from mm_mcp.play.sliders import apply_values
                 graph=apply_values(graph,values,strict=True,catalog=self.catalog)
@@ -161,18 +186,32 @@ class MaterialService:
                 and result.get('manifest',{}).get('renderer_kind')=='native_material_maker'):
             self._native_verified=True
             self._last_render_error=None
+        try:
+            if result.get('build_id'):
+                self.thumbnails.record(result['build_id'])
+        except Exception:
+            logging.getLogger(__name__).warning('Completed build could not be indexed for previews.')
         return result
-    def family(self,recipe_id,count=6,seed=1,ranges=None,locked=None,values=None,build=False,size=256,target='generic'):
+    def family(self,recipe_id,count=6,seed=1,ranges=None,locked=None,values=None,build=False,size=256,target='generic',physical_size_m=1):
+        resolution(size,getattr(self.cfg,'max_resolution',2048))
+        if target not in TARGETS:
+            raise ServiceError('TARGET','Unknown target profile.',targets=list(TARGETS))
+        if not finite(physical_size_m) or not 0<physical_size_m<=100000:
+            raise ServiceError('PHYSICAL_SCALE','physical_size_m must be positive and finite.')
+        if type(build) is not bool:
+            raise ServiceError('REQUEST_TYPE','build must be boolean.')
         graph,origin=self.recipes.instantiate(recipe_id,values)
         ranges=self.recipes.resolve_controls(recipe_id,ranges or {})
         locked=list(self.recipes.resolve_controls(recipe_id,{key:True for key in locked or []}))
         values=self.recipes.resolve_controls(recipe_id,values or {})
         candidates=variations(graph,self.catalog,count=count,seed=seed,ranges=ranges,locked=locked,base_values=values)
+        jobs=self.jobs.submit_many([{'recipe_id':recipe_id,'values':c['values'],'size':size,
+                                    'target':target,'physical_size_m':physical_size_m} for c in candidates]) if build else []
         result=[]
-        for c in candidates:
+        for index,c in enumerate(candidates):
             item={k:v for k,v in c.items() if k!='graph'}
             if build:
-                item['job']=self.jobs.submit({'recipe_id':recipe_id,'values':c['values'],'size':size,'target':target})
+                item['job']=jobs[index]
             result.append(item)
         return {'ok':True,'recipe_id':recipe_id,'origin':origin,'candidates':result}
     def world_context(self,recipe_id,context,bindings,locked=None,values=None):
@@ -209,6 +248,10 @@ class MaterialService:
         # Approval is service-owned and separate from caller-supplied recipe metadata.
         atomic_json(self.root/'provenance'/'recipes'/f"{result['id']}.json",
                     {'project_id':project_id,'approved_code_hashes':sorted(code_hashes(graph))})
+        try:
+            self.thumbnails.reuse_project(project_id,project['graph_hash'],result)
+        except Exception:
+            logging.getLogger(__name__).warning('Saved recipe %s could not reuse its project preview.',result['id'])
         return result
     def close(self):
         self.jobs.close()

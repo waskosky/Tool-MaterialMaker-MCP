@@ -89,10 +89,10 @@ def test_failed_batch_commits_nothing(app):
 def test_dry_run_and_policy_denial_leave_no_changes(app):
     p=app.instantiate('fixture');pid=p['project_id'];ops=[{'op':'set_controls','values':{'surface/param0':13}}]
     planned=app.patch(pid,0,ops,'dry-run-1',True)
-    assert planned['status']=='planned' and app.graphs.read(pid)==p
+    assert planned['status']=='planned' and app.read_project(pid)==p
     with pytest.raises(ServiceError):
         app.patch(pid,0,[{'op':'add_node','name':'code','node':{'type':'shader','shader_model':{'parameters':[],'inputs':[],'outputs':[],'code':'injected'}}}],'shader-1')
-    assert app.graphs.read(pid)==p
+    assert app.read_project(pid)==p
 
 def test_concurrent_edits_one_wins(app):
     p=app.instantiate('fixture');barrier=threading.Barrier(2)

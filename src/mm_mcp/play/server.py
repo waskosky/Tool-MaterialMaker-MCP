@@ -100,22 +100,26 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                     result['proof']=response_proof(session_token,self.headers['X-MM-Session-Nonce'],session_identity)
                 return self._send(result)
             if path=='/api/materials':
-                return self._send({'ok':True,'materials':app.recipes.search((query.get('q') or [''])[0],limit=100)})
+                return self._send(app.materials((query.get('q') or [''])[0],category=(query.get('category') or [''])[0]))
             if path.startswith('/api/material/'):
                 info=app.recipes.describe(path[len('/api/material/'):])
                 return self._send({**info,'sliders':info['controls']})
             if path=='/api/projects':
                 return self._send({'ok':True,'projects':app.graphs.list()})
             if path.startswith('/api/projects/'):
-                result=app.graphs.read(path[len('/api/projects/'):])
-                result['controls']=derive_sliders(result['graph'],app.catalog)
-                return self._send(result)
+                project_id=path[len('/api/projects/'):]
+                if project_id.endswith('/snapshots'):
+                    project_id=project_id[:-len('/snapshots')]
+                    return self._send({'ok':True,'project_id':project_id,'snapshots':app.graphs.snapshots(project_id)})
+                return self._send(app.read_project(project_id))
             if path.startswith('/api/jobs/'):
                 return self._send(app.jobs.get(path[len('/api/jobs/'):]))
             if path.startswith('/api/builds/'):
                 rest=path[len('/api/builds/'):].split('/')
                 if len(rest)==1:
                     return self._send({'ok':True,'manifest':app.builds.get(rest[0])})
+                if len(rest)==2 and rest[1]=='thumbnail.png':
+                    return self._send(app.thumbnails.image(rest[0]),'image/png')
                 if len(rest)==3 and rest[1]=='files':
                     file=app.builds.artifact(rest[0],rest[2])
                     return self._send(file.read_bytes(),mimetypes.guess_type(file.name)[0] or 'application/octet-stream')

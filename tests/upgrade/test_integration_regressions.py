@@ -55,7 +55,7 @@ def test_cookbook_project_cannot_add_unapproved_code(app, field):
     with pytest.raises(ServiceError, match='Custom export code'):
         app.patch(project['project_id'], 0, [{'op': 'add_node', 'name': 'injected',
                    'node': {'type': 'source', field: 'unapproved code'}}], 'inject-code')
-    assert app.graphs.read(project['project_id']) == project
+    assert app.read_project(project['project_id']) == project
 
 
 def test_shared_service_resumes_persisted_jobs(cfg, catalog, baker, monkeypatch):

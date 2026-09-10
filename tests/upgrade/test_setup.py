@@ -87,7 +87,8 @@ def test_native_refresh_preserves_service_projects_and_policy(app, settings_env,
     result = app.configure_native(native_paths)
     assert result['ok'] and result['settings']['project_path'] == native_paths['project_path']
     assert objects == (app.graphs, app.recipes, app.builds, app.jobs)
-    assert app.graphs.read(project['project_id']) == project
+    stored = app.graphs.read(project['project_id'])
+    assert stored == {key: project[key] for key in stored}
     assert app.cfg.output_dir == before.output_dir and app.cfg.workspace_dir == before.workspace_dir
     assert app.cfg.allow_custom_shaders and app.cfg.enable_experimental_live_writes
     assert app.graphs.catalog is app.catalog and app.recipes.catalog is app.catalog

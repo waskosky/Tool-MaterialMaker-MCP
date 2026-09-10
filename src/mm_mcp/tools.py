@@ -7,7 +7,6 @@ from pathlib import Path
 from PIL import Image as PILImage
 from mm_mcp.core import ServiceError, atomic_json, file_digest, identifier
 from mm_mcp.service import get_service
-from mm_mcp.play.sliders import derive_sliders
 from mm_mcp.composition import compose_layers
 from mm_mcp.policy import code_hashes
 
@@ -37,8 +36,8 @@ def material_capabilities() -> dict:
 
 @safe
 def material_recipe_search(query: str = "", category: str = "", limit: int = 30) -> dict:
-    """Search recipe names, categories and guide text. This is lexical search, not embeddings."""
-    return {"ok": True, "recipes": get_service().recipes.search(query, category=category, limit=limit)}
+    """Search friendly recipe names, metadata and guide text using lexical matching."""
+    return {"ok": True, "recipes": get_service().materials(query, category=category, limit=limit)['materials']}
 
 @safe
 def material_recipe_describe(recipe_id: str, include_graph: bool = False) -> dict:
@@ -64,9 +63,7 @@ def material_project_list() -> dict:
 @safe
 def material_project_get(project_id: str) -> dict:
     """Read the complete graph, current revision, hash and exposed controls."""
-    app=get_service(); result=app.graphs.read(project_id)
-    result['controls']=derive_sliders(result['graph'],app.catalog)
-    return result
+    return get_service().read_project(project_id)
 
 @safe
 def material_project_patch(project_id: str, expected_revision: int, operations: list,
@@ -140,9 +137,9 @@ def material_build_export(build_id: str) -> dict:
 def material_variation_family(recipe_id: str, count: int = 6, seed: int = 1,
                               ranges: dict | None = None, locked: list | None = None,
                               values: dict | None = None, build: bool = False,
-                              size: int = 256, target: str = "generic") -> dict:
+                              size: int = 256, target: str = "generic", physical_size_m: float = 1) -> dict:
     """Create deterministic recipe variations from explicit ranges, preserving locked controls."""
-    return get_service().family(recipe_id,count,seed,ranges,locked,values,build,size,target)
+    return get_service().family(recipe_id,count,seed,ranges,locked,values,build,size,target,physical_size_m)
 
 @safe
 def material_world_context(recipe_id: str, context: dict, bindings: list,

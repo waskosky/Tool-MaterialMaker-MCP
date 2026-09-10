@@ -5,13 +5,14 @@ and terminates the worker-owned subprocess; it never claims a running GPU shader
 can be instantaneously interrupted inside an attached artist session.
 """
 import json
+import hashlib
 from pathlib import Path
 import sqlite3
 from contextlib import contextmanager
 import threading
 import time
 import uuid
-from mm_mcp.core import ServiceError, canonical, digest, file_lock, identifier
+from mm_mcp.core import ServiceError, canonical, file_lock, identifier
 
 class JobQueue:
     def __init__(self, root, handler, max_pending=64):
@@ -31,18 +32,28 @@ class JobQueue:
         finally:
             db.close()
     def submit(self,request):
-        raw=canonical(request)
-        if len(raw.encode())>8*1024*1024:
-            raise ServiceError('JOB_LIMIT','Job request exceeds 8 MiB.')
+        return self.submit_many([request])[0]
+    def submit_many(self,requests):
+        """Validate a bounded batch, then admit all jobs in one queue transaction."""
+        if not isinstance(requests,list) or not 1<=len(requests)<=32:
+            raise ServiceError('JOB_LIMIT','Submit between 1 and 32 jobs together.')
+        rows=[]; total=0
+        for request in requests:
+            if not isinstance(request,dict):
+                raise ServiceError('REQUEST_TYPE','Job request must be an object.')
+            raw=canonical(request); encoded=raw.encode(); total+=len(encoded)
+            if total>8*1024*1024:
+                raise ServiceError('JOB_LIMIT','Job batch exceeds 8 MiB.')
+            job='j_'+uuid.uuid4().hex; now=time.time()
+            rows.append((job,'queued',raw,None,0,now,now,hashlib.sha256(encoded).hexdigest()))
         with self._db() as db:
             db.execute('BEGIN IMMEDIATE')
             pending=db.execute("SELECT COUNT(*) FROM jobs WHERE state IN ('queued','running')").fetchone()[0]
-            if pending>=self.max_pending:
+            if pending+len(rows)>self.max_pending:
                 raise ServiceError('QUEUE_FULL','Local queue is full; finish or cancel work first.')
-            job='j_'+uuid.uuid4().hex; now=time.time()
-            db.execute('INSERT INTO jobs VALUES(?,?,?,?,?,?,?,?)',(job,'queued',raw,None,0,now,now,digest(request)))
+            db.executemany('INSERT INTO jobs VALUES(?,?,?,?,?,?,?,?)',rows)
         self.start()
-        return self.get(job)
+        return [self.get(row[0]) for row in rows]
     def get(self,job_id):
         identifier(job_id,'job ID')
         with self._db() as db:

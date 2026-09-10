@@ -10,10 +10,19 @@ from pathlib import Path
 import sqlite3
 from contextlib import contextmanager
 import time
+import unicodedata
 import uuid
 from mm_mcp.core import ServiceError, MAX_OPERATIONS, canonical, digest, identifier, finite
 from mm_mcp.play.sliders import resolve_node, apply_values
 from mm_mcp.validator import validate_graph
+
+
+def _snapshot_name(name):
+    # Labels live only in SQLite. Slashes and punctuation have no path meaning.
+    if (not isinstance(name,str) or not name.strip() or len(name)>128
+            or any(unicodedata.category(char).startswith('C') for char in name)):
+        raise ServiceError('SNAPSHOT_NAME','Snapshot name must be 1–128 readable characters without control characters.')
+    return name
 
 
 def _scope(graph, path=''):
@@ -192,7 +201,7 @@ class GraphStore:
             db.execute('UPDATE projects SET graph=?,revision=revision+1,cursor=? WHERE id=?',(target['graph'],cursor,pid))
             return self._result(self._row(db,pid))
     def snapshot(self, pid, name):
-        identifier(name,'snapshot name')
+        _snapshot_name(name)
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE'); row=self._row(db,pid)
             try:
@@ -200,7 +209,15 @@ class GraphStore:
             except sqlite3.IntegrityError as exc:
                 raise ServiceError('SNAPSHOT_EXISTS','Snapshot names are immutable; choose a new name.') from exc
         return {'ok':True,'project_id':pid,'name':name,'revision':row['revision']}
+    def snapshots(self,pid):
+        with self.connect() as db:
+            self._row(db,pid)
+            return [dict(row) for row in db.execute(
+                'SELECT name,revision FROM snapshots WHERE project=? ORDER BY name COLLATE BINARY',(pid,))]
     def restore(self,pid,name,expected_revision):
+        _snapshot_name(name)
+        if type(expected_revision) is not int:
+            raise ServiceError('REVISION_REQUIRED','expected_revision must be an integer.')
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE'); row=self._row(db,pid)
             if row['revision'] != expected_revision:

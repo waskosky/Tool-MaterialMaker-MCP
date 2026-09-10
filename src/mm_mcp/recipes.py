@@ -9,6 +9,39 @@ from mm_mcp.core import ServiceError, atomic_json, canonical, digest, file_diges
 from mm_mcp.cookbook import list_cookbook
 from mm_mcp.play.sliders import derive_sliders, apply_values, validate_values
 
+
+def _plain_text(text):
+    text=re.sub(r'!?\[([^\]]+)\]\([^)]*\)',r'\1',text)
+    return ' '.join(re.sub(r'[`*_]','',text).split())
+
+
+def _presentation(name,metadata,guide):
+    """Small guide fallback; keep the original Markdown and stable IDs intact."""
+    heading=re.search(r'^#\s+(.+?)\s*#*\s*$',guide,re.MULTILINE)
+    title=heading.group(1) if heading else ''
+    title=re.sub(r'^'+re.escape(name)+r'\s*[-—–:]\s*','',title,flags=re.IGNORECASE)
+    title=_plain_text(title)
+    description=''; in_code=False
+    for paragraph in re.split(r'\n\s*\n',guide):
+        paragraph=paragraph.strip()
+        if paragraph.startswith(('```','~~~')):
+            in_code=not in_code if paragraph.count(paragraph[:3])==1 else in_code
+            continue
+        if in_code or paragraph.startswith(('#','|','>','- ','* ','<!--')):
+            continue
+        plain=_plain_text(paragraph)
+        if plain and not plain.lower().startswith('category:'):
+            description=plain; break
+    explicit_title=metadata.get('display_name',metadata.get('title'))
+    explicit_description=metadata.get('description')
+    return {
+        'display_name': (explicit_title.strip() if isinstance(explicit_title,str) and explicit_title.strip()
+                         else title or name.removeprefix('user.').replace('_',' ').replace('-',' ').capitalize())[:512],
+        'description': (explicit_description.strip() if isinstance(explicit_description,str) and explicit_description.strip()
+                        else description)[:2000],
+    }
+
+
 class RecipeLibrary:
     def __init__(self, cookbook_dir, user_dir, catalog):
         self.cookbook_dir=cookbook_dir
@@ -35,10 +68,11 @@ class RecipeLibrary:
         metadata=parse_json(meta_path.read_bytes()) if meta_path.exists() else {}
         if not isinstance(metadata, dict):
             raise ServiceError('RECIPE_SCHEMA', 'Recipe metadata must be an object.')
+        guide=card.read_text(encoding='utf-8') if card.exists() else ''
         result={'ok':True,'id':name,'name':name,'category':category,'source':source,
                 'recipe_version':digest({'graph':graph,'metadata':metadata}),
                 'graph_sha256':file_digest(path),'controls':derive_sliders(graph,self.catalog),
-                'metadata':metadata,'guide':card.read_text(encoding='utf-8') if card.exists() else ''}
+                'metadata':metadata,'guide':guide,**_presentation(name,metadata,guide)}
         specs=result['controls']; aliases={}; used=set()
         for control in specs:
             alias=re.sub(r'[^a-z0-9]+','_',control['label'].lower()).strip('_')
@@ -64,12 +98,20 @@ class RecipeLibrary:
             if category and category!=cat:
                 continue
             card=path.with_suffix('.md')
-            text=card.read_text(encoding='utf-8').lower() if card.exists() else ''
-            title=(name+' '+cat).lower()
+            guide=card.read_text(encoding='utf-8') if card.exists() else ''
+            meta_path=path.with_suffix('.recipe.json')
+            metadata=parse_json(meta_path.read_bytes()) if meta_path.exists() else {}
+            if not isinstance(metadata,dict):
+                raise ServiceError('RECIPE_SCHEMA','Recipe metadata must be an object.')
+            presentation=_presentation(name,metadata,guide)
+            text=(guide+' '+canonical(metadata)).lower()
+            title=(name+' '+cat+' '+presentation['display_name']).lower()
             score=sum(5*title.count(t)+min(3,text.count(t)) for t in terms)
             if terms and score==0:
                 continue
-            records.append({'id':name,'name':name,'category':cat,'source':source,'score':score})
+            version=digest({'graph':parse_json(path.read_bytes()),'metadata':metadata})
+            records.append({'id':name,'name':name,'category':cat,'source':source,'score':score,
+                            'recipe_version':version,**presentation})
         return sorted(records,key=lambda e:(-e['score'],e['category'],e['id']))[:limit]
     def instantiate(self,recipe_id,values=None):
         recipe=self.describe(recipe_id,include_graph=True)
