@@ -1,5 +1,8 @@
 import os
-from dataclasses import dataclass
+import json
+from pathlib import Path
+import sys
+from dataclasses import dataclass, field
 from dotenv import dotenv_values
 
 # Config is env-var-first (an MCP client sets MM_* in its server "env" block).
@@ -19,6 +22,60 @@ _DEFAULTS = {
     "MM_PLAY_PORT": "8788",
     "MM_IDLE_EXIT_MINUTES": "0",
 }
+
+NATIVE_SETTINGS = {'godot_binary': 'MM_GODOT_BINARY', 'project_path': 'MM_PROJECT_PATH'}
+
+
+def settings_path() -> Path:
+    """Per-user native defaults; profiles/tests can select an isolated file."""
+    override = os.environ.get('MM_SETTINGS_FILE')
+    if override:
+        return Path(override).expanduser().resolve()
+    if os.name == 'nt':
+        parent = Path(os.environ.get('APPDATA') or Path.home() / 'AppData' / 'Roaming')
+    elif sys.platform == 'darwin':
+        parent = Path.home() / 'Library' / 'Application Support'
+    else:
+        parent = Path(os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')
+    return parent / 'MaterialWorkshop' / 'settings.json'
+
+
+def _read_settings():
+    path = settings_path()
+    try:
+        if not path.exists():
+            return {}, None
+        if path.stat().st_size > 32768:
+            raise ValueError('file too large')
+        value = json.loads(path.read_text(encoding='utf-8'))
+        if not isinstance(value, dict):
+            raise ValueError('expected object')
+        # Settings never authorize other configuration, even if edited by hand.
+        return {key: value[key] for key in NATIVE_SETTINGS if isinstance(value.get(key), str)}, None
+    except (OSError, ValueError):
+        # Keep repair available even when this optional defaults file is damaged.
+        # Never rewrite it on read or disclose its contents in the warning.
+        return {}, f'Cannot read native settings at {path}. Saving valid paths will replace these unreadable defaults.'
+
+
+def read_settings() -> dict[str, str]:
+    return _read_settings()[0]
+
+
+def native_values(saved=None, dotenv=None):
+    """Native-only resolution, without exposing any unrelated dotenv entries."""
+    saved = read_settings() if saved is None else saved
+    dotenv = dotenv_values(_dotenv_path()) if dotenv is None else dotenv
+    values = {key: saved.get(key, '') for key in NATIVE_SETTINGS}
+    sources = {}
+    for key, env_key in NATIVE_SETTINGS.items():
+        if dotenv.get(env_key):
+            values[key] = dotenv[env_key]
+            sources[key] = f'.env entry {env_key} in {_dotenv_path()}'
+        if env_key in os.environ:
+            values[key] = os.environ[env_key]
+            sources[key] = f'environment variable {env_key}'
+    return values, sources
 
 
 def _dotenv_path() -> str:
@@ -45,6 +102,8 @@ class Config:
     max_resolution: int = 2048
     allow_custom_shaders: bool = False
     enable_experimental_live_writes: bool = False
+    native_overrides: dict[str, str] = field(default_factory=dict)
+    native_settings_warning: str | None = None
 
 
 def _resolve_console(godot_binary: str) -> str:
@@ -112,7 +171,11 @@ def _parse_idle_exit_minutes(raw: str) -> int:
 
 def load_config(overrides: dict | None = None) -> Config:
     env = dict(_DEFAULTS)
-    env.update({k: v for k, v in dotenv_values(_dotenv_path()).items() if v})
+    dotenv = dotenv_values(_dotenv_path())
+    saved, settings_warning = _read_settings()
+    native, sources = native_values(saved=saved, dotenv=dotenv)
+    env.update({NATIVE_SETTINGS[key]: value for key, value in native.items()})
+    env.update({k: v for k, v in dotenv.items() if v})
     env.update({k: v for k, v in os.environ.items() if k.startswith("MM_")})
     if overrides:
         env.update(overrides)
@@ -154,4 +217,6 @@ def load_config(overrides: dict | None = None) -> Config:
         max_resolution=maximum,
         allow_custom_shaders=env.get("MM_ALLOW_CUSTOM_SHADERS") == "1",
         enable_experimental_live_writes=env.get("MM_ENABLE_EXPERIMENTAL_LIVE_WRITES") == "1",
+        native_overrides=sources,
+        native_settings_warning=settings_warning,
     )

@@ -17,6 +17,10 @@ from mm_mcp.policy import graph_dependencies, code_hashes
 
 class MaterialService:
     def __init__(self,cfg=None,catalog=None,*,render_fn=None):
+        self._config_lock=threading.RLock()
+        self._build_running=False
+        self._native_verified=False
+        self._last_render_error=None
         self.cfg=cfg or load_config()
         self.catalog=catalog if catalog is not None else build_catalog(self.cfg.nodes_dir)
         self.root=Path(getattr(self.cfg,'workspace_dir','') or Path(self.cfg.output_dir)/'workspace').resolve()
@@ -39,7 +43,8 @@ class MaterialService:
         return {'ok':True,'schema_version':1,'workspace':str(self.root),
                 'injected_test_renderer':self.render_fn is not None,
                 'catalog_available':bool(self.catalog),'native_render_configured':native,
-                'native_render_verified_this_session':False,'render_configuration_error':reason,
+                'native_render_verified_this_session':self._native_verified,'render_configuration_error':reason,
+                'last_render_error':self._last_render_error,
                 'features':{'recipe_search':True,'typed_controls':True,'variation_families':True,
                             'world_context_bindings':True,'graph_transactions':True,'persistent_undo':True,
                             'immutable_builds':True,'jobs':True,'cancel_worker_render':True,
@@ -82,7 +87,25 @@ class MaterialService:
             self._validated(graph, trusted=self._project_trust(project_id,graph))
         return self.graphs.patch(project_id,expected_revision,operations,idempotency_key,
                                  dry_run=dry_run,authorize=authorize)
+    def setup_status(self,check=False):
+        from mm_mcp.setup import setup_status
+        return setup_status(self,check=check)
+    def configure_native(self,values):
+        from mm_mcp.setup import configure_native
+        return configure_native(self,values)
+    def verify_native(self):
+        from mm_mcp.setup import verify_native
+        return verify_native(self)
     def build(self,request,cancel=None):
+        # Reconfiguration must neither swap a build's cfg/catalog nor replace
+        # its worker. Status reads deliberately do not acquire this long lock.
+        with self._config_lock:
+            self._build_running=True
+            try:
+                return self._build(request,cancel)
+            finally:
+                self._build_running=False
+    def _build(self,request,cancel=None):
         if not isinstance(request,dict):
             raise ServiceError('REQUEST_TYPE','Build request must be an object.')
         unknown=set(request)-{'material_id','recipe_id','project_id','revision','graph','values','size','target','seed','physical_size_m','force','source_dir'}
@@ -122,11 +145,23 @@ class MaterialService:
         self._validated(graph,'import' if trusted else 'strict',trusted,source_dir=source_dir)
         if self.render_fn is None:
             require_valid(self.cfg)
-        return self.builds.build(graph,material_id=name,values=values,size=request.get('size',512),
-                                 target=request.get('target','generic'),seed=request.get('seed'),
-                                 physical_size_m=request.get('physical_size_m',1),provenance=provenance,
-                                 trusted_recipe=trusted,render_fn=self.render_fn,cancel=cancel,
-                                 force=request.get('force',False),source_dir=source_dir)
+        try:
+            result=self.builds.build(graph,material_id=name,values=values,size=request.get('size',512),
+                                     target=request.get('target','generic'),seed=request.get('seed'),
+                                     physical_size_m=request.get('physical_size_m',1),provenance=provenance,
+                                     trusted_recipe=trusted,render_fn=self.render_fn,cancel=cancel,
+                                     force=request.get('force',False),source_dir=source_dir)
+        except Exception as exc:
+            native_failures={'RENDER_FAILED','IMAGE_FORMAT','IMAGE_LIMIT','IMAGE_DIMENSIONS','INVALID_IMAGE',
+                             'DUPLICATE_CHANNEL','MISSING_CHANNELS','NO_IMAGES','TOOL_CHANGED'}
+            if self.render_fn is None and getattr(exc,'code',None) in native_failures:
+                self._last_render_error=str(exc)
+            raise
+        if (self.render_fn is None and result.get('ok') is True and result.get('cached') is False
+                and result.get('manifest',{}).get('renderer_kind')=='native_material_maker'):
+            self._native_verified=True
+            self._last_render_error=None
+        return result
     def family(self,recipe_id,count=6,seed=1,ranges=None,locked=None,values=None,build=False,size=256,target='generic'):
         graph,origin=self.recipes.instantiate(recipe_id,values)
         ranges=self.recipes.resolve_controls(recipe_id,ranges or {})

@@ -22,12 +22,15 @@ from mm_mcp.core import ServiceError,MAX_JSON_BYTES,parse_json,identifier
 from mm_mcp.service import get_service
 from mm_mcp.play.sliders import derive_sliders
 from mm_mcp.paths import reject_path_fragment,PathNotAllowed
+from mm_mcp.play.session import (identity, authenticated_probe, response_proof, find_session,
+                                 write_session, remove_session, launch_url)
 
 STATIC_DIR=str(Path(__file__).parent/'static')
 
-def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,token=None):
+def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,token=None,session_id=None):
     app=service or get_service(cfg,catalog)
     session_token=token or secrets.token_urlsafe(32)
+    session_identity=identity(session_id or secrets.token_hex(16),app.root)
     class Handler(BaseHTTPRequestHandler):
         protocol_version='HTTP/1.0'
         def setup(self):
@@ -46,7 +49,7 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             if filename:
                 self.send_header('Content-Disposition',f'attachment; filename="{identifier(filename)}"')
             self.end_headers(); self.wfile.write(data)
-        def _guard(self,api=False):
+        def _guard(self,api=False,session_probe=False):
             port=self.server.server_address[1]
             allowed={f'127.0.0.1:{port}',f'localhost:{port}'}
             if self.headers.get('Host','') not in allowed:
@@ -56,7 +59,8 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                 raise ServiceError('ORIGIN_DENIED','Cross-origin requests are disabled.')
             if self.headers.get('Sec-Fetch-Site')=='cross-site':
                 raise ServiceError('ORIGIN_DENIED','Cross-site requests are disabled.')
-            if api and not hmac.compare_digest(self.headers.get('X-MM-Token',''),session_token):
+            if (api and not hmac.compare_digest(self.headers.get('X-MM-Token',''),session_token)
+                    and not (session_probe and authenticated_probe(self.headers,session_token,session_identity['session']))):
                 raise ServiceError('AUTH_REQUIRED','Open the full launch URL printed by mm-play, including its fragment token.')
         def _body(self):
             if self.headers.get('Transfer-Encoding'):
@@ -81,13 +85,20 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             return self._send(path.read_bytes(),mimetypes.guess_type(name)[0] or 'application/octet-stream')
         def _get(self):
             url=urlsplit(self.path); path=unquote(url.path); query=parse_qs(url.query)
-            self._guard(api=path.startswith('/api/'))
+            self._guard(api=path.startswith('/api/'),session_probe=path=='/api/session')
             if path=='/':
                 return self._static('index.html')
             if path.startswith('/static/'):
                 return self._static(path[len('/static/'):])
             if path=='/api/capabilities':
                 return self._send(app.capabilities())
+            if path=='/api/setup':
+                return self._send(app.setup_status())
+            if path=='/api/session':
+                result=dict(session_identity)
+                if authenticated_probe(self.headers,session_token,session_identity['session']):
+                    result['proof']=response_proof(session_token,self.headers['X-MM-Session-Nonce'],session_identity)
+                return self._send(result)
             if path=='/api/materials':
                 return self._send({'ok':True,'materials':app.recipes.search((query.get('q') or [''])[0],limit=100)})
             if path.startswith('/api/material/'):
@@ -122,6 +133,12 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             self._guard(api=True); path=urlsplit(self.path).path; body=self._body()
             if path=='/api/render':
                 result=app.build(body)
+            elif path=='/api/setup':
+                result=app.configure_native(body)
+            elif path in ('/api/setup/check','/api/setup/verify'):
+                if body:
+                    raise ServiceError('SETUP_FIELDS','This setup operation requires an empty object.')
+                result=app.setup_status(check=True) if path.endswith('/check') else app.verify_native()
             elif path=='/api/jobs':
                 result=app.jobs.submit(body)
             elif path.startswith('/api/jobs/') and path.endswith('/cancel'):
@@ -155,7 +172,7 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             try:
                 callback()
             except ServiceError as exc:
-                status=401 if exc.code=='AUTH_REQUIRED' else 403 if exc.code in ('HOST_DENIED','ORIGIN_DENIED') else 404 if exc.code.endswith('NOT_FOUND') else 409 if 'CONFLICT' in exc.code else 400
+                status=401 if exc.code=='AUTH_REQUIRED' else 403 if exc.code in ('HOST_DENIED','ORIGIN_DENIED') else 404 if exc.code.endswith('NOT_FOUND') else 409 if 'CONFLICT' in exc.code or exc.code=='SETUP_BUSY' else 400
                 self._send(exc.result(),status=status)
             except (ValueError,TypeError,KeyError,PathNotAllowed) as exc:
                 self._send({'ok':False,'code':'INVALID_REQUEST','error':str(exc)},status=400)
@@ -170,6 +187,7 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
         def do_POST(self):
             self._handle(self._post)
     Handler.session_token=session_token
+    Handler.session_identity=session_identity
     return Handler
 
 def port_in_use(port: int, host: str = "127.0.0.1") -> bool:
@@ -249,31 +267,58 @@ class _StrictThreadingHTTPServer(ThreadingHTTPServer):
 
 
 
-def serve(cfg=None,open_browser=False):
+def serve(cfg=None,open_browser=True):
     cfg=cfg or load_config()
     if port_in_use(cfg.play_port):
-        print(f'Port {cfg.play_port} is already in use. Set MM_PLAY_PORT to another port.'); return None
+        record=find_session(cfg)
+        if record:
+            print(f'Reusing the running Material Workshop on port {cfg.play_port}.')
+            if open_browser:
+                webbrowser.open(launch_url(cfg,record['token']))
+        else:
+            print(f'Local port {cfg.play_port} is in use by an unverified session or another application. Set MM_PLAY_PORT to another port, or close the old process.')
+        return None
     catalog=build_catalog(cfg.nodes_dir)
-    app=get_service(cfg,catalog); token=secrets.token_urlsafe(32)
-    handler=make_handler(cfg,catalog,service=app,token=token)
-    httpd=_StrictThreadingHTTPServer(('127.0.0.1',cfg.play_port),handler)
-    url=f'http://127.0.0.1:{cfg.play_port}/#token={token}'
-    print('Material Maker Play launch URL (keep private):\n'+url)
-    print('Catalog and native-render status are shown in the browser. Ctrl+C stops this process.')
-    app.jobs.start()
-    if open_browser:
-        webbrowser.open(url)
+    token=secrets.token_urlsafe(32); session_id=secrets.token_hex(16)
+    # Bind before service creation: a simultaneous launcher cannot start another
+    # worker simply because it lost the race for the HTTP port.
     try:
+        httpd=_StrictThreadingHTTPServer(('127.0.0.1',cfg.play_port),BaseHTTPRequestHandler)
+    except OSError:
+        print(f'Could not bind local port {cfg.play_port}. Close the conflicting process or set MM_PLAY_PORT.'); return None
+    app=None
+    try:
+        app=get_service(cfg,catalog)
+        httpd.RequestHandlerClass=make_handler(cfg,catalog,service=app,token=token,session_id=session_id)
+        write_session(cfg,token,session_id)
+    except Exception:
+        httpd.server_close()
+        if app:
+            app.close()
+        raise
+    url=launch_url(cfg,token)
+    try:
+        print('Material Maker Play launch URL (keep private):\n'+url)
+        print('Catalog and native-render status are shown in the browser. Ctrl+C stops this process.')
+        app.jobs.start()
+        if open_browser:
+            webbrowser.open(url)
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
-        httpd.server_close(); app.close()
+        httpd.server_close(); app.close(); remove_session(cfg,session_id)
     return httpd
 
-def main():
-    import sys
-    serve(open_browser='--open' in sys.argv)
+def main(argv=None):
+    import argparse
+    parser=argparse.ArgumentParser(description='Open the local Material Workshop.')
+    group=parser.add_mutually_exclusive_group()
+    group.add_argument('--open',action='store_true',help='Open the browser (the default).')
+    group.add_argument('--no-open',action='store_true',help='Run without opening a browser.')
+    args=parser.parse_args(argv)
+    serve(open_browser=not args.no_open)
+    return 0
 
 if __name__=='__main__':
     main()

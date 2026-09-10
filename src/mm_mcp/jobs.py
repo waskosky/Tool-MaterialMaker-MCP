@@ -22,8 +22,8 @@ class JobQueue:
             db.execute("""CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, state TEXT, request TEXT,
                          result TEXT, cancel INTEGER, created REAL, updated REAL, request_hash TEXT)""")
     @contextmanager
-    def _db(self):
-        db=sqlite3.connect(self.path,timeout=30)
+    def _db(self,timeout=30):
+        db=sqlite3.connect(self.path,timeout=timeout)
         db.row_factory=sqlite3.Row; db.execute('PRAGMA journal_mode=WAL')
         try:
             with db:
@@ -73,6 +73,21 @@ class JobQueue:
     def active(self):
         with self._db() as db:
             return db.execute("SELECT 1 FROM jobs WHERE state IN ('queued','running') LIMIT 1").fetchone() is not None
+    @contextmanager
+    def idle_transaction(self):
+        """Keep idle inspection and reconfiguration atomic with all submissions.
+
+        BEGIN IMMEDIATE also covers other JobQueue instances/processes sharing
+        the workspace. Never hold this transaction for a render or a version probe.
+        """
+        with self._db(timeout=.05) as db:
+            try:
+                db.execute('BEGIN IMMEDIATE')
+            except sqlite3.OperationalError as exc:
+                raise ServiceError('SETUP_BUSY','Finish or cancel pending work before changing native settings.') from exc
+            if db.execute("SELECT 1 FROM jobs WHERE state IN ('queued','running') LIMIT 1").fetchone():
+                raise ServiceError('SETUP_BUSY','Finish or cancel pending work before changing native settings.')
+            yield
     def close(self):
         self.stop_event.set()
         if self.thread:
