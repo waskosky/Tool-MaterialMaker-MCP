@@ -44,6 +44,7 @@ class ThumbnailStore:
                         PRIMARY KEY(build_id, recipe_id, recipe_version))''')
                     db.execute('CREATE INDEX IF NOT EXISTS recipe_previews ON previews(recipe_id,recipe_version,created DESC)')
                     db.execute('CREATE INDEX IF NOT EXISTS project_previews ON previews(project_id,graph_hash,created DESC)')
+                    db.execute('CREATE INDEX IF NOT EXISTS recipe_graph_previews ON previews(recipe_id,recipe_version,graph_hash,created DESC)')
                 self._schema_ready = True
             with db:
                 yield db
@@ -157,10 +158,18 @@ class ThumbnailStore:
 
     def reuse_project(self, project_id, graph_hash, recipe):
         self.discover()
+        origin = self.project_origin(project_id)
         with self._db() as db:
             rows = db.execute('''SELECT DISTINCT build_id,created FROM previews
                 WHERE project_id=? AND graph_hash=? ORDER BY created DESC,build_id DESC LIMIT 8''',
                 (project_id, graph_hash)).fetchall()
+            # Selecting a family candidate creates a new project without another
+            # bake. Reuse its exact graph only within the originating recipe version.
+            if origin.get('recipe_id') and origin.get('recipe_version'):
+                rows += db.execute('''SELECT build_id,created FROM previews
+                    WHERE recipe_id=? AND recipe_version=? AND graph_hash=?
+                    ORDER BY created DESC,build_id DESC LIMIT 8''',
+                    (origin['recipe_id'], origin['recipe_version'], graph_hash)).fetchall()
         for row in rows:
             try:
                 self.image(row['build_id'])

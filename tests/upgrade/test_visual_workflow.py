@@ -216,6 +216,34 @@ def test_saved_recipe_reuses_only_matching_current_project_preview(app):
     assert saved['source'] == 'user'
 
 
+def test_selected_family_candidate_becomes_saved_recipe_preview_without_rebaking(app, baker, monkeypatch):
+    app.jobs.close(); monkeypatch.setattr(app.jobs, 'start', lambda: None)
+    app.jobs.stop_event.clear()
+    candidate = app.family('fixture', count=1, seed=17, ranges={'gain': [8, 16]},
+                            size=32, build=True)['candidates'][0]
+    assert app.jobs.run_one()
+    job = app.jobs.get(candidate['job']['job_id'])
+    assert job['state'] == 'complete', job
+    project = app.instantiate('fixture', candidate['values'])
+    assert project['graph_hash'] == candidate['graph_hash']
+    saved = app.save_recipe(project['project_id'], 'selected_stone')
+    row = next(row for row in app.materials()['materials'] if row['id'] == saved['id'])
+    assert row['thumbnail']['build_id'] == job['result']['build_id']
+    assert row['thumbnail']['renderer_kind'] == 'injected_test_double'
+    assert baker.calls == 1
+
+
+def test_saved_recipe_does_not_reuse_another_recipe_version_with_identical_graph(app, baker):
+    app.build({'recipe_id': 'fixture', 'size': 32})
+    path = app.recipes.find('fixture')[2]
+    path.with_suffix('.recipe.json').write_text(json.dumps({'description': 'New recipe revision'}))
+    project = app.instantiate('fixture')
+    saved = app.save_recipe(project['project_id'], 'new_recipe_version')
+    row = next(row for row in app.materials()['materials'] if row['id'] == saved['id'])
+    assert row['thumbnail'] is None
+    assert baker.calls == 1
+
+
 def test_family_atomic_capacity_and_scale(app, monkeypatch):
     app.jobs.close(); monkeypatch.setattr(app.jobs, 'start', lambda: None)
     app.jobs.stop_event.clear()
