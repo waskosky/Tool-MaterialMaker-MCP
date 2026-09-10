@@ -1,7 +1,6 @@
 """Create or repair native .env paths without changing artist/workspace settings."""
 import argparse
 import io
-import json
 import os
 from pathlib import Path
 import sys
@@ -17,6 +16,13 @@ def ask(prompt, key):
         except ValueError as exc:
             print(exc)
 
+
+def quote_env(value):
+    # dotenv does not decode JSON's Unicode escapes. Keep UTF-8/control
+    # characters literal, escaping only the double-quoted value delimiters.
+    return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+
+
 def write_env(path, values):
     """Preserve every unrelated binding, comment, blank line and newline."""
     from dotenv.parser import parse_stream
@@ -29,11 +35,11 @@ def write_env(path, values):
             parts.append(binding.original.string)
         elif binding.key in pending:
             newline = '\r\n' if binding.original.string.endswith('\r\n') else '\n'
-            parts.append(f'{binding.key}={json.dumps(pending.pop(binding.key))}{newline}')
+            parts.append(f'{binding.key}={quote_env(pending.pop(binding.key))}{newline}')
     content = ''.join(parts)
     if pending and content and not content.endswith('\n'):
         content += '\n'
-    content += ''.join(f'{key}={json.dumps(value)}\n' for key, value in pending.items())
+    content += ''.join(f'{key}={quote_env(value)}\n' for key, value in pending.items())
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temporary = tempfile.mkstemp(prefix='.' + path.name, dir=path.parent)
     try:

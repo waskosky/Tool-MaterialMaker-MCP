@@ -130,6 +130,62 @@ def test_main_returns_success_after_server_closes(monkeypatch):
     assert server.main([]) == 0
 
 
+def test_main_returns_failure_for_an_unrelated_occupied_port(cfg, monkeypatch, capsys):
+    import socket
+    from mm_mcp.play import server
+    with socket.socket() as listener:
+        listener.bind(('127.0.0.1', 0))
+        listener.listen()
+        active_cfg = replace(cfg, play_port=listener.getsockname()[1])
+        monkeypatch.setattr(server, 'load_config', lambda: active_cfg)
+        def forbidden(*args, **kwargs):
+            pytest.fail('an unrelated listener must not create a service or worker')
+        monkeypatch.setattr(server, 'get_service', forbidden)
+        assert server.main(['--no-open']) == 1
+    assert 'MM_PLAY_PORT' in capsys.readouterr().out
+
+
+def test_module_entrypoint_exits_nonzero_for_an_unrelated_listener(tmp_path):
+    import socket
+    import subprocess
+    import sys
+    source_root = Path(__file__).resolve().parents[2]
+    with socket.socket() as listener:
+        listener.bind(('127.0.0.1', 0))
+        listener.listen()
+        environment = dict(os.environ, MM_PLAY_PORT=str(listener.getsockname()[1]),
+            MM_SETTINGS_FILE=str(tmp_path / 'settings.json'), MM_DOTENV=str(tmp_path / 'missing.env'),
+            MM_OUTPUT_DIR=str(tmp_path / 'output'), MM_WORKSPACE_DIR=str(tmp_path / 'workspace'),
+            MM_GODOT_BINARY='', MM_PROJECT_PATH='', PYTHONPATH=str(source_root / 'src'))
+        result = subprocess.run([sys.executable, '-m', 'mm_mcp.play.server', '--no-open'],
+                                env=environment, cwd=source_root, capture_output=True, text=True, timeout=20)
+    assert result.returncode == 1
+    assert 'MM_PLAY_PORT' in result.stdout
+    assert '#token=' not in result.stdout + result.stderr
+
+
+def test_main_returns_failure_when_binding_loses_a_port_race(cfg, monkeypatch, capsys):
+    from mm_mcp.play import server
+    monkeypatch.setattr(server, 'load_config', lambda: cfg)
+    monkeypatch.setattr(server, 'port_in_use', lambda port: False)
+    def cannot_bind(*args, **kwargs):
+        raise OSError('address already in use')
+    monkeypatch.setattr(server, '_StrictThreadingHTTPServer', cannot_bind)
+    assert server.main(['--no-open']) == 1
+    assert 'Could not bind local port' in capsys.readouterr().out
+
+
+def test_main_returns_success_when_reusing_a_verified_session(http_service, cfg, monkeypatch):
+    from mm_mcp.play import server
+    from mm_mcp.play.session import write_session
+    from tests.upgrade.test_http import call
+    active_cfg = replace(cfg, play_port=http_service[0].server_address[1])
+    session = call(http_service, '/api/session')[2]['session']
+    write_session(active_cfg, http_service[1], session)
+    monkeypatch.setattr(server, 'load_config', lambda: active_cfg)
+    assert server.main(['--no-open']) == 0
+
+
 def test_redirecting_listener_is_not_followed_and_proxies_are_ignored(cfg, monkeypatch):
     from mm_mcp.play.session import write_session, find_session
     monkeypatch.setenv('HTTP_PROXY', 'http://bad-proxy.invalid:9999')
@@ -226,6 +282,14 @@ def test_launcher_passes_browser_flags_to_app(tmp_path, monkeypatch):
     monkeypatch.setattr(launch.subprocess, 'run', lambda command, **kwargs: calls.append(command) or subprocess.CompletedProcess(command, 0))
     assert launch.main(['--no-open']) == 0
     assert calls == [[str(expected), '-m', 'mm_mcp.play.server', '--no-open']]
+
+
+def test_launcher_propagates_server_startup_failure(tmp_path, monkeypatch):
+    from scripts import launch
+    import subprocess
+    monkeypatch.setattr(launch, 'prepare_runtime', lambda root: tmp_path / 'python')
+    monkeypatch.setattr(launch.subprocess, 'run', lambda command, **kwargs: subprocess.CompletedProcess(command, 1))
+    assert launch.main(['--no-open']) == 1
 
 
 def test_cleanup_cannot_unlink_a_replacement_session(cfg, monkeypatch):

@@ -296,6 +296,25 @@ def test_configure_cli_offline_works_without_native_paths(tmp_path):
     assert dotenv.is_file()
 
 
+@pytest.mark.parametrize('existing', [False, True], ids=['append', 'replace'])
+@pytest.mark.parametrize('native_path', [
+    '/Users/José/材质/Godot',
+    r'C:\Users\José\Godot',
+    '/Users/José/A "quoted" path/Godot',
+    '/Users/José/backslash\\"quote/Godot',
+    '/Users/José/control\x1f/Godot',
+])
+def test_configure_env_paths_round_trip_unicode_and_dotenv_escaping(tmp_path, existing, native_path):
+    from dotenv import dotenv_values
+    from scripts.configure import write_env
+    path = tmp_path / '.env'
+    unrelated = '# Artist configuration\nMM_OUTPUT_DIR="/preserved/output"\n'
+    path.write_text(unrelated + ('MM_GODOT_BINARY="old"\n' if existing else ''), encoding='utf-8')
+    write_env(path, {'MM_GODOT_BINARY': native_path})
+    assert dotenv_values(path)['MM_GODOT_BINARY'] == native_path
+    assert path.read_text(encoding='utf-8').startswith(unrelated)
+
+
 def test_invalid_build_request_does_not_replace_real_render_error(app):
     app.render_fn = None
     app._last_render_error = 'Previous native graphics failure'

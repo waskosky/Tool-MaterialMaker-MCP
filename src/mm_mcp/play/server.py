@@ -268,6 +268,7 @@ class _StrictThreadingHTTPServer(ThreadingHTTPServer):
 
 
 def serve(cfg=None,open_browser=True):
+    """Serve or reuse Workshop; return False when startup cannot claim the port."""
     cfg=cfg or load_config()
     if port_in_use(cfg.play_port):
         record=find_session(cfg)
@@ -277,6 +278,7 @@ def serve(cfg=None,open_browser=True):
                 webbrowser.open(launch_url(cfg,record['token']))
         else:
             print(f'Local port {cfg.play_port} is in use by an unverified session or another application. Set MM_PLAY_PORT to another port, or close the old process.')
+            return False
         return None
     catalog=build_catalog(cfg.nodes_dir)
     token=secrets.token_urlsafe(32); session_id=secrets.token_hex(16)
@@ -285,7 +287,7 @@ def serve(cfg=None,open_browser=True):
     try:
         httpd=_StrictThreadingHTTPServer(('127.0.0.1',cfg.play_port),BaseHTTPRequestHandler)
     except OSError:
-        print(f'Could not bind local port {cfg.play_port}. Close the conflicting process or set MM_PLAY_PORT.'); return None
+        print(f'Could not bind local port {cfg.play_port}. Close the conflicting process or set MM_PLAY_PORT.'); return False
     app=None
     try:
         app=get_service(cfg,catalog)
@@ -317,8 +319,8 @@ def main(argv=None):
     group.add_argument('--open',action='store_true',help='Open the browser (the default).')
     group.add_argument('--no-open',action='store_true',help='Run without opening a browser.')
     args=parser.parse_args(argv)
-    serve(open_browser=not args.no_open)
-    return 0
+    result=serve(open_browser=not args.no_open)
+    return 1 if result is False else 0
 
 if __name__=='__main__':
-    main()
+    raise SystemExit(main())
