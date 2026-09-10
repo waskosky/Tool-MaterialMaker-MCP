@@ -1,0 +1,12 @@
+{
+  "installed_package": "/Users/macuser/games/temp/workshop-wheel-u_k2hz4l/venv/lib/python3.12/site-packages/mm_mcp",
+  "version": "0.8.0a1",
+  "mcp_sdk": "2.2.0",
+  "cookbook_recipes": 53,
+  "categories": 12,
+  "registered_tools": 42,
+  "new_browser_modules": true,
+  "guide_addon_preview_project": true,
+  "recorded_date": "2026-09-10",
+  "wheel": "dist/mm_mcp-0.8.0a1-py3-none-any.whl"
+}

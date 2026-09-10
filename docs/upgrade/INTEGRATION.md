@@ -93,3 +93,66 @@ including regressions for compatibility findings from pinned native source.
 Both received independent review. These results concern the small upstream
 patches, not a new native certification of this alpha. PR links, branch heads,
 remaining alpha renderer follow-ups and workflow state are in [UPSTREAM.md](UPSTREAM.md).
+
+## Workshop usability milestone — 2026-09-10
+
+Following the user's approval of the [usability plan](../superpowers/plans/2026-09-09-workshop-usability.md),
+work continues on `integration/next`. Further upstream work is paused until maintainer
+activity. `main` and the existing contribution worktrees remain separate; this
+milestone does not publish a release or modify other game/engine repositories.
+
+The renderer now isolates each native retry's output and resolves recognized
+`%PROJECT_PATH%` image references from an explicit, approved source origin. A private
+render copy receives resolved paths; published source remains the original editable
+graph. Successful publication still requires valid complete images.
+
+Workshop gains saved native defaults, environment/`.env` precedence, bounded tool
+discovery, in-place idle setup repair, cancellable native verification, and authenticated
+launcher session reuse. Source launchers install runtime dependencies only as needed;
+configuration repair preserves unrelated `.env` content and Unicode paths. Unknown
+listeners never receive the existing session token.
+
+The visual library uses readable guide metadata and authenticated previews from
+verified completed builds, with bounded indexing and image caching. Browsing queues
+no renders. Missing-catalog first use opens setup and resumes the selected recipe.
+Typed controls, ranges, locks and seeds lead to visible candidate jobs, inspection,
+exact editable selection, pin comparison, personal recipes, and named version restore.
+Candidate family admission is atomic. Selected candidate previews can be reused
+without rebaking when source and origin match. Serialized edit/history handling and
+request epochs keep downloads, controls and previews aligned during late responses.
+
+The initial source integration's cookbook graphs/builders are unchanged: 53 recipes,
+12 categories, 24 shared tools, 10 batch tools and 8 live tools. Independent spec and
+quality reviews covered renderer, setup and visual implementation; concrete findings
+were reproduced before fixes and rechecked. [SETUP](SETUP.md) and [WORKSHOP](WORKSHOP.md)
+are now the user entry points, and the existing CI workflow also runs on this branch.
+
+### Current local verification
+
+| Check | Result |
+| --- | --- |
+| Portable release gate | 377 passed, 1 Windows-only skip, 4 deselected; 35.02 seconds. |
+| Resource synchronization | All 109 source/package resource files match. |
+| Frontend request ordering | 21 focused Node cases pass, including Undo/Restore during both mutation and refresh requests. |
+| Actual HTTP/CSP Chromium workflow | 3 passed in 59.31 seconds; WebGL required, explicitly synthetic maps. |
+| Responsive/library inspection | Desktop and 390-pixel mobile viewport captured; real 53-recipe library and pinned 392-node catalog browsed without native jobs. |
+| JavaScript syntax | `app.js`, `setup.js`, `library.js`, `variations.js` pass `node --check`. |
+| Wheel build and metadata | `mm_mcp-0.8.0a1-py3-none-any.whl` built; `twine check` passes. |
+| Isolated wheel installation | Outside the source checkout, finds 53 recipes, 12 categories, all new browser modules, guide/add-on/preview resources and 42 actual SDK tools. |
+| Source launch and reuse | Two real launcher invocations use one authenticated workspace session; clean exit and discovery cleanup. |
+| Real native worker cancellation | Owned Godot export process observed and cancelled; no child process or completed build left. |
+
+The [machine-readable verification record](evidence/workshop-verification-local.json)
+links the browser, installed-wheel, launcher and native evidence. Portable logs are
+in `.acceptance/workshop-2026-09-10/`. These current results supersede the earlier
+232-pass local count; the supplied archive's 218-pass record remains historical.
+
+### Native boundary
+
+Official Godot 4.7.1 and 4.7.2 against pristine Material Maker
+`ad19fcf0ee34a7caf74df709dc4de7112f0d467d` failed Vulkan compute compilation on the
+local Intel Mac/AMD Radeon Pro 460. No native bake completed. Real worker cancellation
+passed, but native material appearance, successful bake/cache/export, exported graph
+reopening and target-engine imports remain unverified. Browser test maps are labelled
+`injected_test_double` and cannot mark setup as native verified. Complete those
+acceptance steps on a compatible graphics setup using [TESTING](TESTING.md).

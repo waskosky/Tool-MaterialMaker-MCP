@@ -1,67 +1,82 @@
 # Verification and acceptance
 
-## Executed release gate
-
-The numbers below describe the supplied archive's run. See
-[INTEGRATION.md](INTEGRATION.md) for subsequent local fixes and verification.
+## Current portable checks
 
 Run from the repository root with the project's Python environment:
 
 ```bash
-python scripts/check_release.py -rs
+python scripts/check_release.py -m 'not browser and not native' -rs
 ```
 
-The implementation run used Python 3.13 on Linux and produced **218 passed, 3 skipped**.
-The skipped checks were real MCP SDK registration (dependency unavailable), opt-in
-native rendering (Godot/Material Maker unavailable), and a retained Windows-only
-path case-folding test. Exact logs and the XML report are in `evidence/`.
+The gate checks synchronized package resources, portable `tests/upgrade` contracts,
+and retained validator, paths, graph, inspect, naming, authoring, render-comparison,
+idle, cookbook and README checks. It uses the actual installed MCP SDK for registered
+tool discovery. [INTEGRATION.md](INTEGRATION.md) records the current run and its skips.
 
-The gate checks synchronized package resources, all `tests/upgrade` modules, and
-these retained modules: validator, paths, graph, inspect, naming, author helpers,
-rename helpers, render comparisons, idle handling, cookbook discovery, and README
-counts. The README count checks now use SDK registration and the current tool
-reference; obsolete 0.7 transport contracts remain outside this gate.
+Focused regressions cover isolated native retry attempts, source-relative image
+references, setup persistence and precedence, idle configuration refresh, authenticated
+session reuse, atomic family admission, verified gallery previews, exact candidate
+selection, snapshot history and stale browser responses. Native subprocess doubles
+and synthetic images remain explicitly identified in tests.
 
-The new tests exercise strict JSON/graph checks, transaction rollback, persistent
-history, revisions and retries, cross-client conflicts, recipe controls and aliases,
-world bindings, constrained composition, real CPU mask images, valid/corrupt PNGs,
-exact exported graphs, missing channels, wrong dimensions, target packing, cache
-corruption, jobs, cancellation, preview publication, native-client authentication,
-HTTP authentication and browser logic. The native responses in client tests are mocks.
+## Browser evidence
 
-## Browser evidence and its boundary
+The current Chromium suite navigates the actual loopback HTTP server and exercises
+authenticated fetches under the production content security policy. It checks setup
+save/check/cancellation, missing-catalog first-use recovery, automatic preview,
+controls, family ranges and locks, inspect/use/compare, personal recipes, snapshots,
+exact downloads and cross-client revision conflicts.
 
-Chromium executed the actual frontend JavaScript and DOM with the actual Python
-service reached through an in-process test adapter. The test modifies a control,
-waits for a synthetic PNG build, downloads a ZIP and checks its graph. It also
-simulates a second client edit and verifies stale browser rejection.
+```bash
+python -m pip install -e '.[dev,browser]'
+python -m playwright install chromium
+```
 
-This environment's browser networking policy blocked loopback navigation with
-`ERR_BLOCKED_BY_ADMINISTRATOR`; that policy was not disabled. The real HTTP adapter
-was tested separately using local socket requests. Chromium did not provide a working
-WebGL context here, so the graceful image fallback was exercised. Do not describe
-this result as a successful three-dimensional render or browser-network certification.
+Set `MM_TEST_CHROMIUM` to your installed Chromium executable, then run:
 
-`MM_REQUIRE_WEBGL_TEST=1` makes the browser test require a WebGL canvas. It still does
-not assess normal direction or visual correctness. For full local acceptance, use
-the real launch URL and confirm a reflective metal material, a rough dielectric,
-normal orientation, occlusion, color handling, tile repetition, geometry switching,
-height preview and disposal while repeatedly changing materials. Check a supported
-mobile device as well as desktop browsers.
+```bash
+MM_REQUIRE_WEBGL_TEST=1 python -m pytest tests/upgrade/test_browser.py -q
+```
+
+On PowerShell, set `$env:MM_REQUIRE_WEBGL_TEST = '1'` before running Python. Without
+Playwright or Chromium the browser tests skip; inspect the result. WebGL-required
+runs must create a canvas. The local run used SwiftShader and decoded synthetic PNG
+channels, with desktop and 390-pixel mobile viewport checks. It establishes browser
+behavior and a working viewer path, not native material appearance or physical-device
+acceptance. [Evidence and screenshots](evidence/workshop-browser-local.json) record
+these boundaries. The full cookbook was also browsed using its real recipe files
+and, separately, the pinned native catalog; neither check started native builds.
+
+For visual acceptance after native baking works, inspect a reflective metal, a rough
+dielectric, normal orientation, occlusion, color handling, tiling, shape switching,
+height preview and repeated material changes. Check intended desktop browsers and
+physical mobile devices. Compare preview appearance with the actual target engine.
+
+## Setup and native runtime evidence
+
+The source launcher was exercised twice against an isolated workspace. The second
+launch reused its authenticated session, both invocations exited cleanly, and private
+discovery state was removed at shutdown. See [launch evidence](evidence/workshop-launch-local.json).
+Setup tests distinguish path configuration from successful native rendering.
+
+Native startup was attempted with official Godot 4.7.1 and 4.7.2 against pristine
+Material Maker `ad19fcf0ee34a7caf74df709dc4de7112f0d467d`, on macOS 15.7.1 with an Intel
+CPU and AMD Radeon Pro 460. Vulkan compute compilation failed before a bake could
+complete. A separate real worker cancellation check observed and stopped its owned
+Godot process, leaving no completed build or child process. See
+[native evidence](evidence/workshop-native-local.json). Successful bake/cache/export,
+exported `.ptex` reopening and target-engine imports remain unverified on this setup.
 
 ## Real SDK gate
-
-After installing the declared MCP dependency, run:
 
 ```bash
 python -m pytest tests/upgrade/test_optional_integration.py -m sdk -q
 ```
 
-That test imports the real server and checks registered tool discovery. Also connect
-an actual host, call capabilities, read a recipe, edit a workspace graph, queue a build,
-and inspect `material_preview_image` as image content. Test tool failures and image
-responses with your host. SDK registration alone is not full wire-protocol acceptance.
-The real SDK was not installed or run in this implementation environment.
+The actual installed SDK registers all 42 tools; README counts are checked against
+that registration. Also connect your intended host, call capabilities, read a recipe,
+edit a workspace graph, queue a build and inspect `material_preview_image` as image
+content. SDK registration alone is not complete host or wire-protocol acceptance.
 
 ## Native batch smoke
 
@@ -102,9 +117,8 @@ configuration only for this session, restart its overlay, and perform the follow
    files reopen correctly. In particular, inspect whether native export metadata changes
    the serialized revision and requires a compatibility adjustment.
 
-Run these against the actual pinned checkout and supported Godot binary. GDScript
-parser compatibility, engine object lifetime and native rendering were not executed
-here. Capability gating prevents an untested bridge from advertising global undo or
+Run these against the actual pinned checkout and supported Godot binary. Successful native rendering, engine object lifetime and editor-write compatibility
+remain unverified here. Capability gating prevents an untested bridge from advertising global undo or
 safe production artist-session mutation.
 
 ## Engine acceptance
@@ -115,16 +129,20 @@ relative paths, scale and texture budgets. The generated Godot resource wires ba
 opaque channels only; other material features need explicit downstream configuration.
 Roblox uploads, Unity pipeline material files and Unreal binary assets are not generated.
 
-## Historical suite and CI
+## Historical evidence and CI
 
-`python -m pytest tests` explicitly requests all historical tests too. Its full
-collection during development included 963 collected cases and six import errors
-from the absent MCP dependency before later additions. That is a historical diagnostic,
-not the final test count or a passing full-suite claim. Some old tests specify the
-removed protocol/export/path behavior. Keep them as migration evidence and port useful
-requirements into the current gate; do not confuse assertion changes with native proof.
+The supplied archive's root `evidence/` directory records its earlier Linux run:
+218 passed and 3 skips. It used an in-process browser adapter because that environment
+blocked loopback navigation, and it lacked WebGL and the real SDK. Those historical
+limits do not describe the current local browser/SDK checks above.
 
-The CI workflow now invokes `scripts/check_release.py` on Linux, Windows and macOS, installs
-the actual SDK dependency, and runs separate browser logic and wheel-build jobs. It no longer creates
-a fake Godot executable and counts its existence as native validation. The CI workflow
-itself has not been executed on the external GitHub runners during this delivery.
+`python -m pytest tests` also requests historical 0.7 contracts. Some specify removed
+transport/export behavior or machine-dependent native fixtures. The bounded release
+gate is the current acceptance command; this milestone does not claim a passing
+historical full suite.
+
+The CI workflow runs on `integration/next`, `main`, pull requests and manual dispatch.
+It checks portable contracts on Linux, Windows and macOS, builds and checks the wheel,
+and runs the real HTTP browser suite with WebGL required and labelled synthetic maps.
+Browser screenshots are retained as CI artifacts. Native GPU baking and engine imports
+remain separate acceptance work; this workflow does not publish a release.

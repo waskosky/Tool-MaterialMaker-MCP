@@ -75,12 +75,16 @@ where needed. Focused service tests and the actual browser acceptance test.
 Files: `.github/workflows/test.yml`, `README.md`, relevant setup documentation,
 `HANDOFF.md`, `STATUS.md`, `docs/upgrade/STATUS.md`, `INTEGRATION.md`, and this plan.
 
-- [ ] Enable the existing portable/package/browser CI workflow for `integration/next`.
-- [ ] Attempt real native smoke, cancellation/restart and reopening exported `.ptex`
+- [x] Enable the existing portable/package/browser CI workflow for `integration/next`.
+- [x] Attempt real native smoke, cancellation/restart and reopening exported `.ptex`
   with a compatible local runtime, preserving a pristine native source checkout.
-- [ ] Update user quickstart, setup/preview acceptance notes and current handoff.
-- [ ] Run the portable release gate, resource synchronization check, JavaScript syntax
+- [x] Update user quickstart, setup/preview acceptance notes and current handoff.
+- [x] Run the portable release gate, resource synchronization check, JavaScript syntax
   checks, wheel build/metadata check, and focused browser suite. Avoid a broad legacy
   test campaign or engine certifications in this milestone.
 - [ ] Review the final diff, commit changes, push `origin integration/next`, verify
   remote branch and CI status, and report outcomes with remaining practical limits.
+
+Native acceptance stopped at a reproducible local Vulkan compute compiler failure.
+Real worker cancellation passed; successful native bake, source reopening and
+engine imports remain unverified. See `docs/upgrade/evidence/workshop-native-local.json`.

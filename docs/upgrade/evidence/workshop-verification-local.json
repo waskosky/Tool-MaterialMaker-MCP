@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-10",
+  "implementation_commit": "bd35faf",
+  "environment": "macOS 15.7.1, Python 3.12.13, MCP SDK 2.2.0",
+  "portable": {
+    "command": ".venv/bin/python scripts/check_release.py -m 'not browser and not native' -rs",
+    "passed": 377,
+    "skipped": 1,
+    "deselected": 4,
+    "seconds": 35.02,
+    "skip_reason": "Windows-only case folding on macOS",
+    "deselected_scope": "Three browser tests, one opt-in native test",
+    "logs": ".acceptance/workshop-2026-09-10/contracts.log",
+    "junit": ".acceptance/workshop-2026-09-10/contracts.xml"
+  },
+  "resources": {
+    "verified_files": 109
+  },
+  "javascript_syntax": {
+    "tool": "node --check",
+    "passed": [
+      "app.js",
+      "setup.js",
+      "library.js",
+      "variations.js"
+    ]
+  },
+  "browser": {
+    "passed": 3,
+    "seconds": 59.31,
+    "webgl_required": true,
+    "evidence": "workshop-browser-local.json",
+    "renderer": "injected_test_double"
+  },
+  "wheel": {
+    "build": "passed",
+    "twine": "passed",
+    "isolated_install": "passed",
+    "evidence": "workshop-wheel-local.json"
+  },
+  "native": {
+    "successful_bake": false,
+    "real_worker_cancellation": true,
+    "source_reopen": false,
+    "engine_import": false,
+    "evidence": "workshop-native-local.json"
+  },
+  "scope": "Bounded portable/package/browser acceptance. No broad historical suite, successful native graphics acceptance, external engine certification or alpha release.",
+  "launcher": {
+    "authenticated_reuse": true,
+    "clean_shutdown": true,
+    "evidence": "workshop-launch-local.json"
+  },
+  "post_gate_setup_portability": {
+    "command": ".venv/bin/python -m pytest tests/upgrade/test_setup.py -q",
+    "passed": 37,
+    "seconds": 2.03,
+    "scope": "Native path and decoded dotenv assertions made platform independent after final review."
+  }
+}

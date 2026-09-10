@@ -37,7 +37,8 @@ def native_paths(tmp_path):
 def test_saved_native_paths_are_normalized_and_loaded_with_explicit_precedence(settings_env, native_paths, monkeypatch):
     from mm_mcp.setup import save_settings
     saved = save_settings(native_paths)
-    assert saved['godot_binary'].endswith('Godot.app/Contents/MacOS/Godot')
+    expected_binary = (Path(native_paths['godot_binary']) / 'Contents' / 'MacOS' / 'Godot').resolve()
+    assert Path(saved['godot_binary']) == expected_binary
     assert json.loads(settings_env.read_text()) == saved
     assert load_config().godot_binary == saved['godot_binary']
     Path(os.environ['MM_DOTENV']).write_text('MM_GODOT_BINARY="/dotenv/Godot"\nUNRELATED_SECRET=keep-private\n')
@@ -279,6 +280,7 @@ def test_verify_submits_forced_small_native_cookbook_job(app, monkeypatch):
 
 
 def test_configure_cli_repairs_native_entries_and_preserves_unrelated_text(settings_env, native_paths, tmp_path, monkeypatch):
+    from dotenv import dotenv_values
     from scripts import configure
     dotenv = tmp_path / 'source.env'
     original = '# artist settings\nMM_OUTPUT_DIR="/kept/output"\nMM_ALLOW_CUSTOM_SHADERS=1\nSECRET="keep-private"\n'
@@ -287,7 +289,10 @@ def test_configure_cli_repairs_native_entries_and_preserves_unrelated_text(setti
     updated = dotenv.read_text()
     assert updated.startswith(original)
     assert '/old/' not in updated
-    assert 'Godot.app/Contents/MacOS/Godot' in updated
+    parsed = dotenv_values(dotenv)
+    expected_binary = (Path(native_paths['godot_binary']) / 'Contents' / 'MacOS' / 'Godot').resolve()
+    assert Path(parsed['MM_GODOT_BINARY']) == expected_binary
+    assert Path(parsed['MM_PROJECT_PATH']) == Path(native_paths['project_path']).resolve()
 
 
 def test_configure_cli_offline_works_without_native_paths(tmp_path):

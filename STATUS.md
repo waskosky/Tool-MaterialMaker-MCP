@@ -6,7 +6,7 @@
 
 Gate ledger. Three states only: ✅ verified · 🔌 wired · ⬜ not started.
 
-_Last updated: 2026-09-08 (0.8.0a1 local integration)._
+_Last updated: 2026-09-10 (Workshop usability milestone)._
 
 **How to read this file (rule adopted 2026-09-05, teardown #3):** each cell holds
 the state, one line of what it is, and a pointer to where the evidence lives
@@ -19,12 +19,18 @@ row points at.
 
 | Component or gate | State | Evidence |
 | --- | --- | --- |
-| Shared service, build/export and portable authoring contracts | ✅ verified | 232 passed, 1 Windows-only skip; [local integration](docs/upgrade/INTEGRATION.md). |
-| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all documented tools; `tests/test_readme_counts.py`. |
-| Packaged resources and wheel installation | ✅ verified | Isolated wheel import finds cookbook, guide and add-on; [local integration](docs/upgrade/INTEGRATION.md). |
-| Browser request ordering | ✅ verified | Three focused Node cases; `tests/upgrade/test_browser_state.py`. |
-| Native bridge, renderer, WebGL viewer and engine imports | 🔌 wired | Implemented; local native acceptance deferred. `docs/upgrade/TESTING.md`. |
-| Expanded CI and release publication | 🔌 wired | Workflow updated; external runners and publication not invoked. |
+| Shared service, build/export and portable authoring contracts | ✅ verified | 377 passed, 1 Windows-only skip; [integration record](docs/upgrade/INTEGRATION.md). |
+| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all 42 documented tools; `tests/test_readme_counts.py`. |
+| Native retry isolation and source-relative dependencies | ✅ verified | Focused subprocess/asset regressions; `tests/upgrade/test_render_reliability.py`. |
+| Saved setup, repair and authenticated launch reuse | ✅ verified | [Launch evidence](docs/upgrade/evidence/workshop-launch-local.json) and setup/session regressions. |
+| Visual library, variations, history and exact downloads | ✅ verified | 3 real HTTP/CSP browser cases and 21 Node state cases; [browser evidence](docs/upgrade/evidence/workshop-browser-local.json). |
+| WebGL path and responsive viewport | ✅ verified | Chromium SwiftShader with labelled synthetic maps; [desktop/mobile captures](docs/upgrade/WORKSHOP.md). |
+| Native worker cancellation | ✅ verified | Owned Godot process observed and stopped; [native evidence](docs/upgrade/evidence/workshop-native-local.json). |
+| Successful native baking, source reopen and engine imports | 🔌 wired | Local Vulkan compute compiler blocker; `docs/upgrade/TESTING.md`. |
+| Native editor writes and intended assistant-host acceptance | 🔌 wired | Separate native/host checks remain; native writes disabled by default. |
+| Packaged resources, wheel and metadata | ✅ verified | 109 resource files match, wheel and metadata checks pass; [integration record](docs/upgrade/INTEGRATION.md). |
+| Integration branch CI | 🔌 wired | Portable three-OS, distribution and real HTTP browser jobs configured; awaiting this push. |
+| Alpha release publication | ⬜ not started | Version 0.8.0a1 remains a development candidate; release workflow disabled on the fork. |
 
 The following ledger records the **0.7 baseline's historical gates**, not a
 certification of the changed 0.8 native paths. For current capability boundaries,

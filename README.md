@@ -1,123 +1,96 @@
 # Tool-MaterialMaker-MCP — 0.8.0a1
 
-Author editable Material Maker node graphs through a browser or AI assistant,
-then refine the real `.ptex` graph in Material Maker. This alpha upgrade adds a
-shared, persistent material service; native compatibility still needs acceptance
-testing. The cookbook is 53 materials across 12 categories, with the existing
-authoring helpers preserved.
+Make editable procedural materials in **Material Workshop**, then refine the real
+`.ptex` node graph in Material Maker or use the exported textures in your engine.
+The browser and your AI assistant share saved projects, controls, versions and builds.
+The cookbook is 53 materials across 12 categories.
+
+This is an alpha. Browser workflows and portable contracts have been exercised;
+successful native baking still needs validation on a compatible graphics setup.
+See [current verification](docs/upgrade/TESTING.md).
+
+## Start Workshop
+
+Install Python 3.10 or newer, then open the launcher in this source checkout:
+
+- **macOS:** double-click `Play.command`.
+- **Windows:** double-click `play.bat`.
+- **Linux:** run `python3 scripts/launch.py`.
+
+The launcher prepares runtime dependencies and opens your browser. Launching again
+reopens the same running workspace. Keep its terminal open while using Workshop.
+
+In **Setup & repair**, find or enter your Godot executable and compatible Material
+Maker source folder, save them, and choose **Test a small render**. Setup can open
+before the native tools are installed. The [setup guide](docs/upgrade/SETUP.md)
+includes download links, manual installation, saved settings and repair steps.
+
+## Make something
+
+1. Search the recipe library or choose a category. Open a material to create an
+   editable project and start a small preview when rendering is configured.
+2. Adjust its numbers, sliders, colors or gradient stops. Changes save automatically.
+3. Choose numeric ranges and locks, then build a seeded family of variations.
+   Inspect candidates, compare pinned images, and open a favorite with its exact controls.
+4. Save a named version or personal recipe. Download the completed build's textures,
+   editable `.ptex` source and target import notes together.
+
+Library images come from verified completed builds. Browsing never starts a mass
+render, and unbuilt recipes show an explicit placeholder. Follow the
+[Workshop walkthrough](docs/upgrade/WORKSHOP.md) for projects, variations, snapshots,
+comparison and export. [View the library](docs/upgrade/evidence/workshop-cookbook.png).
+
+## Use with an assistant
 
 The server exposes 24 shared material tools, 10 batch tools, and 8 live tools.
-See [the tool reference](docs/upgrade/TOOLS.md) for the interfaces and migration notes.
+Configure your MCP host to launch `mm-mcp` from the installed Python environment.
+Use the same working folder or `MM_WORKSPACE_DIR` as Workshop to share projects.
+The [tool reference](docs/upgrade/TOOLS.md) and [workflows](docs/upgrade/WORKFLOWS.md)
+describe authoring, jobs, variations and exact-build downloads.
 
-**Start with [the developer handoff](docs/upgrade/START_HERE.md).** It identifies the
-actual changes, test evidence, migration steps, and the remaining native acceptance gates.
-The [local integration record](docs/upgrade/INTEGRATION.md) documents the imported
-archive, follow-up fixes, and checks in this checkout. Historical documentation is
-retained. For behavior changed by this upgrade,
-`docs/upgrade/` supersedes the older documentation; the original README is preserved
-as [README-0.7.0.md](docs/upgrade/README-0.7.0.md).
+Builds record their exact graph, inputs, source dependencies and target. Downloads
+use immutable build IDs. Workspace edits use revisions and retry keys. Native editor
+writes and new custom shaders remain disabled by default. Native baking requires a
+working desktop graphics context; Godot's `--headless` dummy renderer cannot bake maps.
 
-## What changed
+## Development and current limits
 
-- Builds bind the exact graph, controls, source dependencies, seed, resolution,
-  tool fingerprints and target to an immutable identifier. Downloads use that
-  identifier and a verified file inventory, not shared output-directory contents.
-- Browser and assistant operations use the same SQLite-backed projects, revisions,
-  atomic patches, retry receipts, undo/redo history and named snapshots.
-- Recipes support typed controls, semantic aliases, explicit variation ranges and
-  locks, shared world-context bindings, personal recipes and constrained editable
-  two-layer composition. A bounded triangle-OBJ backend bakes coverage, height and
-  upward-facing masks; it does not infer physics, curvature or occlusion.
-- The browser has color and gradient controls, search, favorites, comparisons,
-  target selection, asynchronous jobs, cancellation and a corrected material viewer.
-- Local transports are authenticated and bounded. New shader code is denied by
-  default. Native editor writes remain explicitly experimental and disabled.
-- Distribution includes the cookbook, authoring guide, browser files, preview
-  project and native add-on. The release gate uses real PNG decoding and a clearly
-  identified synthetic test renderer; it does not pass a fake Godot executable off
-  as native validation.
+Continue development on `integration/next`. The fork's `main` remains the branch for
+focused upstream contributions; further upstream work is paused pending maintainer activity.
+No alpha release is published by this workflow.
 
-## Installation from this source archive
-
-Run these blocks from the extracted repository root. They do not require editing
-paths inside the commands. The configuration program asks for your existing Material
-Maker checkout and Godot executable; it does not install those native applications.
-
-### Linux or macOS
+Install the development extras in your environment, then run the portable gate:
 
 ```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -e '.[dev,browser]'
-.venv/bin/python scripts/configure.py
-.venv/bin/python scripts/check_release.py
-.venv/bin/python -m mm_mcp.play.server --open
+python -m pip install -e '.[dev,release]'
+python scripts/check_release.py -m 'not browser and not native' -rs
+python scripts/build_distribution.py
 ```
 
-### Windows PowerShell
+See [TESTING](docs/upgrade/TESTING.md) for browser and native acceptance. The local
+Godot 4.7 native attempt hit a Vulkan compute compiler failure; real worker
+cancellation passed, but successful native bake, exported-source reopening and
+engine imports remain unverified. Browser screenshots with test images establish
+UI behavior, not native material appearance.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev,browser]"
-.\.venv\Scripts\python.exe scripts\configure.py
-.\.venv\Scripts\python.exe scripts\check_release.py
-.\.venv\Scripts\python.exe -m mm_mcp.play.server --open
-```
-
-An existing `.env` is never overwritten by the configuration program. Preserve your
-configuration and follow [MIGRATION.md](docs/upgrade/MIGRATION.md). For a renderer-free
-installation, use `scripts/configure.py --offline`; recipe browsing and local data
-operations can be explored, but native-catalog-dependent authoring and baking still
-require the native installation. Browser tests are skipped when Playwright or a
-Chromium executable is unavailable. That skip does not certify the viewer.
-
-The `mm-mcp` entry point starts the Model Context Protocol server over standard input
-and output. Configure your AI host to launch that executable from this environment,
-with this repository as its working directory or explicit `MM_*` environment values.
-The native renderer needs a desktop graphics context. Do not add Godot's
-`--headless` dummy-renderer flag and expect texture baking to work.
-
-## Verify before adoption
-
-```bash
-python scripts/check_release.py -rs
-python scripts/native_smoke.py
-```
-
-The first command is the current portable gate, including the retained compatible
-0.7 unit tests. The second requires your native tools and performs real batch baking
-in a new output workspace without editing any artist tab. See
-[TESTING.md](docs/upgrade/TESTING.md) for graphics, editor and engine checks.
-
-Archive implementation-run result: **218 passed, 3 skipped** in the release gate. The skipped
-checks were the unavailable real MCP software development kit, opt-in native
-rendering, and a Windows-only case-folding check on Linux. Chromium exercised the
-browser logic with an in-process test adapter and synthetic images; actual WebGL
-shading and browser-to-loopback networking were not certified in this environment.
-Current local results are recorded separately in [INTEGRATION.md](docs/upgrade/INTEGRATION.md).
-
-## Documentation
-
-| Document | Purpose |
+| Guide | Purpose |
 | --- | --- |
-| [START_HERE](docs/upgrade/START_HERE.md) | Integration order and release boundaries. |
-| [CHANGE_MAP](docs/upgrade/CHANGE_MAP.md) | Review finding → implementation → regression evidence. |
-| [ARCHITECTURE](docs/upgrade/ARCHITECTURE.md) | State, builds, jobs, trust and native boundaries. |
-| [MIGRATION](docs/upgrade/MIGRATION.md) | Breaking changes, installation and configuration. |
-| [TOOLS](docs/upgrade/TOOLS.md) | All 24 new high-level tools and their signatures. |
-| [WORKFLOWS](docs/upgrade/WORKFLOWS.md) | Practical authoring, variation, context and engine workflows. |
-| [SECURITY](docs/upgrade/SECURITY.md) | Actual protections, permissions and limitations. |
-| [TESTING](docs/upgrade/TESTING.md) | Reproducible tests and native acceptance checklist. |
-| [STATUS](docs/upgrade/STATUS.md) | Implemented versus unverified versus deferred capabilities. |
-| [DECISIONS](docs/upgrade/DECISIONS.md) | Concise engineering rationale and tradeoffs. |
+| [Setup & repair](docs/upgrade/SETUP.md) | Launch, connect native tools and repair paths. |
+| [Workshop](docs/upgrade/WORKSHOP.md) | Browse, edit, vary, save and export. |
+| [Migration](docs/upgrade/MIGRATION.md) | Upgrade from 0.7 and preserve existing work. |
+| [Architecture](docs/upgrade/ARCHITECTURE.md) | Shared state, builds and native boundaries. |
+| [Security](docs/upgrade/SECURITY.md) | Local authentication, code approval and path policy. |
+| [Status](docs/upgrade/STATUS.md) | Exercised capabilities and remaining work. |
+| [Integration record](docs/upgrade/INTEGRATION.md) | Archive provenance, changes and verification. |
+| [Developer handoff](HANDOFF.md) | Current branch and next practical work. |
+
+For changed behavior, `docs/upgrade/` supersedes older documentation. The
+[original README](docs/upgrade/README-0.7.0.md) and historical evidence remain available.
 
 ## License and provenance
 
-The original package's MIT license and attribution are preserved. Existing cookbook
-and vendor files retain their notices. MaterialPilot source code is not copied into
-this implementation. The design adopts general transaction, revision and recovery
-principles, implemented in this package's own Python and Godot architecture.
-
-The uploaded baseline Git commit was `b41b65c612557a7da35a045091199058c0f76abb`.
-The retained Material Maker compatibility pin is
-`ad19fcf0ee34a7caf74df709dc4de7112f0d467d`. This archive does not include Material Maker,
-Godot, or the MCP dependency itself. See [PROVENANCE.md](docs/upgrade/PROVENANCE.md).
+The original MIT license and attribution are preserved. Cookbook and vendor files
+retain their notices. MaterialPilot source code is not copied into this implementation.
+The uploaded baseline was `b41b65c612557a7da35a045091199058c0f76abb`; the retained
+Material Maker compatibility pin is `ad19fcf0ee34a7caf74df709dc4de7112f0d467d`.
+Godot and Material Maker are installed separately. See [PROVENANCE](docs/upgrade/PROVENANCE.md).

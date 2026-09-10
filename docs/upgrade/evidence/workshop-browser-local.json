@@ -4,7 +4,7 @@
   "environment": "macOS 15.7.1, Python 3.12.13, Playwright 1.62.0, Chromium 1234, SwiftShader WebGL",
   "browser": {
     "command": "MM_TEST_CHROMIUM=<Chromium executable> MM_REQUIRE_WEBGL_TEST=1 .venv/bin/python -m pytest tests/upgrade/test_browser.py -q",
-    "result": "3 passed in 56.13s",
+    "result": "3 passed in 59.31s",
     "transport": "Actual authenticated loopback HTTP adapter with the production content security policy",
     "renderer": "Explicitly labelled injected_test_double: synthetic PNGs; never native verified",
     "checks": [
