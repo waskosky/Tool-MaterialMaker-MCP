@@ -1,14 +1,17 @@
 import json
+import copy
 import os
+import shutil
 import subprocess
 import tempfile
 import signal
 import time
 from pathlib import Path
-from mm_mcp.core import ServiceError, resolution, identifier
+from mm_mcp.core import ServiceError, resolution, identifier, atomic_json
 from mm_mcp.artifacts import verify_images
 from dataclasses import dataclass, field
 from mm_mcp.config import Config, load_config
+from mm_mcp.policy import prepare_render_graph
 
 
 @dataclass
@@ -69,9 +72,10 @@ def _kill_tree(process) -> None:
         pass
 
 
-def _run_godot(cmd: list, timeout: int, cancel=None) -> subprocess.CompletedProcess:
+def _run_godot(cmd: list, timeout: int, cancel=None, *, before_attempt=None) -> subprocess.CompletedProcess:
     """Run a Godot command with capture, retrying up to 3x around the
     transient Windows crash codes above. Raises _GodotTimeout on timeout.
+    before_attempt clears caller-owned private outputs before every launch.
     Shared by render() and preview.render_preview(), which otherwise each had
     a near-identical copy of this retry loop and the crash-code set.
 
@@ -91,6 +95,10 @@ def _run_godot(cmd: list, timeout: int, cancel=None) -> subprocess.CompletedProc
     harmlessly. This is what the working raw-console path always did."""
     proc = None
     for _ in range(3):
+        if cancel and cancel():
+            raise ServiceError("CANCELLED", "Render was cancelled before launch.")
+        if before_attempt is not None:
+            before_attempt()
         with tempfile.TemporaryFile() as out_f, tempfile.TemporaryFile() as err_f:
             process = subprocess.Popen(cmd, stdout=out_f, stderr=err_f, **({"start_new_session": True} if os.name != "nt" else {}))
             try:
@@ -187,15 +195,28 @@ def _build_command(cfg: Config, ptex_path: str, target: str, outdir: str, size: 
     ]
 
 
+def _clear_attempt_files(stage) -> None:
+    """Empty a worker-owned private stage without following exporter symlinks."""
+    for path in Path(stage).iterdir():
+        if path.is_dir() and not path.is_symlink():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
+
+
 def render(ptex: dict, size: int = 512, outdir: str | None = None,
            basename: str = "material", target: str = "Godot/Godot 4 Standard",
-           cfg: Config | None = None, cancel=None, required_channels=()) -> RenderResult:
+           cfg: Config | None = None, cancel=None, required_channels=(),
+           source_dir: str | None = None) -> RenderResult:
     """Render in a private directory; never accept partial nonzero-exit output.
 
     The service owns immutable publication. This legacy facade atomically replaces
     individual verified output files for callers that still use basename paths.
     Only PNG outputs are certified; other exporter products are not a complete
     engine-package guarantee. Use material_build for the stronger contract.
+    source_dir is the original graph's asset directory. Direct legacy callers
+    infer outdir only for %PROJECT_PATH% assets; build callers require an
+    explicit origin for those references before invoking this runner.
     """
     cfg = cfg or load_config()
     try:
@@ -203,17 +224,28 @@ def render(ptex: dict, size: int = 512, outdir: str | None = None,
         identifier(basename, "basename")
         outdir = os.path.abspath(outdir or cfg.output_dir)
         os.makedirs(outdir, exist_ok=True)
+        original_ptex = copy.deepcopy(ptex)
+        prepared_ptex, deps = prepare_render_graph(original_ptex, cfg, source_dir=source_dir,
+                                                   inferred_source_dir=outdir)
         with tempfile.TemporaryDirectory(prefix=".render-", dir=outdir) as stage:
             ptex_path = os.path.join(stage, basename + ".ptex")
-            with open(ptex_path, "w", encoding="utf-8") as fh:
-                json.dump(ptex, fh, allow_nan=False)
+            def prepare_attempt():
+                _clear_attempt_files(stage)
+                with open(ptex_path, "w", encoding="utf-8") as fh:
+                    json.dump(prepared_ptex, fh, allow_nan=False)
             cmd = _build_command(cfg, ptex_path, target, stage, size)
-            proc = _run_godot(cmd, 180, cancel=cancel) if cancel is not None else _run_godot(cmd, 180)
+            proc = _run_godot(cmd, 180, cancel=cancel, before_attempt=prepare_attempt)
             log_tail = _log_tail(proc)
             if proc.returncode != 0:
                 return RenderResult(ok=False, log_tail=log_tail, error=f"Godot exited {proc.returncode}; no files published")
             images = [str(p) for p in sorted(Path(stage).glob(basename + "_*.png"))]
             verify_images(images, size=size, required=required_channels, root=stage)
+            _, current_deps = prepare_render_graph(original_ptex, cfg, source_dir=source_dir,
+                                                    inferred_source_dir=outdir)
+            if current_deps != deps:
+                raise ServiceError('DEPENDENCY_CHANGED', 'A referenced source changed while rendering; no files published.')
+            # Publish the original graph, even if the exporter changed its private copy.
+            atomic_json(ptex_path, original_ptex)
             if cancel and cancel():
                 raise ServiceError("CANCELLED", "Render cancelled before publication.")
             published=[]

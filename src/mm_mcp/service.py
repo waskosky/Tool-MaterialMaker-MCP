@@ -48,11 +48,11 @@ class MaterialService:
                             'browser_native_graph_execution':False,'multi_user_hosting':False,
                             'native_paint_strokes':False,'native_global_undo_certified':False},
                 'limits':{'max_resolution':getattr(self.cfg,'max_resolution',2048),'max_variants':32,'max_pending_jobs':64}}
-    def _validated(self,graph,mode='strict',trusted=False):
+    def _validated(self,graph,mode='strict',trusted=False,source_dir=None):
         problems=validate_graph(graph,self.catalog,mode=mode)
         if any(p['severity']=='error' for p in problems):
             raise ServiceError('VALIDATION_FAILED','Graph validation failed.',problems=problems)
-        graph_dependencies(graph,self.cfg,trusted_recipe=trusted)
+        graph_dependencies(graph,self.cfg,trusted_recipe=trusted,source_dir=source_dir)
         return problems
     def instantiate(self,recipe_id,values=None,title=''):
         graph,provenance=self.recipes.instantiate(recipe_id,values)
@@ -85,7 +85,7 @@ class MaterialService:
     def build(self,request,cancel=None):
         if not isinstance(request,dict):
             raise ServiceError('REQUEST_TYPE','Build request must be an object.')
-        unknown=set(request)-{'material_id','recipe_id','project_id','revision','graph','values','size','target','seed','physical_size_m','force'}
+        unknown=set(request)-{'material_id','recipe_id','project_id','revision','graph','values','size','target','seed','physical_size_m','force','source_dir'}
         if unknown:
             raise ServiceError('UNKNOWN_FIELDS','Unknown build request fields.',fields=sorted(unknown))
         sources=sum(bool(request.get(k)) for k in ('graph','project_id'))+bool(request.get('recipe_id') or request.get('material_id'))
@@ -93,6 +93,8 @@ class MaterialService:
             raise ServiceError('BUILD_SOURCE','Provide exactly one of recipe_id/material_id, project_id, or graph.')
         if 'recipe_id' in request and 'material_id' in request:
             raise ServiceError('BUILD_SOURCE','Use recipe_id or its legacy material_id alias, not both.')
+        if 'source_dir' in request and not request.get('graph'):
+            raise ServiceError('BUILD_SOURCE','source_dir is only supported for raw graph builds.')
         if type(request.get('force',False)) is not bool:
             raise ServiceError('REQUEST_TYPE','force must be boolean.')
         if 'values' in request and not isinstance(request['values'],dict):
@@ -116,14 +118,15 @@ class MaterialService:
             if values:
                 from mm_mcp.play.sliders import apply_values
                 graph=apply_values(graph,values,strict=True,catalog=self.catalog)
-        self._validated(graph,'import' if trusted else 'strict',trusted)
+        source_dir=request.get('source_dir')
+        self._validated(graph,'import' if trusted else 'strict',trusted,source_dir=source_dir)
         if self.render_fn is None:
             require_valid(self.cfg)
         return self.builds.build(graph,material_id=name,values=values,size=request.get('size',512),
                                  target=request.get('target','generic'),seed=request.get('seed'),
                                  physical_size_m=request.get('physical_size_m',1),provenance=provenance,
                                  trusted_recipe=trusted,render_fn=self.render_fn,cancel=cancel,
-                                 force=request.get('force',False))
+                                 force=request.get('force',False),source_dir=source_dir)
     def family(self,recipe_id,count=6,seed=1,ranges=None,locked=None,values=None,build=False,size=256,target='generic'):
         graph,origin=self.recipes.instantiate(recipe_id,values)
         ranges=self.recipes.resolve_controls(recipe_id,ranges or {})

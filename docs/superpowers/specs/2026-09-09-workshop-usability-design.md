@@ -49,3 +49,29 @@ small native render/export/reopen cycle if a compatible local graphics runtime i
 available; record specific limitations instead of treating simulated renders as proof.
 CI runs on pushes to `integration/next`. Update user quickstart and current handoff,
 commit and push the finished work to `origin/integration/next`.
+
+## Setup interface contract
+
+The browser setup panel uses the same authenticated adapter as materials. It can
+operate before the native catalog is configured. Responses contain native paths,
+checks and installation links, never session tokens or unrelated environment values.
+
+| Request | Result |
+| --- | --- |
+| `GET /api/setup` | Current settings, effective overrides, checks, configured/verified state and installation links. |
+| `POST /api/setup/check` with `{}` | Recheck the current configuration and discover installed native tools. |
+| `POST /api/setup` with `godot_binary` and `project_path` | Validate and save supported settings; refresh the idle service's catalog without changing workspace. |
+| `POST /api/setup/verify` with `{}` | Submit a small, forced native recipe build through the cancellable jobs interface. |
+| `GET /api/session` | Authenticated application/session/workspace identity for launch reuse. |
+
+Setup responses expose `settings: {godot_binary, project_path}`, `settings_file`,
+`overrides` keyed by setting name, `detected: {godot_binaries, project_paths}`,
+`checks: [{name, ok, detail}]`, `native_render_configured`,
+`native_render_verified_this_session`, `last_render_error`, and
+`install: {godot_url, material_maker_url}`. A check describes actual path/version
+findings; successful path checks alone never mark a native render verified.
+
+The frontend owns setup-panel presentation. The Python setup/session helpers own
+discovery, persistence, identity checks and configuration refresh. Source launchers
+use a small standard-library bootstrap helper so an existing virtualenv without
+pip can still be repaired, and ordinary launches do not reinstall dependencies.

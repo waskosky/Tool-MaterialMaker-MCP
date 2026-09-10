@@ -1,6 +1,6 @@
 # Material Workshop Usability Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Make the local Material Workshop easy to configure, browse, preview and
 use for selecting editable material variations; publish on `integration/next`.
@@ -9,7 +9,7 @@ use for selecting editable material variations; publish on `integration/next`.
 native retry output, add a small setup/session layer, and extend the existing plain
 JavaScript client with visual recipe, variation and snapshot workflows.
 
-**Tech Stack:** Python 3.11+, SQLite, Pillow, vanilla JavaScript, Three.js, pytest,
+**Tech Stack:** Python 3.10+, SQLite, Pillow, vanilla JavaScript, Three.js, pytest,
 optional Playwright/Chromium, Godot and the compatible Material Maker source.
 
 ## Task 1 — Native rendering reliability
@@ -18,22 +18,22 @@ Files: `src/mm_mcp/render.py`, `preview.py`, `policy.py`, `builds.py`, and narro
 related service interfaces if explicit asset origins require them; focused tests
 under `tests/upgrade/`.
 
-- [ ] Reproduce retry contamination with a subprocess double: a crashing first
+- [x] Reproduce retry contamination with a subprocess double: a crashing first
   attempt writes a valid image and a successful second attempt omits it; publication
   must fail and preserve any previous completed output.
-- [ ] Add a per-attempt cleanup callback to the native runner, preserving its
+- [x] Add a per-attempt cleanup callback to the native runner, preserving its
   cancellation and process cleanup behavior. Clear only private attempt files.
-- [ ] Reproduce and fix `%PROJECT_PATH%` resolution with an explicit source origin.
+- [x] Reproduce and fix `%PROJECT_PATH%` resolution with an explicit source origin.
   Validate asset roots and dependency hashes, render a rewritten copy, and publish
   original source. Reject ambiguous origins through the shared build boundary.
-- [ ] Exercise render and preview retries, cancellation, source preservation and
+- [x] Exercise render and preview retries, cancellation, source preservation and
   ordinary successful publication. Review spec compliance, then code quality.
 
 ## Task 2 — Setup and launch
 
 Files: `src/mm_mcp/setup.py` and `play/session.py` (new bounded helpers),
 `config.py`, `service.py`, `play/server.py`, `scripts/configure.py`, `play.bat`,
-`Play.command`, and focused setup/session tests.
+`Play.command`, `scripts/launch.py`, `play/static/setup.js`, and focused setup/session tests.
 
 - [ ] Add persisted native-path settings beneath the user's configuration directory
   with environment and `.env` precedence, atomic writes, validation, and safe updates.
@@ -73,7 +73,7 @@ where needed. Focused service tests and the actual browser acceptance test.
 ## Task 4 — Integration evidence and publication
 
 Files: `.github/workflows/test.yml`, `README.md`, relevant setup documentation,
-`docs/HANDOFF.md`, `docs/upgrade/STATUS.md`, `INTEGRATION.md`, and this plan.
+`HANDOFF.md`, `STATUS.md`, `docs/upgrade/STATUS.md`, `INTEGRATION.md`, and this plan.
 
 - [ ] Enable the existing portable/package/browser CI workflow for `integration/next`.
 - [ ] Attempt real native smoke, cancellation/restart and reopening exported `.ptex`

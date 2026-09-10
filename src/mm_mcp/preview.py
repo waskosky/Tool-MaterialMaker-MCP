@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 from dataclasses import dataclass
 from mm_mcp.config import Config, load_config
-from mm_mcp.render import _run_godot, _log_tail, _GodotTimeout
+from mm_mcp.render import _run_godot, _log_tail, _GodotTimeout, _clear_attempt_files
 from mm_mcp.core import ServiceError, finite, identifier
 from mm_mcp.paths import ensure_within_roots, PathNotAllowed
 from mm_mcp.artifacts import verify_images
@@ -49,7 +49,8 @@ def render_preview(albedo_path: str, normal_path: str, orm_path: str,
             raise ServiceError("ARTIFACT_SYMLINK", "Refusing to replace a preview symlink.")
         with tempfile.TemporaryDirectory(prefix=".preview-", dir=output) as temporary:
             candidate = Path(temporary) / destination.name
-            proc = _run_godot(_build_command(cfg, *inputs, str(candidate), tile), 60)
+            proc = _run_godot(_build_command(cfg, *inputs, str(candidate), tile), 60,
+                              before_attempt=lambda: _clear_attempt_files(temporary))
             log_tail = _log_tail(proc)
             if proc.returncode != 0:
                 raise ServiceError("PREVIEW_EXIT", f"Godot exited {proc.returncode}; preview was not published.")

@@ -96,7 +96,7 @@ def _preview_inputs(cfg):
 @pytest.mark.parametrize('exit_code,corrupt',[(1,False),(0,True),(0,False)])
 def test_preview_verified_atomic_publish(cfg,monkeypatch,exit_code,corrupt):
     inputs=_preview_inputs(cfg);destination=Path(cfg.output_dir)/'test_preview.png';destination.write_bytes(b'previous good file')
-    def run(cmd,timeout):
+    def run(cmd,timeout,**kwargs):
         out=Path(next(a[6:] for a in cmd if a.startswith('--out=')))
         if corrupt:out.write_bytes(b'junk')
         else:Image.new('RGB',(64,32)).save(out)

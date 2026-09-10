@@ -12,7 +12,7 @@ from PIL import Image
 from mm_mcp import __version__
 from mm_mcp.core import ServiceError, atomic_json, canonical, digest, file_digest, file_lock, identifier, resolution
 from mm_mcp.artifacts import verify_images, verify_manifest, zip_build, image_metrics, channel_name
-from mm_mcp.policy import graph_dependencies
+from mm_mcp.policy import graph_dependencies, source_directory
 from mm_mcp.graph import find_material_node
 from mm_mcp import render as renderer
 
@@ -132,7 +132,7 @@ class BuildStore:
         self.cfg,self.catalog=cfg,catalog
     def build(self, graph, *, material_id='custom', values=None, size=512, target='generic',
               seed=None, physical_size_m=1.0, provenance=None, trusted_recipe=False,
-              render_fn=None, cancel=None, force=False):
+              render_fn=None, cancel=None, force=False, source_dir=None):
         resolution(size,getattr(self.cfg,'max_resolution',2048)); identifier(material_id)
         if target not in TARGETS:
             raise ServiceError('TARGET','Unknown target profile.',targets=list(TARGETS))
@@ -144,9 +144,10 @@ class BuildStore:
                 raise ServiceError('SEED_RANGE','Seed must be a nonnegative 31-bit integer.')
             graph.pop('seed', None)
             graph['seed_int']=seed
-        deps=graph_dependencies(graph,self.cfg,trusted_recipe=trusted_recipe)
+        source_dir=source_directory(source_dir,self.cfg)
+        deps=graph_dependencies(graph,self.cfg,trusted_recipe=trusted_recipe,source_dir=source_dir)
         inputs={'schema_version':1,'material_id':material_id,'graph':graph,'values':values or {},
-                'resolution':size,'target':target,'seed':seed,'physical_size_m':physical_size_m,
+                'resolution':size,'target':target,'seed':seed,'physical_size_m':physical_size_m,'source_dir':source_dir,
                 'dependencies':deps,'renderer_kind':'injected_test_double' if render_fn is not None else 'native_material_maker','tools':tool_fingerprint(self.cfg,self.catalog), 'provenance':provenance or {}}
         key=digest(inputs); build_id='b_'+key
         target_dir=self.root/build_id
@@ -166,7 +167,8 @@ class BuildStore:
                 # Render into a private directory, even when a caller injects a renderer for tests.
                 fn=render_fn or renderer.render
                 result=fn(graph,size=size,outdir=str(stage),basename='material',target=CANONICAL_PROFILE,
-                          cfg=self.cfg,**({'cancel':cancel} if cancel else {}))
+                          cfg=self.cfg,**({'source_dir':source_dir} if source_dir is not None else {}),
+                          **({'cancel':cancel} if cancel else {}))
                 ok=result.get('ok') if isinstance(result,dict) else result.ok
                 images=list(result.get('images',[]) if isinstance(result,dict) else result.images)
                 if not ok:
@@ -186,7 +188,7 @@ class BuildStore:
                 (stage/'IMPORT.md').write_text("""# Import this material\n\nKeep this directory together. `material.ptex` is the editable source; `request.json` records the exact inputs. Read `target.json` for channel conventions and limitations. `quality.json` is technical evidence, not an artistic approval. External source references are recorded by hash; obtain their licenses and preserve their original paths when reopening a recipe. Native engine import must be checked on your target engine.\n""")
                 if cancel and cancel():
                     raise ServiceError('CANCELLED','Build cancelled before publication.')
-                if graph_dependencies(graph,self.cfg,trusted_recipe=trusted_recipe)!=deps:
+                if graph_dependencies(graph,self.cfg,trusted_recipe=trusted_recipe,source_dir=source_dir)!=deps:
                     raise ServiceError('DEPENDENCY_CHANGED','A referenced source changed while rendering; build not published.')
                 if tool_fingerprint(self.cfg,self.catalog)!=inputs['tools']:
                     raise ServiceError('TOOL_CHANGED','A rendering tool or definition changed during the build; output not published.')
