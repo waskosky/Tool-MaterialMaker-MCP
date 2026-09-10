@@ -19,7 +19,7 @@ def test_session_endpoint_requires_auth_and_returns_no_token(http_service):
     from tests.upgrade.test_http import call
     code, _, data = call(http_service, '/api/session')
     assert code == 200 and data['application'] == 'material-workshop'
-    assert data['workspace'] == str(http_service[2].root)
+    assert Path(data['workspace']) == http_service[2].root
     assert data['session'] and http_service[1] not in json.dumps(data)
     assert call(http_service, '/api/session', headers={'X-MM-Token': ''})[0] == 401
 

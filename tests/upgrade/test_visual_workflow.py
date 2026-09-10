@@ -20,7 +20,7 @@ def test_recipe_friendly_guide_fallback_preserves_identity(app):
              '_Category: test. Open the graph: `fixture.ptex`._\n\n'
              'Soft **weathering** across a cool stone surface.\n'
              'The gain control changes its grain.\n\n## Recipe\n\nLater details.')
-    path.with_suffix('.md').write_text(guide)
+    path.with_suffix('.md').write_text(guide, encoding='utf-8')
     recipe = app.recipes.describe('fixture')
     assert recipe['id'] == recipe['name'] == 'fixture'
     assert recipe['display_name'] == 'Weathered stone'
