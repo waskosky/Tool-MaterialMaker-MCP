@@ -293,8 +293,12 @@ async function useVariant(candidate, context) {
   initialValues = controlValues(); await Promise.all([projects(), snapshots()]); if (epoch !== generation) return;
   if (current.graph_hash === candidate.graph_hash) {
     await showBuild(candidate.result.manifest, epoch); if (epoch !== generation) return;
-    selectBuild(candidate.result); status("Variant selected. Its exact values are ready to edit or save as a personal recipe.");
-  } else { await build(); }
+    $("welcome").hidden = true;
+  }
+  // Family jobs belong to a recipe, not this saved project. Keep their images
+  // visible, but select only the normal project job's completed immutable build
+  // so exports and Foundry carry this project's exact ID and source revision.
+  await build();
 }
 function selectBuild(result) {
   $("welcome").hidden = true;
