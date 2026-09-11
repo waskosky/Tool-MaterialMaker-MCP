@@ -138,7 +138,7 @@ def test_adapter_roundtrip_and_errors(app,monkeypatch):
     assert result['ok'] and tools.material_project_get(result['project_id'])['controls']
     assert tools.material_project_patch(result['project_id'],False,[], 'bad')['ok'] is False
     assert tools.material_recipe_search(limit=999)['ok'] is False
-    assert len(tools.TOOLS)==24
+    assert len(tools.TOOLS)==32
 
 def test_real_worker_subprocess_cancel():
     from mm_mcp.render import _run_godot

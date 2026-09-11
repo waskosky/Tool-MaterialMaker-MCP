@@ -90,7 +90,7 @@ unfold UVs, repair topology, compute ambient occlusion, infer curvature or paint
 ## Adapter and native boundaries
 
 The browser handler performs session authentication and request/response translation.
-The MCP adapter offers 24 high-level functions plus the retained authoring surface.
+The MCP adapter offers 32 high-level functions plus the retained authoring surface.
 Capabilities distinguish configured native paths from demonstrated native execution.
 
 The native bridge authenticates requests, captures the serialized editor revision,

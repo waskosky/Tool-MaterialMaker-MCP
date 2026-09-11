@@ -18,7 +18,7 @@ from mm_mcp.artifacts import contact_sheet, image_metrics
 from mm_mcp.policy import graph_dependencies, code_hashes
 
 class MaterialService:
-    def __init__(self,cfg=None,catalog=None,*,render_fn=None):
+    def __init__(self,cfg=None,catalog=None,*,render_fn=None,blender_fn=None):
         self._config_lock=threading.RLock()
         self._build_running=False
         self._native_verified=False
@@ -32,10 +32,18 @@ class MaterialService:
         self.builds=BuildStore(self.root/'builds',self.cfg,self.catalog)
         self.thumbnails=ThumbnailStore(self.root,self.builds,self._project_origin)
         self.render_fn=render_fn
-        self.jobs=JobQueue(self.root,self.build)
+        from mm_mcp.blender.service import BlenderService
+        self.blender=BlenderService(self,runner=blender_fn)
+        self.jobs=JobQueue(self.root,self._job)
         # Recover persisted work for both MCP and browser clients, including a
         # queue already too full to accept another submission after a restart.
         self.jobs.start()
+    def _job(self,request,cancel=None):
+        if isinstance(request,dict) and request.get('kind')=='blender':
+            if set(request)!={'kind','request'}:
+                raise ServiceError('UNKNOWN_FIELDS','Unknown Blender job fields.')
+            return self.blender.execute(request['request'],cancel=cancel)
+        return self.build(request,cancel=cancel)
     def capabilities(self):
         try:
             require_valid(self.cfg); native=True; reason=None

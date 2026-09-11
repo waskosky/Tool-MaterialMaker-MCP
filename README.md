@@ -42,11 +42,15 @@ comparison and export. [View the library](docs/upgrade/evidence/workshop-cookboo
 
 ## Use with an assistant
 
-The server exposes 24 shared material tools, 10 batch tools, and 8 live tools.
+The server exposes 32 shared material tools, 10 batch tools, and 8 live tools.
 Configure your MCP host to launch `mm-mcp` from the installed Python environment.
 Use the same working folder or `MM_WORKSPACE_DIR` as Workshop to share projects.
 The [tool reference](docs/upgrade/TOOLS.md) and [workflows](docs/upgrade/WORKFLOWS.md)
 describe authoring, jobs, variations and exact-build downloads.
+
+The optional [Blender companion](docs/upgrade/BLENDER.md) inspects admitted static
+GLB meshes, previews exact Workshop builds, and bakes portable PBR maps and packed
+assets. An operator enables it with `MM_BLENDER_BINARY`; the default is disabled.
 
 Builds record their exact graph, inputs, source dependencies and target. Downloads
 use immutable build IDs. Workspace edits use revisions and retry keys. Native editor

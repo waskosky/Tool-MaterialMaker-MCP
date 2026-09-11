@@ -112,6 +112,17 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                 return self._static(path[len('/static/'):])
             if path=='/api/capabilities':
                 return self._send(app.capabilities())
+            if path=='/api/blender/capabilities':
+                return self._send(app.blender.capabilities())
+            if path.startswith('/api/blender/results/'):
+                rest=path[len('/api/blender/results/'):].split('/')
+                if len(rest)==1:
+                    return self._send({'ok':True,'manifest':app.blender.get(rest[0])})
+                if len(rest)==2 and rest[1]=='export':
+                    return self._send(app.blender.export(rest[0]),'application/zip',filename=rest[0]+'.zip')
+                if len(rest)==3 and rest[1]=='files':
+                    file=app.blender.artifact(rest[0],rest[2])
+                    return self._send(file.read_bytes(),mimetypes.guess_type(file.name)[0] or 'application/octet-stream')
             if path=='/api/companion':
                 return self._send({'ok':True,'base_path':cfg.base_path,'foundry_path':cfg.foundry_path})
             if path=='/api/setup':
@@ -166,6 +177,10 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             self._guard(api=True); _,path=self._route(); body=self._body()
             if path=='/api/render':
                 result=app.build(body)
+            elif path=='/api/blender/meshes':
+                result=app.blender.upload(**body)
+            elif path=='/api/blender/jobs':
+                result=app.blender.submit(body)
             elif path=='/api/setup':
                 result=app.configure_native(body)
             elif path in ('/api/setup/check','/api/setup/verify'):

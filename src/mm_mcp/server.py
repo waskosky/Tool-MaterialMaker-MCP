@@ -3,6 +3,7 @@ import glob
 import json
 import os
 import sys
+from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 from mm_mcp import __version__, live
 from mm_mcp.config import load_config, require_valid
@@ -17,7 +18,7 @@ from mm_mcp.doctor import run_check
 from mm_mcp.inspect import inspect_ptex
 from mm_mcp.idle import IdleWatchdog
 from mm_mcp.policy import graph_dependencies
-from mm_mcp.core import ServiceError, atomic_json, parse_json, MAX_JSON_BYTES
+from mm_mcp.core import ServiceError, atomic_json, parse_json, MAX_JSON_BYTES, file_lock
 
 # Startup is lazy: importing this module must NOT validate config or build the
 # catalog, so `mm-mcp --check` / `--version` work even when config is broken
@@ -67,6 +68,12 @@ def _first_albedo(images: list) -> str | None:
     return next((p for p in images if p.endswith("_albedo.png")), None)
 
 
+def _native_lock(cfg):
+    """Retained native adapters cooperate with immutable builds and Blender."""
+    root = Path(getattr(cfg, 'workspace_dir', '') or Path(cfg.output_dir) / 'workspace')
+    return file_lock(root / '.native.lock', timeout=660)
+
+
 mcp = MCPServer("material-maker")
 
 
@@ -112,7 +119,8 @@ def render_graph(ptex: dict, size: int = 512, basename: str = "material",
         graph_dependencies(ptex,cfg)
     except ServiceError as exc:
         return exc.result()
-    result = render(ptex, size=size, basename=basename, target=target, cfg=cfg)
+    with _native_lock(cfg):
+        result = render(ptex, size=size, basename=basename, target=target, cfg=cfg)
     return {"ok": result.ok, "images": result.images,
             "error": result.error, "log_tail": result.log_tail}
 
@@ -147,7 +155,8 @@ def render_node_output(ptex: dict, node_name: str, port: int = 0, size: int = 51
         graph_dependencies(isolated,cfg)
     except ServiceError as exc:
         return exc.result()
-    result = render(isolated, size=size, basename=basename, target=target, cfg=cfg)
+    with _native_lock(cfg):
+        result = render(isolated, size=size, basename=basename, target=target, cfg=cfg)
     if not result.ok:
         return {"ok": False, "image": None, "error": result.error,
                 "log_tail": result.log_tail}
@@ -179,8 +188,9 @@ def render_preview(albedo_path: str, normal_path: str, orm_path: str,
             ensure_within_roots(p, cfg.allowed_roots)
     except PathNotAllowed as exc:
         return {"ok": False, "image": None, "error": str(exc)}
-    result = _render_preview(albedo_path, normal_path, orm_path,
-                              basename=basename, tile=tile, cfg=cfg)
+    with _native_lock(cfg):
+        result = _render_preview(albedo_path, normal_path, orm_path,
+                                 basename=basename, tile=tile, cfg=cfg)
     return {"ok": result.ok, "image": result.image,
             "error": result.error, "log_tail": result.log_tail}
 
@@ -393,7 +403,8 @@ def live_render(basename: str = "material", profile: str = "Godot/Godot 4 Standa
     """Render the inspected active graph at the requested pixel size; verify returned image bytes and dimensions."""
     cfg,_=_ensure_ready();session=_ensure_live_session(cfg)
     if not session.ok:return {"ok":False,"error":session.error}
-    result=live.render(basename=basename,profile=profile,size=size,cfg=cfg)
+    with _native_lock(cfg):
+        result=live.render(basename=basename,profile=profile,size=size,cfg=cfg)
     return {"ok":result.ok,"images":result.images,"error":result.error,"log_tail":result.log_tail}
 
 

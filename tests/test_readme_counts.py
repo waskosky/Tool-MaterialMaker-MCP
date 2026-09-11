@@ -35,7 +35,7 @@ def test_readme_tool_counts_match_sdk_registration(kind, names):
 
 
 def test_reference_documents_all_registered_tools():
-    shared = set(re.findall(r'^## (material_\w+)$', REFERENCE, re.M))
+    shared = set(re.findall(r'^## ((?:material|blender)_\w+)$', REFERENCE, re.M))
     legacy = set(re.findall(r'^\| `(\w+)` \|', REFERENCE, re.M))
     assert shared == SHARED
     assert shared | legacy == REGISTERED
