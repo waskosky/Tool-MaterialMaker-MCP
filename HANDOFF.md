@@ -1,6 +1,6 @@
 # Session handoff: Tool-MaterialMaker-MCP
 
-_Last updated: 2026-09-11 — linked Shadermaker companion; upstream paused._
+_Last updated: 2026-09-11 — published companion and live recovery verified; upstream paused._
 
 ## Current state
 
@@ -17,27 +17,38 @@ that saved project's provenance. Legacy imported parameters remain editable only
 when the unrecognized fields are unchanged; new invalid fields still fail.
 
 Start with [SETUP](docs/upgrade/SETUP.md) and [WORKSHOP](docs/upgrade/WORKSHOP.md).
-The [companion evidence](docs/upgrade/evidence/workshop-companion-native.json)
-records real native bake/cache/seed/export, exact browser handoff, retained scene
-and runtime edits, stale-source rejection, actual MCP image responses, source
-reopening, and Godot LOW/HIGH import/capture. This Mac works with Godot 4.7 and the
-prepared native profile; the earlier default-profile compiler failures are historical.
+The [128-pixel native evidence](docs/upgrade/evidence/workshop-companion-native.json)
+records bake/cache/seed/export, retained scene and runtime edits, stale-source
+rejection, editable-source reopening, and native Godot LOW/HIGH import/capture.
+The [published live evidence](docs/upgrade/evidence/workshop-companion-live.json)
+adds 256-pixel sand baking, exact browser handoff and Edit source navigation,
+authenticated TLS, actual MCP PNG responses and one shared native queue,
+cancellation, targeted restart, and service/manager crash recovery. This Mac works
+with Godot 4.7 and the prepared native profile; earlier compiler failures are historical.
+
+Clean published Workshop `107534a` (`integration/next`), Foundry `92abc89` (`main`)
+and Godot Light `a13407bc` (`main`) passed live acceptance. The macOS LaunchAgent
+is installed and loaded; login registration and automatic crash recovery were
+verified, with no actual reboot. Existing Serve routes and peer listeners were
+preserved. The game root returned 502 before and after; the companion tools run
+independently of the stopped game stack and RAI. Native scope remains one sand
+recipe at 128 and 256 pixels, with experimental native editor writes disabled.
 
 Portable gate: **477 passed, 1 Windows-only skip, 4 deselected**. The real HTTP/CSP
 browser suite passes **3 cases** with required WebGL and explicitly synthetic test
 maps. The actual Python 3.12.13 / MCP SDK 2.2.0 client exercised the shared workspace
-and registered 42 tools. Package resources remain synchronized. Version 0.8.0a1
-remains a development candidate; no alpha release is being published.
+and registered 42 tools. Package resources remain synchronized. Accepted-code
+[CI run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693)
+passed all five jobs. Version 0.8.0a1 remains a development candidate; no alpha
+release is being published.
 
 ## Next work
 
-1. Finish reviewed publication to `origin/integration/next` and the linked
-   Foundry/Godot Light main branches, then live HTTPS/startup/recovery acceptance.
-2. Expand ordinary material use beyond the accepted 128-pixel sand example and
+1. Expand ordinary material use beyond the accepted 128/256-pixel sand example and
    inspect additional opaque material categories in the intended engine.
-3. Native editor writes, candidate replacement and bridge history need separate
+2. Native editor writes, candidate replacement and bridge history need separate
    disposable editor acceptance before enabling them for artist work.
-4. Use normal-use feedback to prioritize library management and build retention.
+3. Use normal-use feedback to prioritize library management and build retention.
 
 ## Heads-up
 
@@ -63,10 +74,14 @@ remains a development candidate; no alpha release is being published.
 
 Newest first; older details remain in git history.
 
+- 2026-09-11: Published and deployed the reviewed companion revisions; verified
+  live TLS/browser/MCP handoff, a serialized native queue, cancellation, targeted
+  restart and crash recovery. Installed the login LaunchAgent and checked its
+  automatic recovery without rebooting. Recorded the 128/256-pixel sand limit,
+  disabled editor writes and unchanged pre-existing game-root 502.
 - 2026-09-11: Added reviewed companion hosting and exact saved-project build handoff;
   repaired legacy-source editing and variation provenance; verified real native
-  bake/export/reopen, Godot capture and shared browser/MCP workflows. Live deployment
-  acceptance is the remaining delivery step.
+  bake/export/reopen, Godot capture and shared browser/MCP workflows before deployment.
 - 2026-09-10: Completed the approved setup/library/variation usability milestone,
   fixed reviewed native retry and browser ordering issues, exercised actual HTTP
   and WebGL with labelled test maps, and recorded the local native compiler blocker
@@ -81,4 +96,3 @@ Newest first; older details remain in git history.
 - 2026-09-06 (backup-ops wake-lock, cross-project): `pickup` here, Grayson picked next-step #2. Root-caused the 09-05 nightly truncation as idle-sleep mid-run (the git `NativeCommandError` is a handled CRLF warning; true signature is a missing `transcript end` footer, not a code bug), and added a `SetThreadExecutionState` wake-lock to `backup-ops\Backup-All.ps1` (acquire in try, release in finally). Verified compile + parse; commit `f7e809d` local, PUSH PENDING (ssh-agent not loaded this session). Commons log written. No MM-MCP code changed.
 - 2026-09-06 (idle-exit watchdog): `MM_IDLE_EXIT_MINUTES` opt-in idle exit, 17/17 tools touch it, live session closed on exit; review found and fixed the two untouched tools and the atexit skip; merged `--no-ff` as `f669f8c`, suite 989; registration set to 120.
 - 2026-09-06 (validate subgraph descent + crate round-trip prep)
-- 2026-09-06 (teardown #5 executed): MCP user-wide, crate into the Unity sandbox, kit-map layer 4b, role-named cookbook

@@ -10,11 +10,16 @@ security policy and SwiftShader WebGL. Its material images are synthetic
 TestRenderer output. The [launcher record](evidence/workshop-launch-local.json)
 covers session reuse and shutdown on macOS.
 
-The [native record](evidence/workshop-native-local.json) reports Vulkan compute
-compiler failures on Intel macOS with an AMD Radeon Pro 460, official Godot 4.7.1
-and 4.7.2, and pristine Material Maker source at `ad19fcf0`. Cancellation of a real
-worker-owned Godot process passed. Successful native baking, reopening exported
-`.ptex` source and target-engine imports remain unverified.
+The September 10 [native record](evidence/workshop-native-local.json) reports
+historical Vulkan compute compiler failures on Intel macOS/AMD Radeon Pro 460
+with official Godot 4.7.1/4.7.2 and pristine Material Maker `ad19fcf0`.
+The September 11 [native follow-up](evidence/workshop-companion-native.json)
+passes sand baking, exported `.ptex` reopening and native Godot LOW/HIGH imports
+at 128 pixels using the prepared Godot 4.7 profile. The
+[published live record](evidence/workshop-companion-live.json) adds 256-pixel sand,
+TLS/browser/MCP handoff, shared queue cancellation, restart and crash recovery,
+and installed login startup. No actual reboot was performed. Native editor
+writes remain disabled; [TESTING.md](TESTING.md) records the acceptance limits.
 
 ## Supplied archive description (historical)
 

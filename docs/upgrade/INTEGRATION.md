@@ -1,5 +1,13 @@
 # Local integration — 2026-09-08
 
+September 11 follow-up: the linked companion is published and deployed on the
+reviewed revisions in the [live acceptance record](evidence/workshop-companion-live.json).
+Sand baking at 128 and 256 pixels, source reopening, engine/browser handoff,
+shared queue cancellation, restart/crash recovery and login startup are verified
+within [TESTING.md](TESTING.md)'s limits. Native editor writes remain disabled,
+no actual reboot occurred, and no alpha release or further upstream work is included.
+The dated sections below preserve the earlier integration and its acceptance state.
+
 The supplied 0.8.0a1 update is integrated into the repository on
 `integration/next` (renamed from `integrate/0.8.0a1-updates`). The checkout started clean at
 `b41b65c612557a7da35a045091199058c0f76abb`, matching the archive's documented baseline.

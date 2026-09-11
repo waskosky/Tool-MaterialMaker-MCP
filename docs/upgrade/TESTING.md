@@ -75,7 +75,41 @@ Workshop-to-Foundry navigation, source refresh retaining scene/runtime/image edi
 stale-source denial, actual MCP stdio image responses, editable-source reopening
 and native Godot LOW/HIGH import/capture. See the normalized
 [companion record](evidence/workshop-companion-native.json); raw captures and logs
-remain private. Live HTTPS/manager recovery is a separate pending deployment check.
+remain private. Its `pending_at_recording` entry is historical and links to the
+completed live acceptance below.
+
+## Published companion acceptance
+
+The [live companion record](evidence/workshop-companion-live.json) covers clean,
+published Workshop `107534a` (`integration/next`), Foundry `92abc89` (`main`) and
+Godot Light `a13407bc` (`main`) under the independent companion manager. A real
+256-pixel sand build and exact cache reuse supplement the earlier 128-pixel native
+checks. Browser Send to Foundry imports the selected immutable build; Edit source
+opens the authenticated saved project in its actual popup. Rendered captures and
+compiled Godot Web LOW/HIGH references were inspected without script or shader
+errors under strict CSP. TLS requests without a token return 401, and unapproved
+origins return 403.
+
+Actual MCP SDK 2.2.0 stdio clients use the generated deployed configurations,
+register 42 Workshop and 19 Foundry tools, and receive PNG image content. Concurrent
+requests produce at most one native process and one running job; Foundry waits
+for Workshop's shared queue. Targeted Foundry restart preserves Workshop's process
+and active native job. Foundry cancellation reaches Workshop, drains the native
+worker and preserves the last good package. Foundry crash recovery removes its
+stale lock, and manager crash recovery cleans up owned children. Packages,
+projects and the shared token persist; pre-existing Serve routes and peer
+listeners are preserved, with private credential files and no managed-log token leak.
+
+The macOS LaunchAgent is installed and loaded. Login registration and automatic
+crash recovery were exercised; no actual reboot or pre-login daemon was tested.
+The existing game root returned 502 before and after this deployment. The tools
+operate independently of the stopped game stack and RAI.
+
+Native scope is one opaque sand recipe at 128 and 256 pixels, without a full recipe
+or device matrix. Chromium SwiftShader establishes browser functionality, not
+hardware performance; the earlier native Godot captures separately exercise the
+Mac graphics driver. Experimental native editor writes and global undo remain
+disabled and were not part of this acceptance. Raw logs and captures remain private.
 
 ## Real SDK gate
 
@@ -102,8 +136,9 @@ exact export, then creates an explicit-seed build. It writes `acceptance.json` a
 a verified archive. It does not touch an artist tab. A successful result is batch
 acceptance for that configuration, not global engine or visual-quality certification.
 
-Test additional recipe categories, resolutions and target packages. Reopen exported
-`.ptex` source in Material Maker and compare against the approved maps. Test missing
+Beyond the accepted sand at 128 and 256 pixels, test additional recipe categories,
+resolutions and target packages. Reopen exported `.ptex` source in Material Maker
+and compare against the approved maps. Test missing
 graphics devices, process crashes, cancelled large graphs, corrupt source assets,
 insufficient disk space and file permissions. Confirm driver/process cleanup.
 
@@ -156,3 +191,7 @@ It checks portable contracts on Linux, Windows and macOS, builds and checks the 
 and runs the real HTTP browser suite with WebGL required and labelled synthetic maps.
 Browser screenshots are retained as CI artifacts. Native GPU baking and engine imports
 remain separate acceptance work; this workflow does not publish a release.
+The accepted Workshop revision `107534a` passed all five jobs in
+[CI run 34579303994](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579303994).
+Version 0.8.0a1 remains a development candidate; no new alpha release or upstream
+work is included in this delivery.
