@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-11",
+  "source_commits": {
+    "foundry": "e6bf1d155e4b22b28e3ce7b2caeaaea667c11a41",
+    "workshop": "6de86333c62e7f8335830e90ce007fda54489509"
+  },
+  "host": "macOS 15.7.1, Intel, AMD Radeon Pro 460",
+  "native_profile": {
+    "godot": "4.7.stable.official.5b4e0cb0f",
+    "material_maker_commit": "ad19fcf0ee34a7caf74df709dc4de7112f0d467d",
+    "source": "Prepared isolated toolchain with reviewed size-forwarding repair and imported cache; upstream checkout remains pristine.",
+    "environment": {
+      "MVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS": "0",
+      "MM_RENDER_DEVICE_ID": "intel-mac-amd460-mvk-argument-buffers-disabled"
+    }
+  },
+  "material": "t01_sand_dunes",
+  "size": 128,
+  "project_id": "p_fc90cc90964342da810646dc3d1227d6",
+  "package_id": "workshop_p_fc90cc90964342da810646dc3d1227d6",
+  "build_ids": [
+    "b_522d3380ec645ea4d6837012c5aa2f0fb731e3339a2a9795eb4c77b94f79e7e4",
+    "b_0cbe3c2a1a73af8618409b3c386b0f5234421c440123098388080256f5ec6913",
+    "b_6489ec5e2de2cb31590bac4ba4a9b59008223a223b49f795cb08287649736288"
+  ],
+  "verified": {
+    "native_png_cache_seed_archive": true,
+    "browser_exact_build_handoff": true,
+    "source_refresh_preserves_scene_runtime_images": true,
+    "stale_source_rejected": true,
+    "mcp_sdk": "2.2.0; 42 Workshop tools and 19 Foundry tools over actual stdio clients; shared workspace, cache, queued regeneration and PNG image responses",
+    "runtime_edit_during_bake_preserved": true,
+    "native_editor_reopen": "Disposable editor copy and unique user directory; source path and three graph node identities matched; viewport inspected",
+    "godot_export_import_low_high": "Godot 4.7 Compatibility; both captures inspected; no script or shader errors",
+    "portable_workshop": "477 passed, 1 Windows-only skip, 4 deselected",
+    "browser_workshop": "3 passed; actual HTTP/CSP, required Chromium SwiftShader WebGL, synthetic renderer explicitly labelled",
+    "portable_foundry": "165 Node tests and 5 bridge tests; deterministic build; 867 staged-snapshot release checksums"
+  },
+  "private_evidence": "/Users/macuser/games/godot-shaders-foundry/.foundry/companion-acceptance-20260911",
+  "pending": [
+    "Published live HTTPS deployment and manager recovery acceptance"
+  ],
+  "limits": [
+    "One opaque material at 128 pixels, not a full recipe or device matrix.",
+    "Native editor writes/global undo are disabled and were not tested.",
+    "Chromium uses SwiftShader for functional browser checks; native Godot captures exercise the Mac graphics driver.",
+    "The September 10 Godot 4.7.1/4.7.2 default-profile compiler failures remain historical evidence."
+  ]
+}
