@@ -37,10 +37,29 @@ runtime and image edits, while stale revisions fail. Actual MCP SDK clients shar
 the same queue/workspace and receive PNG image content. See
 [companion evidence](evidence/workshop-companion-native.json).
 
-Hosted subpaths, explicit origins, shared private token files and exact selected
-build links are implemented. Adopted recipe variations obtain a saved-project
-build before handoff. Imported legacy fields may remain unchanged during valid
-edits; this does not admit new unknown fields or custom code.
+The [published live record](evidence/workshop-companion-live.json) adds native
+256-pixel sand baking and cache reuse, exact Send to Foundry and Edit source
+browser navigation, inspected LOW/HIGH Godot Web references, and TLS authentication checks.
+Actual MCP stdio clients share the deployed workspace and serialized queue: one
+native process and one running job at a time, with PNG responses from both tools.
+Foundry cancellation drains Workshop's worker while preserving the last good
+package. Targeted Foundry restart preserves Workshop's active native job, and
+service/manager crashes recover without losing packages, projects or the shared
+token. Existing Serve routes and peer listeners remain unchanged.
+
+Clean published Workshop `107534a` on `integration/next`, Foundry `92abc89` and
+Godot Light `a13407bc` on their `main` branches passed that live acceptance.
+Workshop's accepted-code [CI run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693)
+passed all five jobs. The macOS LaunchAgent is installed and loaded, with login
+registration and automatic crash recovery exercised; no actual reboot occurred.
+The existing game root returned 502 before and after deployment. These tools run
+independently of the stopped game stack and RAI.
+
+Hosted subpaths, explicit origins and shared private tokens are deployed. Adopted
+recipe variations obtain a saved-project build before handoff. Imported legacy
+fields may remain unchanged during valid edits; this does not admit new unknown
+fields or custom code. Native acceptance remains limited to one sand recipe at
+128 and 256 pixels. Experimental native editor writes remain disabled.
 
 The earlier Godot 4.7.1/4.7.2 default-profile failures remain in the historical
 [native record](evidence/workshop-native-local.json). The upstream source remains
@@ -48,15 +67,14 @@ pristine; the working renderer uses an isolated prepared toolchain.
 
 ## Next practical work
 
-1. Complete reviewed publication and live TLS, startup and recovery acceptance
-   under the independent Godot Light companion manager.
-2. Expand real native and engine checks beyond this one opaque recipe/resolution.
-3. Validate native editor writes, replacement, recovery and bridge history in a
+1. Expand real native and engine checks beyond sand at 128 and 256 pixels.
+2. Validate native editor writes, replacement, recovery and bridge history in a
    disposable project before enabling them for artist work.
-4. Prioritize library organization and retention after ordinary material use.
+3. Prioritize library organization and retention after ordinary material use.
 
 Development continues on `integration/next`; upstream contributions remain paused.
 Foundry and Godot Light integration stays in their independent repositories.
+Version 0.8.0a1 remains a development candidate; no alpha release is being published.
 
 ## Deliberately limited contracts
 

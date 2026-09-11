@@ -6,7 +6,7 @@
 
 Gate ledger. Three states only: ✅ verified · 🔌 wired · ⬜ not started.
 
-_Last updated: 2026-09-11 (linked companion acceptance)._
+_Last updated: 2026-09-11 (published companion and live recovery acceptance)._
 
 **How to read this file (rule adopted 2026-09-05, teardown #3):** each cell holds
 the state, one line of what it is, and a pointer to where the evidence lives
@@ -25,14 +25,20 @@ row points at.
 | Saved setup, repair and authenticated launch reuse | ✅ verified | [Launch evidence](docs/upgrade/evidence/workshop-launch-local.json) and setup/session regressions. |
 | Visual library, variations, history and exact downloads | ✅ verified | 3 real HTTP/CSP browser cases and 21 Node state cases; [browser evidence](docs/upgrade/evidence/workshop-browser-local.json). |
 | WebGL path and responsive viewport | ✅ verified | Chromium SwiftShader with labelled synthetic maps; [desktop/mobile captures](docs/upgrade/WORKSHOP.md). |
-| Native worker cancellation | ✅ verified | Owned Godot process observed and stopped; [native evidence](docs/upgrade/evidence/workshop-native-local.json). |
-| Successful native baking, source reopen and Godot imports | ✅ verified | One 128-pixel sand material, prepared Godot 4.7 profile; [companion evidence](docs/upgrade/evidence/workshop-companion-native.json). |
+| Native worker cancellation | ✅ verified | Foundry cancellation reaches Workshop and drains the native worker while retaining the last good package; [live evidence](docs/upgrade/evidence/workshop-companion-live.json). |
+| Successful native baking, source reopen and Godot imports | ✅ verified | Sand at 128 pixels with native source reopen/LOW-HIGH imports; 256-pixel live bake/Godot Web references; [native](docs/upgrade/evidence/workshop-companion-native.json), [live](docs/upgrade/evidence/workshop-companion-live.json). |
 | Exact linked Foundry handoff and source refresh | ✅ verified | Browser and actual MCP clients preserve runtime/scene/images and reject stale source; [companion evidence](docs/upgrade/evidence/workshop-companion-native.json). |
-| Hosted TLS deployment and startup recovery | 🔌 wired | Adapters and optional Godot Light manager implemented; live deployment acceptance pending. |
+| Hosted TLS deployment and startup recovery | ✅ verified | Clean published sources, TLS auth, LaunchAgent installation and automatic recovery; no reboot performed; [live evidence](docs/upgrade/evidence/workshop-companion-live.json). |
+| Shared MCP queue and independent service recovery | ✅ verified | One native worker, exact Edit source link, targeted restart, child/manager crashes and preserved routes/workspaces; [live evidence](docs/upgrade/evidence/workshop-companion-live.json). |
 | Native editor writes and bridge history | 🔌 wired | Disposable editor mutation checks remain; native writes disabled by default. |
 | Packaged resources, wheel and metadata | ✅ verified | 109 resource files match, wheel and metadata checks pass; [integration record](docs/upgrade/INTEGRATION.md). |
-| Integration branch CI | ✅ verified | Linux, Windows, macOS, distribution and browser jobs pass; [CI evidence](docs/upgrade/evidence/workshop-origin-ci.json). |
+| Integration branch CI | ✅ verified | Accepted Workshop `107534a`: all five Linux, Windows, macOS, distribution and browser jobs pass; [run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693). |
 | Alpha release publication | ⬜ not started | Version 0.8.0a1 remains a development candidate; release workflow disabled on the fork. |
+
+Native acceptance covers one sand recipe at 128 and 256 pixels, without a broader
+recipe or device matrix. Experimental native editor writes remain disabled and
+need separate acceptance. The existing game root returned 502 before and after
+deployment; the tools operate independently of the stopped game stack and RAI.
 
 The following ledger records the **0.7 baseline's historical gates**, not a
 certification of the changed 0.8 native paths. For current capability boundaries,

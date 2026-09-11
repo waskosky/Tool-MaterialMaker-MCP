@@ -38,9 +38,10 @@
     "portable_foundry": "165 Node tests and 5 bridge tests; deterministic build; 867 staged-snapshot release checksums"
   },
   "private_evidence": "/Users/macuser/games/godot-shaders-foundry/.foundry/companion-acceptance-20260911",
-  "pending": [
+  "pending_at_recording": [
     "Published live HTTPS deployment and manager recovery acceptance"
   ],
+  "follow_up_evidence": "workshop-companion-live.json",
   "limits": [
     "One opaque material at 128 pixels, not a full recipe or device matrix.",
     "Native editor writes/global undo are disabled and were not tested.",

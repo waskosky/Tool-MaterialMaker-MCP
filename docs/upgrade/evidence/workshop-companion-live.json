@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-11",
+  "passed": true,
+  "source_commits": {
+    "foundry": "92abc897141f1279c18f1a05bd8d51c64e37c13c",
+    "workshop": "107534abbc55aad6240f5ba93f976f6ad86bb0a4",
+    "supervisor": "a13407bccaaa85e0627938a38cc31346f32deb38"
+  },
+  "source_branches": {
+    "foundry": "main",
+    "workshop": "integration/next",
+    "supervisor": "main"
+  },
+  "host": "macOS 15.7.1, Intel, AMD Radeon Pro 460",
+  "native_profile": {
+    "godot": "4.7.stable.official.5b4e0cb0f",
+    "material_maker_commit": "ad19fcf0ee34a7caf74df709dc4de7112f0d467d",
+    "source": "Prepared isolated toolchain with reviewed size-forwarding repair and imported cache; upstream checkout remains pristine.",
+    "environment": {
+      "MVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS": "0",
+      "MM_RENDER_DEVICE_ID": "intel-mac-amd460-mvk-argument-buffers-disabled"
+    }
+  },
+  "deployment": {
+    "origin": "https://w11.tailbcac65.ts.net",
+    "foundry_path": "/shadermaker/",
+    "workshop_path": "/shadermaker/workshop/",
+    "manager_state": "ready",
+    "routes_state": "configured",
+    "workspaces": "Persistent private Godot Light companion state; generated browser and MCP configuration shares the same token and workspaces."
+  },
+  "material": "t01_sand_dunes",
+  "size": 256,
+  "build_id": "b_0cbb60c6aec0bdd9889792e66adc2e0d469ed786b5554154dc5d0fbe6ab9e69a",
+  "verified": {
+    "clean_published_running_sources": true,
+    "tls_unauthenticated_401_and_unapproved_origin_403": true,
+    "real_native_build_and_exact_cache_reuse": true,
+    "browser_send_exact_build_import_and_rendered_capture": true,
+    "edit_source_popup_reopens_authenticated_saved_project": true,
+    "targeted_foundry_restart_preserves_workshop_process_and_active_native_job": true,
+    "foundry_cancellation_reaches_workshop_and_drains_native_worker": true,
+    "last_good_package_preserved_after_cancellation": true,
+    "mcp_sdk": "2.2.0 over actual stdio clients using generated deployed configuration",
+    "shared_mcp_queue": {
+      "workshop_tools": 42,
+      "foundry_tools": 19,
+      "native_process_maximum": 1,
+      "running_job_maximum": 1,
+      "foundry_waited_for_workshop": true,
+      "workshop_cached": false
+    },
+    "mcp_png_image_content_from_both_tools": true,
+    "compiled_godot_web_reference": {
+      "tiers": [
+        {
+          "tier": "low",
+          "source_hash": "a01e6616",
+          "png_sha256": "d0a67c8e5cedd07a3644bf5479a54ce3efb0a34484f0e469940c590b06cf9ad2"
+        },
+        {
+          "tier": "high",
+          "source_hash": "7ae79b42",
+          "png_sha256": "8af1b8f1b76e4c9d063bd536bc47870ab3f8eb7c7c4bb52f4665b8d78073a5aa"
+        }
+      ],
+      "strict_csp": true,
+      "script_or_shader_errors": false,
+      "frames_inspected": true
+    },
+    "foundry_crash_recovers_stale_lock_without_peer_or_package_loss": true,
+    "manager_crash_recovers_owned_children": true,
+    "startup": {
+      "label": "org.godot-light.shadermaker",
+      "installed": true,
+      "loaded": true,
+      "run_at_login": true,
+      "actual_reboot_performed": false
+    },
+    "package_project_and_shared_token_persist_across_recovery": true,
+    "all_preexisting_serve_routes_and_peer_listeners_preserved": true,
+    "private_credential_files_and_no_managed_log_token_leak": true
+  },
+  "ci": {
+    "foundry": "https://github.com/waskosky/godot-shaders-foundry/actions/runs/34579071942",
+    "workshop": "https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693",
+    "supervisor": "https://github.com/waskosky/godot-light/actions/runs/34581878027",
+    "supervisor_headless_fix": "https://github.com/waskosky/godot-light/actions/runs/34584102385"
+  },
+  "merged_implementation_prs": [
+    "https://github.com/waskosky/godot-shaders-foundry/pull/1",
+    "https://github.com/waskosky/Tool-MaterialMaker-MCP/pull/2",
+    "https://github.com/waskosky/godot-light/pull/336",
+    "https://github.com/waskosky/godot-light/pull/337"
+  ],
+  "existing_game_root": {
+    "before": 502,
+    "after": 502
+  },
+  "private_evidence": "/Users/macuser/games/godot-shaders-foundry/.foundry/companion-acceptance-20260911/live",
+  "inspected_capture_sha256": {
+    "foundry-initial.png": "4e9b0c6abbee610ef5b9c0f45a74538c4eadcbe6926f29dbf2b91d60f2afd0f3",
+    "foundry-ui-initial.png": "1727d5b9a875ee70439491589a070d78c1ab7217d0b435641a08d419873dee38",
+    "workshop-native-project.png": "fa5f382287fb533badadab7c2c75ed7aba86104dbf048df8b2f7384548c35bf9",
+    "mcp-workshop.png": "be358e77ba77abaca316adddb0678207c8d4901b1e53880316697a1928631915",
+    "mcp-foundry.png": "d2f097549bec5c1b0863488165580f812443d3199d2aca5da1ffd18c783e24c0",
+    "live-godot-web-low.png": "d0a67c8e5cedd07a3644bf5479a54ce3efb0a34484f0e469940c590b06cf9ad2",
+    "live-godot-web-high.png": "8af1b8f1b76e4c9d063bd536bc47870ab3f8eb7c7c4bb52f4665b8d78073a5aa",
+    "live-godot-web-ui.png": "ee0c9bec39aac0243c31db7420c9ea84cedb819d37184899c317e340ff2d2138",
+    "edit-source-project.png": "67e4f26c99118161f358d95eb1c54b30c3bdf49c7f363aa905684d3057305982"
+  },
+  "limits": [
+    "One opaque sand recipe at 256 pixels, supplementing the earlier 128-pixel native source/export/engine acceptance; no full recipe or device matrix.",
+    "Chromium SwiftShader establishes browser functionality, not hardware performance. Earlier native Godot captures separately exercise the Mac graphics driver.",
+    "LaunchAgent login registration and automatic crash recovery were exercised; no actual reboot or pre-login daemon was tested.",
+    "Experimental native editor writes/global undo remain disabled and were not tested.",
+    "The existing game homepage returned 502 before and after this deployment; companion tools operate independently of the stopped game stack and RAI."
+  ]
+}
