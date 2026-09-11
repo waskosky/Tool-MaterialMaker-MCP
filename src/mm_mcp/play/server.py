@@ -4,6 +4,7 @@ The operator receives a fragment-token launch URL. Fragments are not sent in
 HTTP requests; JavaScript exchanges the token via a header. No CORS is enabled.
 """
 import csv
+from html import escape
 import hmac
 import json
 import mimetypes
@@ -90,7 +91,15 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             path=Path(static_dir)/name
             if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(Path(static_dir).resolve()):
                 raise ServiceError('NOT_FOUND','Static file not found.')
-            return self._send(path.read_bytes(),mimetypes.guess_type(name)[0] or 'application/octet-stream')
+            data=path.read_bytes()
+            if name=='index.html' and cfg.base_path!='/':
+                # A proxy can strip the mount before forwarding a slashless
+                # browser entry. Initial assets must resolve before app.js runs.
+                base=escape(cfg.base_path,quote=True).encode('utf-8')
+                data=data.replace(b'<html ',b'<html data-base-path="'+base+b'" ',1)
+                data=data.replace(b'href="static/',b'href="'+base+b'static/')
+                data=data.replace(b'src="static/',b'src="'+base+b'static/')
+            return self._send(data,mimetypes.guess_type(name)[0] or 'application/octet-stream')
         def _get(self):
             url,path=self._route(); query=parse_qs(url.query)
             self._guard(api=path.startswith('/api/'),session_probe=path=='/api/session')

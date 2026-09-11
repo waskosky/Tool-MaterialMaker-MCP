@@ -138,11 +138,49 @@ class ResourceLinks(HTMLParser):
     def __init__(self):
         super().__init__()
         self.paths = []
+        self.html_attrs = {}
 
     def handle_starttag(self, tag, attrs):
         fields = dict(attrs)
+        if tag == 'html':
+            self.html_attrs = fields
         if tag == 'script' or (tag == 'link' and fields.get('rel') == 'stylesheet'):
             self.paths.append(fields.get('src') or fields['href'])
+
+
+def test_stripped_entry_resources_resolve_from_slashless_public_mount(hosted_service):
+    # A prefix-stripping proxy forwards this URL as /?project=project_a.
+    # The browser still resolves the initial stylesheet/scripts against the
+    # slashless public URL, before app.js can normalize its history entry.
+    mount = '/shadermaker/workshop/'
+    public_url = 'https://workshop.example' + mount.rstrip('/') + '?project=project_a'
+    code, headers, html = call(hosted_service, '/?project=project_a',
+                             headers={'Host': 'workshop.example', 'X-MM-Token': ''})
+    assert code == 200
+    links = ResourceLinks()
+    links.feed(html.decode())
+    assert len(links.paths) == 6
+    for resource in links.paths:
+        path = urlsplit(urljoin(public_url, resource)).path
+        assert path.startswith(mount + 'static/'), f'Slashless entry escaped its mount: {path}'
+        upstream = path[len(mount) - 1:]
+        status, meta, body = call(hosted_service, upstream,
+                                 headers={'Host': 'workshop.example', 'X-MM-Token': ''})
+        assert status == 200 and body
+        assert ('text/css' if path.endswith('.css') else 'javascript') in meta['Content-Type']
+    assert links.html_attrs['data-base-path'] == mount
+    assert "base-uri 'none'" in headers['Content-Security-Policy']
+    assert hosted_service[1].encode() not in html
+
+
+def test_standalone_entry_keeps_relative_file_resources(http_service):
+    code, _, html = call(http_service, '/', headers={'X-MM-Token': ''})
+    assert code == 200
+    links = ResourceLinks()
+    links.feed(html.decode())
+    assert 'data-base-path' not in links.html_attrs
+    assert len(links.paths) == 6
+    assert all(path.startswith('static/') for path in links.paths)
 
 
 def test_entry_resources_resolve_at_root_and_mount(hosted_service):
@@ -155,7 +193,7 @@ def test_entry_resources_resolve_at_root_and_mount(hosted_service):
         links.feed(html.decode())
         assert len(links.paths) == 6
         for resource in links.paths:
-            assert not resource.startswith('/')
+            assert resource.startswith('/shadermaker/workshop/static/')
             path = urlsplit(urljoin('https://workshop.example' + entry, resource)).path
             assert call(hosted_service, path, headers={'Host': 'workshop.example', 'X-MM-Token': ''})[0] == 200
     code, meta, _ = call(hosted_service, '/shadermaker/workshop?project=project_a')

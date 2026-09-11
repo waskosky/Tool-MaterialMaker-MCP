@@ -6,6 +6,51 @@ import subprocess
 import pytest
 
 
+@pytest.mark.parametrize('entry, base, fragment', [
+    ('/shadermaker/workshop', '/shadermaker/workshop/', '#token=fixture-token&tab=source'),
+    ('/shadermaker/workshop', '/shadermaker/workshop/', '#tab=source'),
+    ('/shadermaker/workshop/', '/shadermaker/workshop/', '#token=fixture-token'),
+    ('/', '/shadermaker/workshop/', '#token=fixture-token'),
+    ('/', '', '#token=fixture-token'),
+    ('/tmp/workshop/index.html', '', '#token=fixture-token'),
+])
+def test_entry_normalization_preserves_query_fragment_and_history(entry, base, fragment):
+    node = shutil.which('node')
+    if node is None:
+        pytest.skip('Node.js is needed for the frontend entry check')
+    source = Path(__file__).resolve().parents[2] / 'src/mm_mcp/play/static/app.js'
+    harness = r'''
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+const [entry,base,fragment]=process.argv.slice(2),query='?project=project_link&view=source';
+const location=new URL('https://workshop.example'+entry+query+fragment);
+const originalState={selected:'retained-history'},replaced=[],storage=new Map();
+const history={state:originalState,replaceState(state,title,url){
+  replaced.push({state,url});this.state=state;location.href=new URL(url,location).href;
+}};
+const context={URLSearchParams,location,history,
+  document:{documentElement:{dataset:base?{basePath:base}:{}}},
+  sessionStorage:{setItem(key,value){storage.set(key,value);},getItem(key){return storage.get(key);}}};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync(process.argv[1],'utf8').split('let foundryPath = null;')[0],context);
+const normalized=base && entry===base.slice(0,-1),expectedPath=normalized?base:entry;
+assert.equal(location.pathname,expectedPath,'Normalize before capturing the API base');
+assert.equal(location.search,query,'The selected project query must survive');
+assert.equal(vm.runInContext('entryBase',context),expectedPath.slice(0,expectedPath.lastIndexOf('/')+1));
+assert.equal(vm.runInContext('entryProject',context),'project_link');
+if(normalized)assert.deepEqual(replaced[0],{state:originalState,url:base+query+fragment});
+if(fragment.includes('token=')){
+  assert.equal(storage.get('mm.token'),'fixture-token');assert.equal(location.hash,'');
+}else{
+  assert.strictEqual(history.state,originalState,'URL normalization preserves history state');
+  assert.equal(location.hash,fragment);assert.equal(storage.size,0);
+}
+assert.equal(replaced.length,Number(normalized)+Number(fragment.includes('token=')));
+'''
+    result = subprocess.run([node, '-e', harness, str(source), entry, base, fragment],
+                            capture_output=True, text=True, timeout=10)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 @pytest.mark.parametrize('mount', ['/', '/shadermaker/workshop/'])
 @pytest.mark.parametrize('scenario', ['linked', 'setup_race', 'project_race', 'standalone', 'invalid_link'])
 def test_mounted_entry_project_and_exact_selected_build_navigation(mount, scenario):

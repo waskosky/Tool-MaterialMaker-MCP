@@ -1,6 +1,10 @@
 "use strict";
 // The local shared service owns graphs and builds; this client tracks selections.
 const $ = id => document.getElementById(id);
+const configuredBase = document.documentElement?.dataset.basePath;
+if (configuredBase && configuredBase !== "/" && location.pathname === configuredBase.slice(0, -1)) {
+  history.replaceState(history.state, "", configuredBase + (location.search || "") + (location.hash || ""));
+}
 const entryPath = location.pathname || "/", entrySearch = location.search || "";
 const entryBase = entryPath.slice(0, entryPath.lastIndexOf("/") + 1);
 const entryProject = new URLSearchParams(entrySearch).get("project");
