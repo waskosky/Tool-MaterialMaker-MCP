@@ -66,3 +66,25 @@ def test_legacy_compatibility_does_not_admit_new_invalid_authoring(app, legacy_p
         app.patch(before['project_id'], 0,
                   [{'op': 'set_seed', 'seed': 73022}, copy.deepcopy(operation)], 'bad-legacy-edit')
     assert app.read_project(before['project_id']) == before
+
+
+@pytest.mark.parametrize('count', [500, 501, 1000])
+@pytest.mark.parametrize('parameters', [{'roughness': True}, {'zz_new_typo': 1}])
+def test_legacy_warning_limit_cannot_hide_new_authoring_errors(app, cfg, graph, count, parameters):
+    resolve_node(graph, 'Material')['parameters'].update({f'legacy_{i:04}': i for i in range(count)})
+    Path(cfg.cookbook_dir, 'test', 'fixture.ptex').write_text(json.dumps(graph))
+    before = app.instantiate('fixture')
+    with pytest.raises(ServiceError) as error:
+        app.patch(before['project_id'], 0,
+                  [{'op': 'set_parameters', 'path': 'Material', 'parameters': parameters}], 'overflow-edit')
+    assert any(p['severity'] == 'error' for p in error.value.details['problems'])
+    assert app.read_project(before['project_id']) == before
+
+
+def test_import_warning_limit_cannot_hide_a_later_invalid_declared_value(graph, catalog):
+    values = {f'legacy_{i:04}': i for i in range(500)}
+    values['roughness'] = True
+    resolve_node(graph, 'Material')['parameters'] = values
+    problems = validate_graph(graph, catalog, mode='import')
+    assert len(problems) <= 500
+    assert any(p['severity'] == 'error' for p in problems)

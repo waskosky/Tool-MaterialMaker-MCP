@@ -33,9 +33,17 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
     """
     problems = []
     strict = mode == 'strict'
+    has_error = False
     def report(where, message, severity='error', code='INVALID_GRAPH'):
+        nonlocal has_error
+        problem = dict(severity=severity, where=where, message=message, code=code)
         if len(problems) < 500:
-            problems.append(dict(severity=severity, where=where, message=message, code=code))
+            problems.append(problem)
+        elif severity == 'error' and not has_error:
+            # A large imported graph can exhaust the warning budget before its
+            # first invalid edit. Never turn rejection into success by truncation.
+            problems[-1] = problem
+        has_error |= severity == 'error'
     if mode not in ('strict', 'import'):
         report('', 'mode must be strict or import'); return problems
     try:
