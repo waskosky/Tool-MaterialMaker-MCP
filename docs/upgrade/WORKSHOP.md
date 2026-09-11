@@ -62,6 +62,25 @@ textures, editable `material.ptex`, input record and import notes. Further edits
 disable the download until the new preview completes. Use **Retry build** if a build
 fails, or **Setup & repair** to correct native paths and test the renderer.
 
+## Continue in Foundry
+
+When the operator configures the Shadermaker companion, **Foundry** appears beside
+**Setup & repair**. Finish and select a preview, then use **Send to Foundry** to
+open that exact completed build. The link carries its immutable build ID as
+`?workshop_build=BUILD_ID` and the shared credential only in the URL fragment.
+Changing controls or build settings hides this action until the new preview
+completes. Choosing a completed variation sends that selected candidate's build.
+
+Workshop keeps ownership of editable source, gradients, producer controls and the
+native render queue. Foundry owns game recipes, scene/runtime controls and their
+exports. Foundry's **Edit source** link returns to Workshop with `?project=ID`,
+which opens the existing saved project after setup and library initialization.
+Late initial reads cannot replace a material you have selected in the meantime.
+The hosted configuration caps previews and variations at 1024 pixels; choose the
+generic or Godot package for the Foundry handoff. [Hosted setup](SETUP.md#hosted-shadermaker-companion)
+describes the explicit origin, paths and shared credential. Without that
+configuration, the standalone editing and export workflow remains available.
+
 The browser previews baseline opaque material channels. Review the downloaded maps
 and import notes in your intended engine. Native editor writes remain disabled by
 default. The current native and browser acceptance limits are in

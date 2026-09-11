@@ -61,7 +61,54 @@ unrelated program occupies the configured port, set `MM_PLAY_PORT` to another po
 or stop that program. The launcher does not take over an unrelated listener.
 
 For a terminal-managed service that should not open a browser, use `mm-play --no-open`.
-The terminal prints its private launch link; keep that link local.
+Standalone startup prints its private launch link; keep that link local.
+
+## Hosted Shadermaker companion
+
+An operator-managed reverse proxy can mount Workshop beside Foundry while both
+services continue listening on loopback. Configure Workshop explicitly:
+
+```dotenv
+MM_PLAY_PORT=8788
+MM_BASE_PATH=/shadermaker/workshop/
+MM_PUBLIC_ORIGIN=https://w11.tailbcac65.ts.net
+MM_FOUNDRY_PATH=/shadermaker/
+MM_SESSION_TOKEN_FILE=/private/operator-state/companion.token
+MM_MAX_RESOLUTION=1024
+```
+
+The supervisor supplies the shared token file before starting either service. It
+must be a regular file containing exactly 64 hexadecimal characters, optionally
+followed by one newline. On POSIX it must belong to the current user and have no
+group or other permissions (normally mode 0600). Symlinks are rejected. Use the
+same persistent `MM_WORKSPACE_DIR` for Workshop and its local assistant service.
+Native rendering still requires the operator's prepared Material Maker source and
+compatible Godot executable; mounting the browser does not prepare native tools.
+
+`MM_BASE_PATH` defaults to `/`. Both mount settings require canonical `/segments/`
+paths; `MM_FOUNDRY_PATH` is optional and cannot contain another origin. Public origin
+configuration accepts one HTTPS host origin or explicit HTTP loopback origin, with
+no path, credentials, query or fragment. Without `MM_FOUNDRY_PATH`, companion
+navigation remains hidden. The browser reads the resolution capability, so this
+1024-pixel configuration also removes larger preview and variation choices.
+
+Managed startup prints the public mounted URL without its token. Opening the
+launcher with browser launch enabled still supplies the fragment credential. A
+private discovery record remains under the Workshop settings directory's
+`sessions/` folder, with `application`, `session`, `workspace`, `port` and `token`
+fields. `mm_mcp.play.session.session_path(cfg)` locates it. A second launcher
+verifies a nonce-bound session proof, hosting settings and managed token before
+reusing the service. Changing those settings requires stopping the old service.
+Never copy the discovery record or authenticated launch link into public logs.
+
+Foundry's adapter uses fixed loopback `http://127.0.0.1:8788/api/...` and sends the
+shared credential in `X-MM-Token`. Workshop also accepts the configured prefix,
+including `/shadermaker/workshop/api/...`, so proxies that preserve or strip the
+mount both work. Static resources resolve relative to the browser entry directory.
+The mount without its final slash redirects to the directory URL and preserves
+the project query. Proxy headers cannot authorize additional hosts or origins.
+The authenticated `/api/companion` endpoint returns only `ok`, `base_path` and
+`foundry_path`; it exposes neither credentials nor filesystem paths.
 
 ## Manual installation
 

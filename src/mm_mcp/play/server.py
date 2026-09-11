@@ -13,10 +13,11 @@ import secrets
 import socket
 import threading
 import subprocess
-from urllib.parse import parse_qs,urlsplit,unquote
+from urllib.parse import parse_qs,urlsplit
 import webbrowser
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from mm_mcp.config import load_config
+from mm_mcp.hosting import browser_url, read_managed_token, request_path
 from mm_mcp.catalog_builder import build_catalog
 from mm_mcp.core import ServiceError,MAX_JSON_BYTES,parse_json,identifier
 from mm_mcp.service import get_service
@@ -29,15 +30,15 @@ STATIC_DIR=str(Path(__file__).parent/'static')
 
 def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,token=None,session_id=None):
     app=service or get_service(cfg,catalog)
-    session_token=token or secrets.token_urlsafe(32)
-    session_identity=identity(session_id or secrets.token_hex(16),app.root)
+    session_token=token or (read_managed_token(cfg.session_token_file) if cfg.session_token_file else secrets.token_urlsafe(32))
+    session_identity=identity(session_id or secrets.token_hex(16),app.root,cfg)
     class Handler(BaseHTTPRequestHandler):
         protocol_version='HTTP/1.0'
         def setup(self):
             super().setup(); self.connection.settimeout(30)
         def log_message(self,*args):
             pass
-        def _send(self,data,ctype='application/json',status=200,filename=None):
+        def _send(self,data,ctype='application/json',status=200,filename=None,location=None):
             if not isinstance(data,bytes):
                 data=json.dumps(data,allow_nan=False).encode()
             self.send_response(status)
@@ -48,20 +49,27 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
             if filename:
                 self.send_header('Content-Disposition',f'attachment; filename="{identifier(filename)}"')
+            if location:
+                self.send_header('Location',location)
             self.end_headers(); self.wfile.write(data)
         def _guard(self,api=False,session_probe=False):
             port=self.server.server_address[1]
             allowed={f'127.0.0.1:{port}',f'localhost:{port}'}
-            if self.headers.get('Host','') not in allowed:
-                raise ServiceError('HOST_DENIED','Invalid local Host header.')
+            origins={'http://'+host for host in allowed}
+            if cfg.public_origin:
+                allowed.add(urlsplit(cfg.public_origin).netloc)
+                origins.add(cfg.public_origin)
+            if len(self.headers.get_all('Host',[]))!=1 or self.headers.get('Host','') not in allowed:
+                raise ServiceError('HOST_DENIED','Host is not an explicitly configured Workshop host.')
             origin=self.headers.get('Origin')
-            if origin and origin not in {'http://'+host for host in allowed}:
+            if len(self.headers.get_all('Origin',[]))>1 or (origin is not None and origin not in origins):
                 raise ServiceError('ORIGIN_DENIED','Cross-origin requests are disabled.')
-            if self.headers.get('Sec-Fetch-Site')=='cross-site':
+            if 'cross-site' in self.headers.get_all('Sec-Fetch-Site',[]):
                 raise ServiceError('ORIGIN_DENIED','Cross-site requests are disabled.')
-            if (api and not hmac.compare_digest(self.headers.get('X-MM-Token',''),session_token)
+            if (api and not (len(self.headers.get_all('X-MM-Token',[]))==1 and
+                            hmac.compare_digest(self.headers.get('X-MM-Token','').encode(),session_token.encode()))
                     and not (session_probe and authenticated_probe(self.headers,session_token,session_identity['session']))):
-                raise ServiceError('AUTH_REQUIRED','Open the full launch URL printed by mm-play, including its fragment token.')
+                raise ServiceError('AUTH_REQUIRED','Open the authenticated Workshop launch link, including its fragment token.')
         def _body(self):
             if self.headers.get('Transfer-Encoding'):
                 raise ServiceError('REQUEST_ENCODING','Chunked requests are not accepted.')
@@ -84,14 +92,19 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                 raise ServiceError('NOT_FOUND','Static file not found.')
             return self._send(path.read_bytes(),mimetypes.guess_type(name)[0] or 'application/octet-stream')
         def _get(self):
-            url=urlsplit(self.path); path=unquote(url.path); query=parse_qs(url.query)
+            url,path=self._route(); query=parse_qs(url.query)
             self._guard(api=path.startswith('/api/'),session_probe=path=='/api/session')
+            if cfg.base_path!='/' and path==cfg.base_path.rstrip('/'):
+                return self._send(b'','text/plain',status=308,
+                                  location=cfg.base_path+('?' + url.query if url.query else ''))
             if path=='/':
                 return self._static('index.html')
             if path.startswith('/static/'):
                 return self._static(path[len('/static/'):])
             if path=='/api/capabilities':
                 return self._send(app.capabilities())
+            if path=='/api/companion':
+                return self._send({'ok':True,'base_path':cfg.base_path,'foundry_path':cfg.foundry_path})
             if path=='/api/setup':
                 return self._send(app.setup_status())
             if path=='/api/session':
@@ -133,8 +146,15 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                     raise ServiceError('NOT_FOUND','Comparison not found.')
                 return self._send(file.read_bytes(),'image/png')
             raise ServiceError('NOT_FOUND','Endpoint not found.')
+        def _route(self):
+            # Accept both the browser mount and ordinary routes used by local
+            # adapters/path-stripping proxies. Forwarded headers authorize nothing.
+            url=urlsplit(self.path)
+            if url.scheme or url.netloc or url.fragment:
+                raise ServiceError('INVALID_REQUEST','Use an origin-relative request path.')
+            return url,request_path(url.path,cfg.base_path)
         def _post(self):
-            self._guard(api=True); path=urlsplit(self.path).path; body=self._body()
+            self._guard(api=True); _,path=self._route(); body=self._body()
             if path=='/api/render':
                 result=app.build(body)
             elif path=='/api/setup':
@@ -278,6 +298,8 @@ def serve(cfg=None,open_browser=True):
         record=find_session(cfg)
         if record:
             print(f'Reusing the running Material Workshop on port {cfg.play_port}.')
+            if cfg.session_token_file:
+                print('Material Workshop URL:\n'+browser_url(cfg))
             if open_browser:
                 webbrowser.open(launch_url(cfg,record['token']))
         else:
@@ -285,7 +307,8 @@ def serve(cfg=None,open_browser=True):
             return False
         return None
     catalog=build_catalog(cfg.nodes_dir)
-    token=secrets.token_urlsafe(32); session_id=secrets.token_hex(16)
+    token=read_managed_token(cfg.session_token_file) if cfg.session_token_file else secrets.token_urlsafe(32)
+    session_id=secrets.token_hex(16)
     # Bind before service creation: a simultaneous launcher cannot start another
     # worker simply because it lost the race for the HTTP port.
     try:
@@ -304,7 +327,11 @@ def serve(cfg=None,open_browser=True):
         raise
     url=launch_url(cfg,token)
     try:
-        print('Material Maker Play launch URL (keep private):\n'+url)
+        if cfg.session_token_file:
+            print('Material Workshop URL:\n'+browser_url(cfg))
+            print('Authentication uses the private companion token file and local session discovery.')
+        else:
+            print('Material Maker Play launch URL (keep private):\n'+url)
         print('Catalog and native-render status are shown in the browser. Ctrl+C stops this process.')
         app.jobs.start()
         if open_browser:

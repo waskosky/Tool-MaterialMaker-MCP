@@ -16,14 +16,19 @@ import stat
 
 from mm_mcp.config import settings_path
 from mm_mcp.core import atomic_json, canonical, file_lock, parse_json
+from mm_mcp.hosting import browser_url, read_managed_token
 
 APPLICATION = 'material-workshop'
 _FIELDS = {'application', 'session', 'workspace', 'port', 'token'}
 
 
-def identity(session_id, root):
-    return {'application': APPLICATION, 'session': session_id,
-            'workspace': os.path.normcase(str(Path(root).resolve()))}
+def identity(session_id, root, cfg=None):
+    result = {'application': APPLICATION, 'session': session_id,
+              'workspace': os.path.normcase(str(Path(root).resolve()))}
+    if cfg is not None:
+        result['hosting'] = {'base_path': cfg.base_path, 'public_origin': cfg.public_origin,
+                             'foundry_path': cfg.foundry_path, 'managed_token': bool(cfg.session_token_file)}
+    return result
 
 
 def workspace(cfg):
@@ -111,8 +116,10 @@ def find_session(cfg):
     record = read_session(cfg)
     if record is None:
         return None
+    if cfg.session_token_file and not hmac.compare_digest(record['token'], read_managed_token(cfg.session_token_file)):
+        return None
     nonce = secrets.token_hex(32)
-    expected = identity(record['session'], workspace(cfg))
+    expected = identity(record['session'], workspace(cfg), cfg)
     # A fixed loopback address, HTTPConnection, and explicit 200 acceptance
     # exclude record-provided URLs, environment proxies, and HTTP redirects.
     connection = http.client.HTTPConnection('127.0.0.1', cfg.play_port, timeout=2)
@@ -141,4 +148,4 @@ def find_session(cfg):
 
 
 def launch_url(cfg, token):
-    return f'http://127.0.0.1:{cfg.play_port}/#token={token}'
+    return browser_url(cfg) + '#token=' + token

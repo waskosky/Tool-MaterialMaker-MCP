@@ -1,9 +1,13 @@
 "use strict";
 // The local shared service owns graphs and builds; this client tracks selections.
 const $ = id => document.getElementById(id);
+const entryPath = location.pathname || "/", entrySearch = location.search || "";
+const entryBase = entryPath.slice(0, entryPath.lastIndexOf("/") + 1);
+const entryProject = new URLSearchParams(entrySearch).get("project");
 const incoming = new URLSearchParams(location.hash.slice(1)).get("token");
-if (incoming) { sessionStorage.setItem("mm.token", incoming); history.replaceState(null, "", location.pathname); }
+if (incoming) { sessionStorage.setItem("mm.token", incoming); history.replaceState(null, "", entryPath + entrySearch); }
 const token = sessionStorage.getItem("mm.token") || "";
+let foundryPath = null;
 let current = null, recipeId = null, initialValues = {}, locked = new Set();
 let selectedBuild = null, activeJob = null, generation = 0, projectReadEpoch = 0, queue = Promise.resolve();
 let searchTimer = null, previewTimer = null, comparisonURL = null, evidenceURLs = [], pinned = [], compareEpoch = 0;
@@ -28,10 +32,14 @@ function status(message, error = false) {
   $("status").classList.toggle("error", error); $("status-details").hidden = text.length <= 300;
   $("status-detail-text").textContent = text; $("retry").hidden = true;
 }
+function apiURL(path) {
+  if (!path.startsWith("/api/")) throw new Error("Workshop requests must use its local API.");
+  return entryBase + path.slice(1);
+}
 async function request(path, body, raw = false) {
   const headers = {"X-MM-Token": token};
   if (body !== undefined) headers["Content-Type"] = "application/json";
-  const response = await fetch(path, {method: body === undefined ? "GET" : "POST", headers,
+  const response = await fetch(apiURL(path), {method: body === undefined ? "GET" : "POST", headers,
     body: body === undefined ? undefined : JSON.stringify(body), cache: "no-store"});
   if (!response.ok) {
     let failure; try { failure = await response.json(); } catch (_) { failure = {error: response.statusText}; }
@@ -42,9 +50,22 @@ async function request(path, body, raw = false) {
   return value;
 }
 function action(fn) { return () => Promise.resolve().then(fn).catch(error => status(error.message, true)); }
+function foundryURL(build = null) {
+  if (!foundryPath) return null;
+  return foundryPath + (build ? "?workshop_build=" + encodeURIComponent(build.build_id) : "") + "#token=" + encodeURIComponent(token);
+}
+function updateCompanionNavigation() {
+  $("foundry-link").hidden = !foundryPath;
+  $("foundry-link").href = foundryURL() || "";
+  $("send-foundry").hidden = !foundryPath || !selectedBuild;
+}
+function sendToFoundry() {
+  if (selectedBuild && foundryPath) location.assign(foundryURL(selectedBuild));
+}
 function invalidate() {
   // Build-setting changes must not discard an accepted edit's graph refresh.
   generation++; snapshotReadEpoch++; selectedBuild = null; clearTimeout(previewTimer);
+  updateCompanionNavigation();
   $("download").disabled = true; $("pin").disabled = true; $("retry").hidden = true;
   $("preview-note").textContent = "Preview needs rebuilding · Drag to orbit";
   $("viewport-shell").classList.toggle("stale", true);
@@ -240,7 +261,16 @@ async function openProject(id) {
   if (epoch !== generation) return;
   initialValues = controlValues(); await snapshots();
   if (epoch !== generation) return;
+  $("projects").value = id;
   schedulePreview();
+}
+async function openLinkedProject(epoch) {
+  // Setup/library reads can finish after the operator has already chosen a
+  // material. The entry link owns only the initial, still-unselected generation.
+  if (!entryProject || epoch !== generation || current || pendingRecipe) return;
+  if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/.test(entryProject) || entryProject.includes(".."))
+    throw new Error("The Workshop project link is invalid.");
+  await openProject(entryProject);
 }
 function buildSettings() {
   const settings = {size: Number($("size").value), target: $("target").value, physical_size_m: Number($("physical-size").value)};
@@ -269,6 +299,7 @@ async function useVariant(candidate, context) {
 function selectBuild(result) {
   $("welcome").hidden = true;
   selectedBuild = result; $("download").disabled = false; $("pin").disabled = false;
+  updateCompanionNavigation();
   $("viewport-shell").classList.toggle("stale", false);
   $("preview-note").textContent = `${result.manifest.resolution}px · ${humanize(result.manifest.target)} · Drag to orbit`;
   $("preview-kind").textContent = result.manifest.renderer_kind === "injected_test_double" ? "Test renderer" : "Completed build";
@@ -412,6 +443,7 @@ $("download").onclick = action(async () => {
   const url = URL.createObjectURL(blob), anchor = element("a", {href: url, download: id + ".zip"}, document.body);
   anchor.click(); anchor.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
+$("send-foundry").onclick = sendToFoundry;
 $("shape").onchange = () => { if (mesh) { mesh.geometry = geometries[$("shape").value]; redraw(); } };
 $("lighting").onchange = lighting; $("repeat").onchange = repeatMaps;
 $("height-toggle").onchange = action(async () => { if (selectedBuild) await showBuild(selectedBuild.manifest, generation); });
@@ -445,9 +477,12 @@ $("save-recipe").onclick = action(async () => {
   await gallery(); status("Personal recipe saved: " + title); $("recipe-name").value = "";
 });
 (async () => {
+  const entryEpoch = generation;
   initViewer();
   try {
-    const capabilities = await request("/api/capabilities");
+    const [capabilities, companion] = await Promise.all([request("/api/capabilities"), request("/api/companion")]);
+    foundryPath = companion.foundry_path;
+    updateCompanionNavigation();
     catalogAvailable = capabilities.catalog_available;
     const maximum = capabilities.limits.max_resolution;
     defaultPreviewSize = Math.min(256, maximum);
@@ -478,6 +513,6 @@ $("save-recipe").onclick = action(async () => {
     });
     $("setup-open").onclick = $("welcome-setup").onclick = () => setupPanel.show();
     $("setup-open").disabled = false;
-    await setupPanel.load(); await projects();
+    await setupPanel.load(); await projects(); await openLinkedProject(entryEpoch);
   } catch (error) { status(error.message, true); }
 })();

@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Material Workshop</title><link rel="stylesheet" href="/static/style.css"></head>
+<title>Material Workshop</title><link rel="stylesheet" href="static/style.css"></head>
 <body>
-<header><div class="brand"><span class="brand-mark" aria-hidden="true">◈</span><div><h1>Material Workshop</h1><span id="capabilities">Connecting to your workspace…</span></div></div><button id="setup-open" disabled>Setup &amp; repair</button></header>
+<header><div class="brand"><span class="brand-mark" aria-hidden="true">◈</span><div><h1>Material Workshop</h1><span id="capabilities">Connecting to your workspace…</span></div></div><nav class="companion-nav" aria-label="Companion tools"><a id="foundry-link" hidden>Foundry</a><button id="setup-open" disabled>Setup &amp; repair</button></nav></header>
 <div id="layout">
   <aside id="library">
     <div class="section-heading"><div><p class="eyebrow">Start with a material</p><h2>Recipe library</h2></div><span id="recipe-count" class="badge"></span></div>
@@ -34,11 +34,11 @@
       <div class="toolbar history-tools"><button id="undo">Undo</button><button id="redo">Redo</button><button id="reset">Reset</button><button id="refresh">Reload</button></div>
       <div id="sliders"></div>
       <details class="project-details"><summary>Project details</summary><p id="revision" class="hint"></p></details>
-      <section id="build-settings"><h2>Preview &amp; export</h2><div class="settings-grid"><label>Resolution <select id="size"><option>128</option><option selected>256</option><option>512</option><option>1024</option><option>2048</option></select></label><label>Package <select id="target"><option>generic</option><option>godot</option><option>roblox</option><option>unity</option><option>unreal</option></select></label></div><label>Tile size in meters <input id="physical-size" type="number" min="0.001" max="100000" value="1" step="any"></label><div class="toolbar"><button id="render" class="primary">Build preview</button><button id="cancel" disabled>Cancel</button></div><button id="download" disabled>Download material</button><p class="hint">Includes textures and the editable .ptex source.</p></section>
+      <section id="build-settings"><h2>Preview &amp; export</h2><div class="settings-grid"><label>Resolution <select id="size"></select></label><label>Package <select id="target"><option>generic</option><option>godot</option><option>roblox</option><option>unity</option><option>unreal</option></select></label></div><label>Tile size in meters <input id="physical-size" type="number" min="0.001" max="100000" value="1" step="any"></label><div class="toolbar"><button id="render" class="primary">Build preview</button><button id="cancel" disabled>Cancel</button></div><button id="download" disabled>Download material</button><button id="send-foundry" hidden>Send to Foundry</button><p class="hint">Includes textures and the editable .ptex source.</p></section>
       <details id="snapshots-panel"><summary>Saved versions <span id="snapshot-count" class="badge">0</span></summary><div class="inline-form"><input id="snapshot-name" placeholder="Name this version…" aria-label="Snapshot name" maxlength="120"><button id="snapshot">Save</button></div><div id="snapshot-list"></div></details>
       <details id="personal-panel"><summary>Keep as a personal recipe</summary><p class="hint">Save the current controls as a new recipe in your library.</p><input id="recipe-name" placeholder="Give it a name…" aria-label="Personal recipe name" maxlength="100"><button id="save-recipe">Save personal recipe</button></details>
     </fieldset>
   </section>
 </div>
-<script src="/static/three.min.js"></script><script src="/static/setup.js"></script><script src="/static/library.js"></script><script src="/static/variations.js"></script><script src="/static/app.js"></script>
+<script src="static/three.min.js"></script><script src="static/setup.js"></script><script src="static/library.js"></script><script src="static/variations.js"></script><script src="static/app.js"></script>
 </body></html>
