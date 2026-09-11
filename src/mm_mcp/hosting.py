@@ -13,6 +13,8 @@ def mount_path(value, name='MM_BASE_PATH'):
             re.fullmatch(r'/(?:[A-Za-z0-9._~-]+/)*', value) is None or
             any(part in ('.', '..') for part in value.split('/'))):
         raise ValueError(f'{name} must be / or a canonical /segments/ path without traversal or encoding.')
+    if name == 'MM_BASE_PATH' and value.startswith(('/api/', '/static/')):
+        raise ValueError('MM_BASE_PATH must not overlap the reserved /api/ or /static/ routes.')
     return value
 
 

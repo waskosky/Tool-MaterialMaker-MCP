@@ -53,6 +53,12 @@ def test_ambiguous_or_external_mounts_are_rejected(name, value):
         load_config({name: value})
 
 
+@pytest.mark.parametrize('path', ['/api/', '/api/projects/', '/static/', '/static/assets/'])
+def test_mount_cannot_shadow_fixed_loopback_routes(path):
+    with pytest.raises(ValueError, match='MM_BASE_PATH.*reserved'):
+        load_config({'MM_BASE_PATH': path})
+
+
 @pytest.mark.parametrize('origin', ['http://localhost:8080', 'http://127.0.0.1:8788', 'http://[::1]:8788',
                                    'https://workshop.example', 'https://workshop.example:8443'])
 def test_explicit_origins(origin):

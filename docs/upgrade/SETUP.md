@@ -88,9 +88,11 @@ compatible Godot executable; mounting the browser does not prepare native tools.
 `MM_BASE_PATH` defaults to `/`. Both mount settings require canonical `/segments/`
 paths; `MM_FOUNDRY_PATH` is optional and cannot contain another origin. Public origin
 configuration accepts one HTTPS host origin or explicit HTTP loopback origin, with
-no path, credentials, query or fragment. Without `MM_FOUNDRY_PATH`, companion
-navigation remains hidden. The browser reads the resolution capability, so this
-1024-pixel configuration also removes larger preview and variation choices.
+no path, credentials, query or fragment. Workshop's mount cannot begin with `/api/`
+or `/static/`, which remain reserved for direct local connections. Without
+`MM_FOUNDRY_PATH`, companion navigation remains hidden. The browser reads the
+resolution capability, so this 1024-pixel configuration also removes larger preview
+and variation choices.
 
 Managed startup prints the public mounted URL without its token. Opening the
 launcher with browser launch enabled still supplies the fragment credential. A
