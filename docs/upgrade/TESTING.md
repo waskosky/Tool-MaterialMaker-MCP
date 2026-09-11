@@ -65,7 +65,17 @@ CPU and AMD Radeon Pro 460. Vulkan compute compilation failed before a bake coul
 complete. A separate real worker cancellation check observed and stopped its owned
 Godot process, leaving no completed build or child process. See
 [native evidence](evidence/workshop-native-local.json). Successful bake/cache/export,
-exported `.ptex` reopening and target-engine imports remain unverified on this setup.
+exported `.ptex` reopening and target-engine imports were unverified in that run.
+
+The September 11 companion run passes with Godot 4.7, an isolated prepared source
+copy with the reviewed size-forwarding repair/import cache, and
+`MVK_CONFIG_USE_METAL_ARGUMENT_BUFFERS=0`. The upstream checkout remains pristine.
+A real 128-pixel sand material passes native bake/cache/seed/verified export, exact
+Workshop-to-Foundry navigation, source refresh retaining scene/runtime/image edits,
+stale-source denial, actual MCP stdio image responses, editable-source reopening
+and native Godot LOW/HIGH import/capture. See the normalized
+[companion record](evidence/workshop-companion-native.json); raw captures and logs
+remain private. Live HTTPS/manager recovery is a separate pending deployment check.
 
 ## Real SDK gate
 
@@ -117,8 +127,8 @@ configuration only for this session, restart its overlay, and perform the follow
    files reopen correctly. In particular, inspect whether native export metadata changes
    the serialized revision and requires a compatibility adjustment.
 
-Run these against the actual pinned checkout and supported Godot binary. Successful native rendering, engine object lifetime and editor-write compatibility
-remain unverified here. Capability gating prevents an untested bridge from advertising global undo or
+Run these against the actual pinned checkout and supported Godot binary. The batch/render and source-reopen checks above do not certify editor object lifetime
+or editor-write compatibility. Capability gating prevents an untested bridge from advertising global undo or
 safe production artist-session mutation.
 
 ## Engine acceptance

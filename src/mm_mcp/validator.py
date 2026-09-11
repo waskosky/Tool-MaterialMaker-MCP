@@ -24,12 +24,26 @@ def _definition(node, catalog):
 
 
 def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import',
-                   max_nodes: int = MAX_NODES, max_depth: int = MAX_DEPTH) -> list[dict]:
+                   max_nodes: int = MAX_NODES, max_depth: int = MAX_DEPTH,
+                   preserve_unknown_from: dict | None = None) -> list[dict]:
+    """An edit baseline permits only unchanged, previously undeclared fields.
+
+    Callers must supply the stored pre-edit graph, never a client assertion.
+    Declared types, enums, interfaces and graph structure remain strict.
+    """
     problems = []
     strict = mode == 'strict'
+    has_error = False
     def report(where, message, severity='error', code='INVALID_GRAPH'):
+        nonlocal has_error
+        problem = dict(severity=severity, where=where, message=message, code=code)
         if len(problems) < 500:
-            problems.append(dict(severity=severity, where=where, message=message, code=code))
+            problems.append(problem)
+        elif severity == 'error' and not has_error:
+            # A large imported graph can exhaust the warning budget before its
+            # first invalid edit. Never turn rejection into success by truncation.
+            problems[-1] = problem
+        has_error |= severity == 'error'
     if mode not in ('strict', 'import'):
         report('', 'mode must be strict or import'); return problems
     try:
@@ -38,7 +52,18 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
     except ValueError as exc:
         report('', str(exc)); return problems
     count = 0
-    def walk(g, path, depth):
+    def unchanged_parameter(node, previous, key, value, definition):
+        if not isinstance(previous, dict) or previous.get('type') != node.get('type'):
+            return False
+        old = previous.get('parameters', {})
+        if not isinstance(old, dict) or key not in old:
+            return False
+        try:
+            return (canonical(_definition(previous, catalog)) == canonical(definition)
+                    and canonical(old[key]) == canonical(value))
+        except (TypeError, KeyError, AttributeError, ValueError):
+            return False
+    def walk(g, path, depth, previous=None):
         nonlocal count
         if depth > max_depth:
             report(path, 'graph nesting limit exceeded'); return
@@ -47,6 +72,9 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
         nodes, edges = g.get('nodes', []), g.get('connections', [])
         if not isinstance(nodes, list) or not isinstance(edges, list):
             report(path, 'nodes and connections must be arrays'); return
+        old_nodes = previous.get('nodes', []) if isinstance(previous, dict) and previous.get('type', 'graph') == g.get('type', 'graph') else []
+        old_by_name = {n.get('name'): n for n in old_nodes if isinstance(n, dict)
+                       and isinstance(n.get('name'), str)} if isinstance(old_nodes, list) else {}
         count += len(nodes)
         if count > max_nodes or len(edges) > max_nodes * 16:
             report(path, 'graph complexity limit exceeded'); return
@@ -77,7 +105,8 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
                 for key, value in params.items():
                     spec = declared.get(key)
                     if spec is None:
-                        report(where, f"unknown parameter '{key}'", 'error' if strict else 'warning'); continue
+                        preserved = unchanged_parameter(n, old_by_name.get(name), key, value, definition)
+                        report(where, f"unknown parameter '{key}'", 'error' if strict and not preserved else 'warning'); continue
                     typ = spec.get('type')
                     invalid = ((typ in ('float', 'int', 'size', 'enum') and not finite(value)) or
                                (typ in ('int', 'size', 'enum') and finite(value) and int(value) != value) or
@@ -102,7 +131,7 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
                             msg = 'invalid enum index' if typ == 'enum' else 'outside editor range; not shader-clamped'
                             report(where, f"parameter '{key}': {msg}", 'error' if strict and typ == 'enum' else 'warning')
             if t == 'graph':
-                walk(n, where, depth + 1)
+                walk(n, where, depth + 1, old_by_name.get(name))
         incoming, adjacency = set(), {name: set() for name in by_name}
         indegree = {name: 0 for name in by_name}
         for i, c in enumerate(edges):
@@ -147,7 +176,7 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
         if visited != len(indegree):
             report(path, 'cycle in stateless node connections', 'error' if strict else 'warning', 'CYCLE')
     try:
-        walk(ptex, _path, 0)
+        walk(ptex, _path, 0, preserve_unknown_from if strict else None)
     except (TypeError, AttributeError, KeyError, RecursionError, OverflowError) as exc:
         report(_path, f'malformed graph structure: {type(exc).__name__}')
     return problems

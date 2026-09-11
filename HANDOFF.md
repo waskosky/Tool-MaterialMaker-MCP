@@ -1,6 +1,6 @@
 # Session handoff: Tool-MaterialMaker-MCP
 
-_Last updated: 2026-09-10 — Workshop usability milestone on integration/next; upstream paused._
+_Last updated: 2026-09-11 — linked Shadermaker companion; upstream paused._
 
 ## Current state
 
@@ -10,46 +10,41 @@ us to ignore upstream until maintainer activity; do not poll it or prepare more
 upstream changes as part of this work. Existing PR/worktree references remain in
 [UPSTREAM.md](docs/upgrade/UPSTREAM.md).
 
-The supplied 0.8.0a1 archive is integrated. The usability milestone now adds isolated
-native retry attempts and explicit source-image origins, saved native setup and
-repair, runtime source launchers, authenticated session reuse, a responsive recipe
-library, real cached thumbnails, automatic previews, typed variation ranges and
-locks, exact editable candidate selection, pin comparison, personal recipes and
-named version restore. Shared edits/history finish before previews; late requests
-cannot replace a newer selection. Spec and quality reviews covered each implementation
-task and their concrete findings were reproduced and fixed.
+The 0.8.0a1 Workshop now supports hosted subpaths, an explicit public origin and a
+private shared token. Send to Foundry selects one verified immutable build; Edit
+source returns to the same saved project. Adopted variations produce a build with
+that saved project's provenance. Legacy imported parameters remain editable only
+when the unrecognized fields are unchanged; new invalid fields still fail.
 
 Start with [SETUP](docs/upgrade/SETUP.md) and [WORKSHOP](docs/upgrade/WORKSHOP.md).
-The archive source/checksum and this milestone's verification are recorded in
-[INTEGRATION](docs/upgrade/INTEGRATION.md). Cookbook graphs, builders and native source
-remain unchanged. The alpha version stays 0.8.0a1; no release or deployment was made.
+The [companion evidence](docs/upgrade/evidence/workshop-companion-native.json)
+records real native bake/cache/seed/export, exact browser handoff, retained scene
+and runtime edits, stale-source rejection, actual MCP image responses, source
+reopening, and Godot LOW/HIGH import/capture. This Mac works with Godot 4.7 and the
+prepared native profile; the earlier default-profile compiler failures are historical.
 
-Local portable gate: **377 passed, 1 Windows-only skip, 4 deselected**. Real HTTP/CSP
-browser acceptance: **3 passed**, with WebGL required and explicitly synthetic maps;
-21 focused Node state cases also passed. Wheel build and metadata checks passed.
-The actual SDK registers 42 tools. GitHub CI passes on Linux, Windows and macOS,
-with separate browser and distribution jobs; [CI evidence](docs/upgrade/evidence/workshop-origin-ci.json). The repository `.venv` uses Python 3.12.13 and MCP SDK 2.2.0.
+Portable gate: **477 passed, 1 Windows-only skip, 4 deselected**. The real HTTP/CSP
+browser suite passes **3 cases** with required WebGL and explicitly synthetic test
+maps. The actual Python 3.12.13 / MCP SDK 2.2.0 client exercised the shared workspace
+and registered 42 tools. Package resources remain synchronized. Version 0.8.0a1
+remains a development candidate; no alpha release is being published.
 
 ## Next work
 
-1. Complete real native bake/cache/export/reopen acceptance on a graphics setup that
-   can initialize the pinned Material Maker source. Local Intel Mac/AMD Radeon Pro
-   460 runs with official Godot 4.7.1 and 4.7.2 failed Vulkan compute compilation.
-   Actual worker cancellation passed; no successful native bake is claimed.
-2. Import real exported materials into the intended engine and inspect normal
-   direction, channel packing, color handling, physical scale and editable source.
-3. Exercise an intended assistant host against the shared browser workspace,
-   including image responses. Native editor writes require separate disposable
-   project acceptance before enabling them for artist work.
-4. Collect normal-use feedback before expanding library management or build retention.
-   No work in Unity, Godot Light or other game repositories was included here.
+1. Finish reviewed publication to `origin/integration/next` and the linked
+   Foundry/Godot Light main branches, then live HTTPS/startup/recovery acceptance.
+2. Expand ordinary material use beyond the accepted 128-pixel sand example and
+   inspect additional opaque material categories in the intended engine.
+3. Native editor writes, candidate replacement and bridge history need separate
+   disposable editor acceptance before enabling them for artist work.
+4. Use normal-use feedback to prioritize library management and build retention.
 
 ## Heads-up
 
 - [TESTING](docs/upgrade/TESTING.md) separates current browser/portable evidence from
   native graphics and historical 0.7 gates. Synthetic map screenshots certify no
-  native material appearance. Native failure/cancellation details are in
-  [runtime evidence](docs/upgrade/evidence/workshop-native-local.json).
+  native material appearance. Current native success is in the companion evidence;
+  earlier failures remain in [runtime evidence](docs/upgrade/evidence/workshop-native-local.json).
 - Native defaults resolve environment → `.env` → saved paths; setup changes apply
   only while the service is idle. Source launchers preserve the workspace and reuse
   authenticated matching sessions. Restart a separate assistant service after repair.
@@ -68,6 +63,10 @@ with separate browser and distribution jobs; [CI evidence](docs/upgrade/evidence
 
 Newest first; older details remain in git history.
 
+- 2026-09-11: Added reviewed companion hosting and exact saved-project build handoff;
+  repaired legacy-source editing and variation provenance; verified real native
+  bake/export/reopen, Godot capture and shared browser/MCP workflows. Live deployment
+  acceptance is the remaining delivery step.
 - 2026-09-10: Completed the approved setup/library/variation usability milestone,
   fixed reviewed native retry and browser ordering issues, exercised actual HTTP
   and WebGL with labelled test maps, and recorded the local native compiler blocker
@@ -83,4 +82,3 @@ Newest first; older details remain in git history.
 - 2026-09-06 (idle-exit watchdog): `MM_IDLE_EXIT_MINUTES` opt-in idle exit, 17/17 tools touch it, live session closed on exit; review found and fixed the two untouched tools and the atexit skip; merged `--no-ff` as `f669f8c`, suite 989; registration set to 120.
 - 2026-09-06 (validate subgraph descent + crate round-trip prep)
 - 2026-09-06 (teardown #5 executed): MCP user-wide, crate into the Unity sandbox, kit-map layer 4b, role-named cookbook
-- 2026-09-05 (teardown #4 executed): hygiene sweep (CI pinned to the MM sha), `quality/` packaged, Phase-3 harness archived (`6e4568f`, `c5d473c`).

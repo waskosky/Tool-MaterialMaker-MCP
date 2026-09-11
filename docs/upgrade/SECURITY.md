@@ -9,12 +9,32 @@ and operator-installed Material Maker code are privileged executable dependencie
 
 ## Implemented protections
 
-The browser binds loopback only, requires a random session token on API calls,
+The browser binds loopback only, requires a session token on API calls,
 validates Host/Origin and cross-site request metadata, and does not enable CORS.
 Responses use a restrictive local-content policy and no-referrer/no-store headers.
 Requests are bounded to 8 MiB, including duplicate/non-finite JSON rejection; server
 concurrency is capped at 24 request threads. Static and build paths reject traversal
 and symlink escapes.
+
+Standalone launches create a random fragment token. Managed companions can share
+an explicitly configured private regular file containing a 64-character hexadecimal
+token; POSIX ownership and group/other permissions are checked before reading it.
+Managed tokens are never printed by the launcher. The fragment is consumed into
+browser session storage, retaining the project query, and API calls use
+`X-MM-Token`; query-string credentials do not authenticate a request.
+
+Hosted configuration permits one exact HTTPS origin or HTTP loopback origin in
+addition to the local listener's explicit hosts/origins. Mount and Foundry paths
+must be canonical same-origin directory paths. Encoded separators, traversal,
+duplicate Host/Origin headers and arbitrary forwarded-header claims cannot widen
+that boundary. Ordinary loopback and configured-prefix routes enforce the same
+API token and cross-site checks. `/api/companion` is authenticated and exposes only
+safe navigation paths. Private launcher discovery signs the hosting configuration
+as part of session identity, so changing it cannot silently reuse another setup.
+
+This optional reverse proxy mode is for the same trusted operator behind their
+authenticated tailnet. It does not provide multi-user isolation or change the
+privileges of native rendering and setup operations.
 
 Native discovery contains a token and protocol identifier, written privately on
 supported Unix systems. The Python client refuses insecure discovery permissions,

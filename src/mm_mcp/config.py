@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 from dataclasses import dataclass, field
 from dotenv import dotenv_values
+from mm_mcp.hosting import mount_path, public_origin, read_managed_token
 
 # Config is env-var-first (an MCP client sets MM_* in its server "env" block).
 # A .env file is a dev convenience only: looked up at MM_DOTENV if set, else in
@@ -21,6 +22,10 @@ _DEFAULTS = {
     "MM_COOKBOOK_DIR": "",
     "MM_PLAY_PORT": "8788",
     "MM_IDLE_EXIT_MINUTES": "0",
+    "MM_BASE_PATH": "/",
+    "MM_PUBLIC_ORIGIN": "",
+    "MM_FOUNDRY_PATH": "",
+    "MM_SESSION_TOKEN_FILE": "",
 }
 
 NATIVE_SETTINGS = {'godot_binary': 'MM_GODOT_BINARY', 'project_path': 'MM_PROJECT_PATH'}
@@ -104,6 +109,19 @@ class Config:
     enable_experimental_live_writes: bool = False
     native_overrides: dict[str, str] = field(default_factory=dict)
     native_settings_warning: str | None = None
+    base_path: str = '/'
+    public_origin: str | None = None
+    foundry_path: str | None = None
+    session_token_file: str | None = None
+
+    def __post_init__(self):
+        self.base_path = mount_path(self.base_path)
+        if self.public_origin is not None:
+            self.public_origin = public_origin(self.public_origin)
+        if self.foundry_path is not None:
+            self.foundry_path = mount_path(self.foundry_path, 'MM_FOUNDRY_PATH')
+        if self.session_token_file is not None:
+            read_managed_token(self.session_token_file)
 
 
 def _resolve_console(godot_binary: str) -> str:
@@ -219,4 +237,8 @@ def load_config(overrides: dict | None = None) -> Config:
         enable_experimental_live_writes=env.get("MM_ENABLE_EXPERIMENTAL_LIVE_WRITES") == "1",
         native_overrides=sources,
         native_settings_warning=settings_warning,
+        base_path=env['MM_BASE_PATH'],
+        public_origin=env['MM_PUBLIC_ORIGIN'] or None,
+        foundry_path=env['MM_FOUNDRY_PATH'] or None,
+        session_token_file=env['MM_SESSION_TOKEN_FILE'] or None,
     )

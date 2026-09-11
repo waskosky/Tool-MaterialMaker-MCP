@@ -26,33 +26,37 @@ was browsed without rendering. Native worker cancellation was exercised against 
 real Godot process. [TESTING.md](TESTING.md) and [INTEGRATION.md](INTEGRATION.md) provide
 the current evidence and commands.
 
-## Still requiring native or host acceptance
+## Native and companion acceptance
 
-Godot 4.7.1 and 4.7.2 startup on the local Intel Mac/AMD GPU failed Vulkan compute
-compilation. Successful native bake, cache/export, exported `.ptex` reopening and
-native material appearance remain unverified for this milestone. The source checkout
-was kept pristine. See [native evidence](evidence/workshop-native-local.json).
+The reviewed Godot 4.7 profile with Metal argument buffers disabled now bakes the
+128-pixel sand recipe on this Intel Mac/AMD GPU. Native PNGs, cache identity,
+explicit seeds and verified archives pass. Its exported source reopens in an
+isolated Material Maker editor; the linked Foundry package imports and captures
+LOW/HIGH views in native Godot. Browser source updates retain independent scene,
+runtime and image edits, while stale revisions fail. Actual MCP SDK clients share
+the same queue/workspace and receive PNG image content. See
+[companion evidence](evidence/workshop-companion-native.json).
 
-The authenticated native add-on, candidate replacement, recovery and bridge history
-still need editor acceptance. Native writes remain disabled by default. Intended
-assistant hosts need end-to-end tool and image-response checks, and target packages
-need actual engine import. A working browser WebGL canvas does not establish these.
+Hosted subpaths, explicit origins, shared private token files and exact selected
+build links are implemented. Adopted recipe variations obtain a saved-project
+build before handoff. Imported legacy fields may remain unchanged during valid
+edits; this does not admit new unknown fields or custom code.
+
+The earlier Godot 4.7.1/4.7.2 default-profile failures remain in the historical
+[native record](evidence/workshop-native-local.json). The upstream source remains
+pristine; the working renderer uses an isolated prepared toolchain.
 
 ## Next practical work
 
-1. Complete the small native bake/cache/export/reopen cycle on a graphics setup that
-   can initialize the pinned Material Maker source. Validate representative opaque
-   materials before expanding recipe and resolution coverage.
-2. Import those real exports into the engine we intend to use, checking normal
-   direction, channel packing, color handling, physical size and editable source.
-3. Exercise a real assistant host against the same Workshop workspace, including
-   preview images, edits, cancellation and recovery. Validate native editor writes
-   separately in a disposable project before enabling them for normal use.
-4. After regular material use produces evidence, prioritize library organization,
-   build retention and targeted workflow improvements from that experience.
+1. Complete reviewed publication and live TLS, startup and recovery acceptance
+   under the independent Godot Light companion manager.
+2. Expand real native and engine checks beyond this one opaque recipe/resolution.
+3. Validate native editor writes, replacement, recovery and bridge history in a
+   disposable project before enabling them for artist work.
+4. Prioritize library organization and retention after ordinary material use.
 
-Development continues on `integration/next`; upstream contributions are paused until
-maintainer activity. No separate game or engine repository is changed by this milestone.
+Development continues on `integration/next`; upstream contributions remain paused.
+Foundry and Godot Light integration stays in their independent repositories.
 
 ## Deliberately limited contracts
 

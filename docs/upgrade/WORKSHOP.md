@@ -27,6 +27,10 @@ explore without losing the editable source. **Reload** reads changes made by an
 assistant or another browser. A revision conflict reloads shared state and asks you
 to review it before retrying your edit.
 
+Older recipes can retain unchanged legacy parameters while you edit their current
+controls or save a personal recipe. Workshop preserves those source fields exactly;
+new unknown parameters, changed legacy values and invalid authoring are rejected.
+
 ## Explore variations
 
 1. Expand **Choose what varies**. Enable numeric controls and enter minimum and
@@ -36,8 +40,10 @@ to review it before retrying your edit.
 3. Choose resolution, package and physical tile size, then **Build variations**.
    Cards show actual job states as the local queue works through the family.
 4. Click a completed image to inspect its albedo and values. **Use variant** opens
-   those exact controls in a new editable project and selects the completed preview
-   when its graph matches. The captured export settings come with it.
+   those exact controls in a new editable project. When its graph matches, the
+   candidate images stay visible while Workshop builds the saved project. Download
+   and Foundry handoff become available when that project build completes, with
+   its own project ID and revision. The captured export settings come with it.
 5. **Pin** any completed variants or the current preview, then **Compare pins** to
    see their albedo images together. Comparison is a visual aid, not an automatic
    quality score or a test of engine lighting.
@@ -61,6 +67,26 @@ available when the current preview is complete. It downloads that exact build's
 textures, editable `material.ptex`, input record and import notes. Further edits
 disable the download until the new preview completes. Use **Retry build** if a build
 fails, or **Setup & repair** to correct native paths and test the renderer.
+
+## Continue in Foundry
+
+When the operator configures the Shadermaker companion, **Foundry** appears beside
+**Setup & repair**. Finish and select a preview, then use **Send to Foundry** to
+open that exact completed build. The link carries its immutable build ID as
+`?workshop_build=BUILD_ID` and the shared credential only in the URL fragment.
+Changing controls or build settings hides this action until the new preview
+completes. **Use variant** prepares a build of the selected candidate's exact values
+for its new saved project; **Send to Foundry** uses that completed project build.
+
+Workshop keeps ownership of editable source, gradients, producer controls and the
+native render queue. Foundry owns game recipes, scene/runtime controls and their
+exports. Foundry's **Edit source** link returns to Workshop with `?project=ID`,
+which opens the existing saved project after setup and library initialization.
+Late initial reads cannot replace a material you have selected in the meantime.
+The hosted configuration caps previews and variations at 1024 pixels; choose the
+generic or Godot package for the Foundry handoff. [Hosted setup](SETUP.md#hosted-shadermaker-companion)
+describes the explicit origin, paths and shared credential. Without that
+configuration, the standalone editing and export workflow remains available.
 
 The browser previews baseline opaque material channels. Review the downloaded maps
 and import notes in your intended engine. Native editor writes remain disabled by

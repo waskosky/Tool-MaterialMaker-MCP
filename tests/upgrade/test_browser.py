@@ -90,7 +90,10 @@ def test_browser_http_edit_export_matches_shared_state(http_service,tmp_path):
         page.locator('.use-variant').nth(1).click()
         sync.expect(page.locator('#material-name')).to_have_text('Fixture · variant 2')
         sync.expect(page.locator('#download')).to_be_enabled(timeout=20000)
-        assert app.render_fn.calls == calls, 'Selecting an exact completed candidate should not rebake it'
+        assert app.render_fn.calls == calls + 1, 'An adopted variant needs a build of its saved project'
+        adopted_project = page.locator('#projects').input_value()
+        adopted_revision = app.graphs.read(adopted_project)['revision']
+        candidate_build = app.jobs.get(candidates[1]['job']['job_id'])['result']['build_id']
         assert float(page.locator('.control').filter(has=page.locator('code',has_text='surface/param0')).locator('input[type=number]').input_value()) == candidates[1]['values']['surface/param0']
         with page.expect_download() as event:
             page.locator('#download').click()
@@ -98,6 +101,10 @@ def test_browser_http_edit_export_matches_shared_state(http_service,tmp_path):
         from mm_mcp.core import digest
         with zipfile.ZipFile(destination) as z:
             assert digest(json.loads(z.read('material.ptex'))) == candidates[1]['graph_hash']
+            request = json.loads(z.read('request.json'))
+            assert request['provenance']['project_id'] == adopted_project
+            assert request['provenance']['revision'] == adopted_revision
+            assert json.loads(z.read('manifest.json'))['build_id'] != candidate_build
             target = json.loads(z.read('target.json'))
             assert target['target'] == 'godot' and target['physical_size_m'] == 2.5
         page.locator('#personal-panel > summary').click()

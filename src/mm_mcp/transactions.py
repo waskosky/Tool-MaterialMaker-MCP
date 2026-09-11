@@ -103,7 +103,9 @@ def apply_patch(graph: dict, operations: list, catalog: dict, *, mode='strict') 
         except (KeyError, TypeError) as exc:
             raise ServiceError('INVALID_OPERATION', f'Operation {index} has missing or malformed fields.', index=index) from exc
         changes.append({'index': index, 'op': kind, 'path': path})
-    problems = validate_graph(out, catalog, mode=mode)
+    # GraphStore supplies this baseline from the same write transaction that
+    # checks the revision. Legacy import fields cannot be newly introduced.
+    problems = validate_graph(out, catalog, mode=mode, preserve_unknown_from=graph)
     if any(p['severity'] == 'error' for p in problems):
         raise ServiceError('VALIDATION_FAILED', 'Patch leaves an invalid graph; no changes were committed.', problems=problems)
     return out, changes
