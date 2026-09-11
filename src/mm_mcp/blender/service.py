@@ -51,6 +51,39 @@ class BlenderService:
         self.meshes.mkdir(parents=True, exist_ok=True)
         self.results.mkdir(parents=True, exist_ok=True)
 
+    def recover(self):
+        """Recover abandoned private directories under the queue's worker lock.
+
+        Every stage/profile is created while execute holds the native lock. An
+        idle queue therefore cannot remove an active direct or queued operation.
+        Nonblocking acquisition leaves unrelated native builds free to finish;
+        later queue passes retry, even when no new jobs are submitted.
+        """
+        removed = 0
+        try:
+            with file_lock(self.app.root / '.native.lock', timeout=0):
+                if self.root.is_symlink() or self.results.is_symlink():
+                    return 0
+                for path in self.results.iterdir():
+                    # tempfile owns these reserved names. Completed bl_* results,
+                    # arbitrary files/directories and symlink targets are retained.
+                    if not re.fullmatch(r'\.(?:stage|profile)-[a-z0-9_]{8}', path.name) or path.is_symlink() or not path.is_dir():
+                        continue
+                    try:
+                        shutil.rmtree(path)
+                        removed += 1
+                    except OSError:
+                        # A just-orphaned worker may still be finishing its owner
+                        # guard exit; Windows can temporarily retain open handles.
+                        # Leave any remaining directory for the next idle pass.
+                        continue
+                    if removed >= 64:
+                        break
+        except ServiceError as exc:
+            if exc.code != 'BUSY':
+                raise
+        return removed
+
     def capabilities(self):
         binary = self.app.cfg.blender_binary
         configured = bool(binary and Path(binary).is_file() and os.access(binary, os.X_OK))

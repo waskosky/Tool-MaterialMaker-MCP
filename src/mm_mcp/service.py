@@ -34,7 +34,7 @@ class MaterialService:
         self.render_fn=render_fn
         from mm_mcp.blender.service import BlenderService
         self.blender=BlenderService(self,runner=blender_fn)
-        self.jobs=JobQueue(self.root,self._job)
+        self.jobs=JobQueue(self.root,self._job,recover=self.blender.recover)
         # Recover persisted work for both MCP and browser clients, including a
         # queue already too full to accept another submission after a restart.
         self.jobs.start()

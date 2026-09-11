@@ -99,6 +99,11 @@ environment, two CPU render threads, a 600-second timeout and a 1 MiB output cap
 Cancellation, timeout and output-limit failures kill the owned process group and
 remove staging/profile directories. A recorded-parent check plus an anonymous
 owner pipe also terminates a detached worker after its HTTP/MCP parent crashes.
+After restart, idle queue passes recover abandoned stage/profile directories
+while holding the shared worker and native execution locks. Cleanup only removes
+real directories with the service's reserved temporary names; completed results,
+unrelated directories and symlink targets remain intact. Active native work defers
+cleanup, and temporarily locked orphan directories are retried on later passes.
 Legacy render/preview adapters share the same native lock. This fixed operation
 boundary is not an OS sandbox for arbitrary Blender addons or scripts.
 
@@ -126,3 +131,8 @@ native cases passed. Preview scene packing and destination UV0 export gained
 additional native assertions for the coordinated final acceptance run. These
 native fixtures use a synthetic Workshop source and do not claim native Material
 Maker provenance. The main integration acceptance records that separate canary.
+
+The orphan-recovery review follow-up added five portable regressions, including
+a hard-killed owner with an actual guarded Python child, abandoned private
+directories, interrupted-job recovery and a preserved immutable result. The
+updated portable release gate passed 565 tests (one skipped, nine deselected).
