@@ -51,11 +51,12 @@ jobs:
           MM_BROWSER_EVIDENCE: browser-evidence/workshop-desktop-TestRenderer.png
           MM_MOBILE_BROWSER_EVIDENCE: browser-evidence/workshop-mobile-TestRenderer.png
           MM_SETUP_BROWSER_EVIDENCE: browser-evidence/workshop-setup-TestRenderer.png
+          MM_HOSTED_ENTRY_BROWSER_EVIDENCE: browser-evidence/workshop-slashless-entry.png
         run: |
           mkdir -p browser-evidence
           MM_TEST_CHROMIUM="$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
           export MM_TEST_CHROMIUM
-          python -m pytest tests/upgrade/test_browser.py -q --junitxml=browser.xml
+          python -m pytest tests/upgrade/test_browser.py tests/upgrade/test_browser_hosting.py -q --junitxml=browser.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:

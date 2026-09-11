@@ -1,6 +1,6 @@
 # Session handoff: Tool-MaterialMaker-MCP
 
-_Last updated: 2026-09-11 — published companion and live recovery verified; upstream paused._
+_Last updated: 2026-09-11 — slashless hosted-entry repair verified locally; upstream paused._
 
 ## Current state
 
@@ -9,6 +9,14 @@ origin `main` remain reserved for focused upstream contributions. The user asked
 us to ignore upstream until maintainer activity; do not poll it or prepare more
 upstream changes as part of this work. Existing PR/worktree references remain in
 [UPSTREAM.md](docs/upgrade/UPSTREAM.md).
+
+The current follow-up repairs missing CSS/JavaScript when a prefix-stripping proxy
+serves `/shadermaker/workshop` without its final slash. Hosted HTML anchors initial
+assets to its configured mount; startup normalizes the browser URL before API
+setup while retaining project/query/fragment handling. Token consumption, CSP and
+Host/Origin checks are unchanged. The real proxy/browser regression passes with
+an inspected styled page and saved project, without any native renderer configured.
+This is local candidate evidence; publication and live URL checks remain separate.
 
 The 0.8.0a1 Workshop now supports hosted subpaths, an explicit public origin and a
 private shared token. Send to Foundry selects one verified immutable build; Edit
@@ -34,9 +42,10 @@ preserved. The game root returned 502 before and after; the companion tools run
 independently of the stopped game stack and RAI. Native scope remains one sand
 recipe at 128 and 256 pixels, with experimental native editor writes disabled.
 
-Portable gate: **477 passed, 1 Windows-only skip, 4 deselected**. The real HTTP/CSP
-browser suite passes **3 cases** with required WebGL and explicitly synthetic test
-maps. The actual Python 3.12.13 / MCP SDK 2.2.0 client exercised the shared workspace
+Portable gate: **485 passed, 1 Windows-only skip, 5 deselected**. The hosted-entry
+browser regression passes **1 case**; the earlier real HTTP/CSP suite passed
+**3 cases** with required WebGL and explicitly synthetic test maps. The actual
+Python 3.12.13 / MCP SDK 2.2.0 client exercised the shared workspace
 and registered 42 tools. Package resources remain synchronized. Accepted-code
 [CI run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693)
 passed all five jobs. Version 0.8.0a1 remains a development candidate; no alpha
@@ -74,6 +83,10 @@ release is being published.
 
 Newest first; older details remain in git history.
 
+- 2026-09-11: Reproduced slashless proxy CSS/JS misrouting, anchored hosted assets
+  and normalized browser entry URLs; 485 portable checks and the real proxy/browser
+  regression pass, with the styled project page inspected. Native rendering was
+  unconfigured and live routes were unchanged.
 - 2026-09-11: Published and deployed the reviewed companion revisions; verified
   live TLS/browser/MCP handoff, a serialized native queue, cancellation, targeted
   restart and crash recovery. Installed the login LaunchAgent and checked its
@@ -95,4 +108,3 @@ Newest first; older details remain in git history.
   `integration/next`; reserved `main` for selected upstream PRs.
 - 2026-09-06 (backup-ops wake-lock, cross-project): `pickup` here, Grayson picked next-step #2. Root-caused the 09-05 nightly truncation as idle-sleep mid-run (the git `NativeCommandError` is a handled CRLF warning; true signature is a missing `transcript end` footer, not a code bug), and added a `SetThreadExecutionState` wake-lock to `backup-ops\Backup-All.ps1` (acquire in try, release in finally). Verified compile + parse; commit `f7e809d` local, PUSH PENDING (ssh-agent not loaded this session). Commons log written. No MM-MCP code changed.
 - 2026-09-06 (idle-exit watchdog): `MM_IDLE_EXIT_MINUTES` opt-in idle exit, 17/17 tools touch it, live session closed on exit; review found and fixed the two untouched tools and the atexit skip; merged `--no-ff` as `f669f8c`, suite 989; registration set to 120.
-- 2026-09-06 (validate subgraph descent + crate round-trip prep)

@@ -106,9 +106,16 @@ Never copy the discovery record or authenticated launch link into public logs.
 Foundry's adapter uses fixed loopback `http://127.0.0.1:8788/api/...` and sends the
 shared credential in `X-MM-Token`. Workshop also accepts the configured prefix,
 including `/shadermaker/workshop/api/...`, so proxies that preserve or strip the
-mount both work. Static resources resolve relative to the browser entry directory.
-The mount without its final slash redirects to the directory URL and preserves
-the project query. Proxy headers cannot authorize additional hosts or origins.
+mount both work. Hosted HTML names its configured mount and uses absolute paths
+within that mount for its initial stylesheet and scripts. This also covers a
+slashless public entry when a proxy forwards only `/` to Workshop: relative
+assets would otherwise resolve outside Workshop before its JavaScript can load.
+The browser normalizes that entry to the directory URL before choosing its API
+base, preserving the project query and fragment for normal token consumption.
+Normalization without an incoming token also preserves the existing history
+state. Direct requests for the slashless mount still redirect with their query.
+Standalone root/file resources remain relative. CSP, token checks and Host/Origin
+allowlists are unchanged; proxy headers cannot authorize additional hosts or origins.
 The authenticated `/api/companion` endpoint returns only `ok`, `base_path` and
 `foundry_path`; it exposes neither credentials nor filesystem paths.
 

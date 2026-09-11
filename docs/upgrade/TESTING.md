@@ -13,6 +13,10 @@ and retained validator, paths, graph, inspect, naming, authoring, render-compari
 idle, cookbook and README checks. It uses the actual installed MCP SDK for registered
 tool discovery. [INTEGRATION.md](INTEGRATION.md) records the current run and its skips.
 
+The slashless hosted-entry follow-up passes 485 portable tests, with one
+Windows-only skip and five browser/native cases deselected; all 109 packaged
+resource files match. These checks do not start a browser or native renderer.
+
 Focused regressions cover isolated native retry attempts, source-relative image
 references, setup persistence and precedence, idle configuration refresh, authenticated
 session reuse, atomic family admission, verified gallery previews, exact candidate
@@ -51,6 +55,35 @@ For visual acceptance after native baking works, inspect a reflective metal, a r
 dielectric, normal orientation, occlusion, color handling, tiling, shape switching,
 height preview and repeated material changes. Check intended desktop browsers and
 physical mobile devices. Compare preview appearance with the actual target engine.
+
+### Slashless hosted entry
+
+`tests/upgrade/test_hosting.py` reproduces a prefix-stripping proxy forwarding `/`
+while the browser displays `/shadermaker/workshop` without its final slash. Before
+the fix, the stylesheet resolved to `/shadermaker/static/style.css`. Hosted HTML
+now anchors its initial assets to the configured mount, and startup normalizes
+the browser URL before choosing its API base. CPU checks retain root/file paths,
+project queries, token handling and history state during normalization.
+
+The real browser regression uses an actual local prefix-stripping HTTP proxy,
+the Workshop server and a saved fixture project. It checks applied CSS, protected
+API denial, authenticated project selection, correct asset/API routes, query and
+fragment handling, and reload after the token is consumed. Its native renderer
+is unconfigured; no native or synthetic bake is used as appearance evidence.
+Run it only when the shared browser/graphics test slot is available:
+
+```bash
+MM_TEST_CHROMIUM=/path/to/chromium python -m pytest tests/upgrade/test_browser_hosting.py -q
+```
+
+Set `MM_HOSTED_ENTRY_BROWSER_EVIDENCE` to a private screenshot filename with an
+existing parent directory to retain the styled page. This regression does not
+change Tailscale routes, public-origin allowlists, token checks or CSP.
+The local Chromium run passes one case in 25.85 seconds. Its private screenshot
+was inspected: styles are applied and the saved project is selected. This is
+candidate browser/routing evidence; publication and live URL checks remain separate.
+The existing CI browser job runs this regression alongside `test_browser.py`
+and retains `workshop-slashless-entry.png` in its browser evidence artifact.
 
 ## Setup and native runtime evidence
 
