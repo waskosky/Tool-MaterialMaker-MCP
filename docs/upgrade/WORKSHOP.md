@@ -27,6 +27,10 @@ explore without losing the editable source. **Reload** reads changes made by an
 assistant or another browser. A revision conflict reloads shared state and asks you
 to review it before retrying your edit.
 
+Older recipes can retain unchanged legacy parameters while you edit their current
+controls or save a personal recipe. Workshop preserves those source fields exactly;
+new unknown parameters, changed legacy values and invalid authoring are rejected.
+
 ## Explore variations
 
 1. Expand **Choose what varies**. Enable numeric controls and enter minimum and

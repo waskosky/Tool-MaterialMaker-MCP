@@ -56,8 +56,8 @@ class MaterialService:
                             'browser_native_graph_execution':False,'multi_user_hosting':False,
                             'native_paint_strokes':False,'native_global_undo_certified':False},
                 'limits':{'max_resolution':getattr(self.cfg,'max_resolution',2048),'max_variants':32,'max_pending_jobs':64}}
-    def _validated(self,graph,mode='strict',trusted=False,source_dir=None):
-        problems=validate_graph(graph,self.catalog,mode=mode)
+    def _validated(self,graph,mode='strict',trusted=False,source_dir=None,*,preserve_unknown_from=None):
+        problems=validate_graph(graph,self.catalog,mode=mode,preserve_unknown_from=preserve_unknown_from)
         if any(p['severity']=='error' for p in problems):
             raise ServiceError('VALIDATION_FAILED','Graph validation failed.',problems=problems)
         graph_dependencies(graph,self.cfg,trusted_recipe=trusted,source_dir=source_dir)
@@ -108,7 +108,9 @@ class MaterialService:
         return origin.get('source') in ('cookbook','composition','user') and code_hashes(graph).issubset(set(approved))
     def patch(self,project_id,expected_revision,operations,idempotency_key,dry_run=False):
         def authorize(graph):
-            self._validated(graph, trusted=self._project_trust(project_id,graph))
+            # The transaction already checked structure against its stored
+            # baseline. Authorization still rejects new code/dependencies.
+            graph_dependencies(graph,self.cfg,trusted_recipe=self._project_trust(project_id,graph))
         return self.graphs.patch(project_id,expected_revision,operations,idempotency_key,
                                  dry_run=dry_run,authorize=authorize)
     def setup_status(self,check=False):
@@ -243,7 +245,7 @@ class MaterialService:
     def save_recipe(self,project_id,name,metadata=None,guide=''):
         project=self.graphs.read(project_id)
         graph=project['graph']
-        self._validated(graph,trusted=self._project_trust(project_id,graph))
+        self._validated(graph,trusted=self._project_trust(project_id,graph),preserve_unknown_from=graph)
         result=self.recipes.save(name,graph,metadata,guide)
         # Approval is service-owned and separate from caller-supplied recipe metadata.
         atomic_json(self.root/'provenance'/'recipes'/f"{result['id']}.json",
