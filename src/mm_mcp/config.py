@@ -26,6 +26,7 @@ _DEFAULTS = {
     "MM_PUBLIC_ORIGIN": "",
     "MM_FOUNDRY_PATH": "",
     "MM_SESSION_TOKEN_FILE": "",
+    "MM_BLENDER_BINARY": "",
 }
 
 NATIVE_SETTINGS = {'godot_binary': 'MM_GODOT_BINARY', 'project_path': 'MM_PROJECT_PATH'}
@@ -113,8 +114,11 @@ class Config:
     public_origin: str | None = None
     foundry_path: str | None = None
     session_token_file: str | None = None
+    blender_binary: str = ""
 
     def __post_init__(self):
+        if self.blender_binary:
+            self.blender_binary = str(Path(self.blender_binary).expanduser().resolve())
         self.base_path = mount_path(self.base_path)
         if self.public_origin is not None:
             self.public_origin = public_origin(self.public_origin)
@@ -241,4 +245,5 @@ def load_config(overrides: dict | None = None) -> Config:
         public_origin=env['MM_PUBLIC_ORIGIN'] or None,
         foundry_path=env['MM_FOUNDRY_PATH'] or None,
         session_token_file=env['MM_SESSION_TOKEN_FILE'] or None,
+        blender_binary=env['MM_BLENDER_BINARY'],
     )

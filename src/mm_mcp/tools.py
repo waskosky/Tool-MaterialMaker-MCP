@@ -1,8 +1,11 @@
 """Transport adapter for the shared material service; no renderer logic lives here."""
 from __future__ import annotations
 import functools
+import base64
+import hashlib
 import io
 import json
+from typing import Literal
 from pathlib import Path
 from PIL import Image as PILImage
 from mm_mcp.core import ServiceError, atomic_json, file_digest, identifier
@@ -194,12 +197,83 @@ def material_mesh_masks(obj_path: str, size: int = 256, up_axis: str = "y") -> d
     from mm_mcp.mesh_masks import bake_mesh_masks
     return bake_mesh_masks(obj_path,get_service().cfg,size=size,up_axis=up_axis)
 
+
+@safe
+def blender_capabilities() -> dict:
+    """Inspect optional fixed Blender operations and upload/render limits."""
+    return get_service().blender.capabilities()
+
+
+@safe
+def blender_mesh_upload(name: str, data_base64: str) -> dict:
+    """Admit a static, embedded GLB at most 4 MiB; return its content identity."""
+    return get_service().blender.upload(name=name,data_base64=data_base64)
+
+
+@safe
+def blender_job_submit(operation: Literal['inspect','preview','bake'], build_id: str | None = None,
+                       mesh_id: str | None = None, specimen: Literal['sphere','beveled_cube','plane'] | None = None,
+                       resolution: Literal[128,256,512] = 256, unwrap: bool = False, uv_scale: float = 1) -> dict:
+    """Queue a fixed Blender operation on an exact build and specimen or admitted GLB. Unwrap explicitly creates a derivative."""
+    body={key:value for key,value in locals().items() if value is not None}
+    return get_service().blender.submit(body)
+
+
+@safe
+def blender_job_get(job_id: str) -> dict:
+    """Read a Blender job from the shared persistent Workshop queue."""
+    return get_service().jobs.get(job_id)
+
+
+@safe
+def blender_job_cancel(job_id: str) -> dict:
+    """Cancel queued/running work and clean up its bounded worker process."""
+    return get_service().jobs.cancel(job_id)
+
+
+@safe
+def blender_result_get(result_id: str) -> dict:
+    """Verify every immutable Blender artifact and return the exact input receipt."""
+    return {'ok':True,'manifest':get_service().blender.get(result_id)}
+
+
+@safe
+def blender_result_file(result_id: str, name: str) -> dict:
+    """Download one verified, inventory-listed Blender artifact as bounded base64 bytes."""
+    data=get_service().blender.artifact(result_id,name).read_bytes()
+    return {'ok':True,'result_id':result_id,'name':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'data_base64':base64.b64encode(data).decode()}
+
+
+@safe
+def blender_result_export(result_id: str) -> dict:
+    """Write a verified self-contained ZIP into the managed exports directory."""
+    app=get_service();data=app.blender.export(result_id)
+    directory=app.root/'exports';directory.mkdir(exist_ok=True)
+    path=directory/(identifier(result_id)+'.zip')
+    from mm_mcp.core import file_lock
+    with file_lock(directory/'.export.lock'):
+        if path.exists() or path.is_symlink():
+            if path.is_symlink() or path.read_bytes()!=data:
+                raise ServiceError('EXPORT_CONFLICT','Existing export differs from its immutable result.')
+        else:
+            import os,tempfile
+            fd,temp=tempfile.mkstemp(prefix='.export-',dir=directory)
+            try:
+                with os.fdopen(fd,'wb') as output:
+                    output.write(data);output.flush();os.fsync(output.fileno())
+                os.replace(temp,path)
+            finally:
+                if os.path.exists(temp):os.unlink(temp)
+    return {'ok':True,'result_id':result_id,'path':str(path),'bytes':len(data),'sha256':file_digest(path)}
+
 TOOLS=[material_capabilities,material_recipe_search,material_recipe_describe,material_project_create,
        material_project_import,material_project_list,material_project_get,material_project_patch,
        material_project_history,material_project_snapshot,material_project_restore,material_build,
        material_job_submit,material_job_get,material_job_cancel,material_build_get,material_build_export,
        material_variation_family,material_world_context,material_compose_layers,material_recipe_save,
-       material_compare,material_preview_image,material_mesh_masks]
+       material_compare,material_preview_image,material_mesh_masks,
+       blender_capabilities,blender_mesh_upload,blender_job_submit,blender_job_get,blender_job_cancel,
+       blender_result_get,blender_result_file,blender_result_export]
 
 def register(mcp):
     for fn in TOOLS:

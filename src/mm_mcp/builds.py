@@ -151,7 +151,9 @@ class BuildStore:
                 'dependencies':deps,'renderer_kind':'injected_test_double' if render_fn is not None else 'native_material_maker','tools':tool_fingerprint(self.cfg,self.catalog), 'provenance':provenance or {}}
         key=digest(inputs); build_id='b_'+key
         target_dir=self.root/build_id
-        with file_lock(self.root/'.build.lock',cancel=cancel):
+        # Direct builds and both queue kinds share one native execution boundary.
+        # The queue's worker lock alone does not cover synchronous MCP/HTTP builds.
+        with file_lock(self.root.parent/'.native.lock',timeout=660,cancel=cancel), file_lock(self.root/'.build.lock',cancel=cancel):
             if target_dir.exists() and not force:
                 manifest=verify_manifest(target_dir)
                 return {'ok':True,'build_id':build_id,'cached':True,'manifest':manifest}

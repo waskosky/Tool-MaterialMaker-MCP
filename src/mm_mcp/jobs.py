@@ -15,9 +15,10 @@ import uuid
 from mm_mcp.core import ServiceError, canonical, file_lock, identifier
 
 class JobQueue:
-    def __init__(self, root, handler, max_pending=64):
+    def __init__(self, root, handler, max_pending=64, *, recover=None):
         self.root=Path(root); self.root.mkdir(parents=True,exist_ok=True)
         self.path=self.root/'jobs.sqlite3'; self.handler=handler; self.max_pending=max_pending
+        self.recover=recover
         self.stop_event=threading.Event(); self.thread=None; self.start_lock=threading.Lock()
         with self._db() as db:
             db.execute("""CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, state TEXT, request TEXT,
@@ -105,6 +106,10 @@ class JobQueue:
             self.thread.join(timeout=12)
     def run_one(self):
         with file_lock(self.root/'.worker.lock',timeout=.05):
+            # Recovery also runs while idle, including after another service
+            # process dies. The callback must cooperate with direct native work.
+            if self.recover is not None:
+                self.recover()
             with self._db() as db:
                 db.execute('BEGIN IMMEDIATE')
                 # The global worker lock is held here. Any older running row belongs

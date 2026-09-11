@@ -1,6 +1,6 @@
 # High-level tool reference
 
-These 24 shared functions are registered by `tools.register`, alongside 10 batch
+These 32 shared functions are registered by `tools.register`, alongside 10 batch
 and 8 live tools. Setup, session discovery, thumbnails and snapshot listing are
 browser HTTP routes; they do not add MCP tools. The actual source is authoritative.
 
@@ -213,6 +213,52 @@ material_mesh_masks(obj_path: 'str', size: 'int' = 256, up_axis: 'str' = 'y') ->
 
 Bake coverage, normalized height and upward-facing masks from an approved triangle OBJ with unique UVs.
 
+## blender_capabilities
+
+`blender_capabilities()` returns the optional worker's configured status, supported
+operations, specimens, dimensions and upload/result limits.
+
+## blender_mesh_upload
+
+`blender_mesh_upload(name: str, data_base64: str)` admits a static, embedded GLB at
+most 4 MiB and returns `{ok, mesh: {mesh_id, sha256, bytes, name, ...}}`.
+
+## blender_job_submit
+
+`blender_job_submit(operation, build_id=None, mesh_id=None, specimen=None,
+resolution=256, unwrap=False, uv_scale=1)` queues `inspect`, `preview` or `bake`.
+The typed schema restricts specimens to `sphere`, `beveled_cube`, `plane` and
+resolution to 128, 256, 512. Preview/bake require an exact completed `build_id`.
+The source build, worker and binary identities are pinned before queue admission.
+
+## blender_job_get
+
+`blender_job_get(job_id: str)` reads the existing persistent queue. Both material
+and Blender tools observe the same jobs and terminal result receipts.
+
+## blender_job_cancel
+
+`blender_job_cancel(job_id: str)` requests cancellation and worker cleanup through
+that same queue; source builds and admitted meshes remain available.
+
+## blender_result_get
+
+`blender_result_get(result_id: str)` verifies the entire immutable inventory and
+returns `{ok, manifest}` with schema `mm.blender-result/v1`.
+
+## blender_result_file
+
+`blender_result_file(result_id: str, name: str)` returns one verified inventory
+artifact as `{ok, result_id, name, bytes, sha256, data_base64}`. No filesystem path
+or URL may be supplied. Files are bounded to 16 MiB.
+
+## blender_result_export
+
+`blender_result_export(result_id: str)` writes a verified deterministic ZIP to the
+managed exports directory and returns its path, byte count and SHA-256. The bundle
+includes exact procedural source provenance and only its inventoried artifacts.
+See [Blender companion](BLENDER.md) for maps, diagnostics and native acceptance.
+
 ## Batch and native tools
 
 The original authoring tools remain registered alongside the shared service.
@@ -277,6 +323,12 @@ The adapter enforces loopback Host/Origin checks and a content security policy.
 | `POST /api/family`, `POST /api/context` | Create variations or apply explicit world-context bindings. |
 | `POST /api/compare`, `GET /api/comparisons/{filename}` | Create or read a comparison image. |
 | `POST /api/recipes/save`, `POST /api/mesh-masks` | Save a personal recipe or build bounded mesh masks. |
+| `GET /api/blender/capabilities` | Optional fixed Blender operations and bounds. |
+| `POST /api/blender/meshes` | Upload `{name, data_base64}` as a static embedded GLB. |
+| `POST /api/blender/jobs` | Queue a fixed inspect/preview/bake request; use existing job status/cancel routes. |
+| `GET /api/blender/results/{result_id}` | Verify and read the immutable result manifest. |
+| `GET /api/blender/results/{result_id}/files/{name}` | Download a verified result artifact. |
+| `GET /api/blender/results/{result_id}/export` | Download the bounded self-contained ZIP. |
 
 Use the shared Python service or MCP interface for integrations. The actual route
 dispatch in `play/server.py` defines the browser adapter contract.
