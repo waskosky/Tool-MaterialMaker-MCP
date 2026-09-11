@@ -192,6 +192,6 @@ and runs the real HTTP browser suite with WebGL required and labelled synthetic 
 Browser screenshots are retained as CI artifacts. Native GPU baking and engine imports
 remain separate acceptance work; this workflow does not publish a release.
 The accepted Workshop revision `107534a` passed all five jobs in
-[CI run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693).
+[CI run 34579303994](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579303994).
 Version 0.8.0a1 remains a development candidate; no new alpha release or upstream
 work is included in this delivery.
