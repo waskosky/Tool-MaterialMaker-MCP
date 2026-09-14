@@ -61,6 +61,8 @@ function foundryURL(build = null) {
 function updateCompanionNavigation() {
   $("foundry-link").hidden = !foundryPath;
   $("foundry-link").href = foundryURL() || "";
+  $("vector-link").hidden = !foundryPath;
+  $("vector-link").href = foundryPath ? foundryPath + "vectors.html#token=" + encodeURIComponent(token) : "";
   $("send-foundry").hidden = !foundryPath || !selectedBuild;
 }
 function sendToFoundry() {

@@ -51,6 +51,27 @@ and registered 42 tools. Package resources remain synchronized. Accepted-code
 passed all five jobs. Version 0.8.0a1 remains a development candidate; no alpha
 release is being published.
 
+## September 14 plant authoring
+
+Workshop now owns plant projects in its existing SQLite transaction/history
+store, isolated from material graph tools by an additive document kind. RAI owns
+the canonical compiler; `src/mm_mcp/vector/producer` is generated and never edited
+in place. Its independent source lock and exact reproduction gate preserve the
+frozen native artifact contract. Foundry's plant workspace and `vector_author`
+use the same service; locks are persisted and candidate adoption cannot bypass
+them. Undo/restore intentionally restores earlier lock settings with the artifact.
+
+Portable gate: 570 passed, one Windows-only skip, nine native/browser cases
+deselected. The actual paired Foundry/Workshop Chromium and stdio MCP proof
+passes twelve checks, including protected adoption, a stale browser write after
+an MCP edit, 390-pixel layout and retained exact ZIP bytes. It captures no
+screenshots. The downloaded artifact reproduces through the clean RAI CLI and
+passes native Undersong admission/64 finite cached-polygon poses. Wheel build and metadata checks pass. The first consumer is native
+Undersong; broader SVG imports, other recipe families, shader conversion and
+public game publication remain separate reviewed work. This development change
+targets integration/next; it does not release an alpha or merge the full
+integration branch to upstream contribution main.
+
 ## Next work
 
 1. Expand ordinary material use beyond the accepted 128/256-pixel sand example and

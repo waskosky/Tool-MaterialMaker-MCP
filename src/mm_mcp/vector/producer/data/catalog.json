@@ -1,0 +1,8583 @@
+{
+  "schema_version": 1,
+  "archives": {},
+  "palettes": {
+    "lagoon": {
+      "body": "#73cbb3",
+      "accent": "#ee9878",
+      "light": "#d3eee0",
+      "shade": "#3e857e",
+      "glass": "#b8e4ed",
+      "gold": "#f2cf7b",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    },
+    "orchid": {
+      "body": "#b1a0d6",
+      "accent": "#e2a16b",
+      "light": "#e4dcef",
+      "shade": "#786392",
+      "glass": "#cce9df",
+      "gold": "#f1d589",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    },
+    "marigold": {
+      "body": "#e2b666",
+      "accent": "#ca8264",
+      "light": "#f6e5b3",
+      "shade": "#98774e",
+      "glass": "#b9ddda",
+      "gold": "#f6d57c",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    },
+    "coral": {
+      "body": "#de9693",
+      "accent": "#88bbc2",
+      "light": "#f5d9c8",
+      "shade": "#a56774",
+      "glass": "#d4e9c0",
+      "gold": "#efcd72",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    },
+    "moss": {
+      "body": "#9bbf80",
+      "accent": "#cf9bae",
+      "light": "#e0e9bb",
+      "shade": "#668366",
+      "glass": "#b1ddd0",
+      "gold": "#ead486",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    },
+    "arctic": {
+      "body": "#8eb9d4",
+      "accent": "#b5a0d3",
+      "light": "#dbeaf2",
+      "shade": "#557d9d",
+      "glass": "#f6deb1",
+      "gold": "#ebc47f",
+      "ink": "#273444",
+      "paper": "#fffaf0"
+    }
+  },
+  "families": {
+    "creature": {
+      "version": 1,
+      "title": "Creature",
+      "description": "A semantic biped with proportion controls, selectable features, attached markings and two-link foot targets.",
+      "parameters": {
+        "stature": {
+          "label": "Stature",
+          "type": "float",
+          "min": 180,
+          "max": 280,
+          "default": 225,
+          "description": "Ground-to-head height, excluding ears and horns.",
+          "sample": [
+            "mix",
+            195,
+            265,
+            [
+              "rand",
+              "stature"
+            ]
+          ]
+        },
+        "fullness": {
+          "label": "Body fullness",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.55,
+          "description": "",
+          "sample": [
+            "mix",
+            0.12,
+            0.9,
+            [
+              "rand",
+              "mass"
+            ]
+          ]
+        },
+        "leg_length": {
+          "label": "Leg proportion",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.5,
+          "description": "",
+          "sample": [
+            "clamp",
+            [
+              "+",
+              [
+                "-",
+                0.82,
+                [
+                  "*",
+                  [
+                    "v",
+                    "fullness"
+                  ],
+                  0.55
+                ]
+              ],
+              [
+                "*",
+                [
+                  "-",
+                  [
+                    "rand",
+                    "leg_jitter"
+                  ],
+                  0.5
+                ],
+                0.3
+              ]
+            ],
+            0,
+            1
+          ]
+        },
+        "head_size": {
+          "label": "Head size",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.55,
+          "description": "",
+          "sample": [
+            "mix",
+            0.15,
+            0.85,
+            [
+              "rand",
+              "head"
+            ]
+          ]
+        },
+        "angularity": {
+          "label": "Squareness",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.2,
+          "description": "",
+          "sample": [
+            "rand",
+            "angularity"
+          ]
+        },
+        "eye_size": {
+          "label": "Eye size",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.55,
+          "description": "",
+          "sample": [
+            "mix",
+            0.2,
+            0.85,
+            [
+              "rand",
+              "eyes"
+            ]
+          ]
+        },
+        "ear_length": {
+          "label": "Ear length",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.45,
+          "description": "",
+          "sample": [
+            "rand",
+            "ears_length"
+          ]
+        },
+        "tail_length": {
+          "label": "Tail length",
+          "type": "float",
+          "min": 0,
+          "max": 1,
+          "default": 0.5,
+          "description": "",
+          "sample": [
+            "rand",
+            "tail_length"
+          ]
+        },
+        "mark_count": {
+          "label": "Body markings",
+          "type": "int",
+          "min": 0,
+          "max": 7,
+          "default": 4,
+          "description": "",
+          "sample": [
+            "mix",
+            0,
+            7,
+            [
+              "rand",
+              "marks"
+            ]
+          ]
+        }
+      },
+      "parameter_order": [
+        "stature",
+        "fullness",
+        "leg_length",
+        "head_size",
+        "angularity",
+        "eye_size",
+        "ear_length",
+        "tail_length",
+        "mark_count"
+      ],
+      "choices": {
+        "ears": {
+          "values": [
+            "round",
+            "long",
+            "none"
+          ]
+        },
+        "horns": {
+          "values": [
+            "none",
+            "curved",
+            "antennae"
+          ]
+        }
+      },
+      "groups": {
+        "face": [
+          "stature",
+          "head_size",
+          "eye_size",
+          "angularity"
+        ],
+        "standing_height": [
+          "stature"
+        ]
+      },
+      "structural_parameters": [
+        "mark_count"
+      ],
+      "derived": [
+        [
+          "height",
+          [
+            "v",
+            "stature"
+          ]
+        ],
+        [
+          "leg_h",
+          [
+            "*",
+            [
+              "v",
+              "height"
+            ],
+            [
+              "+",
+              0.18,
+              [
+                "*",
+                0.16,
+                [
+                  "v",
+                  "leg_length"
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
+          "head_h",
+          [
+            "*",
+            [
+              "v",
+              "height"
+            ],
+            [
+              "+",
+              0.28,
+              [
+                "*",
+                0.08,
+                [
+                  "v",
+                  "head_size"
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
+          "body_h",
+          [
+            "-",
+            [
+              "-",
+              [
+                "v",
+                "height"
+              ],
+              [
+                "v",
+                "leg_h"
+              ]
+            ],
+            [
+              "*",
+              [
+                "v",
+                "head_h"
+              ],
+              0.68
+            ]
+          ]
+        ],
+        [
+          "body_rx",
+          [
+            "*",
+            [
+              "v",
+              "height"
+            ],
+            [
+              "+",
+              0.14,
+              [
+                "*",
+                0.085,
+                [
+                  "v",
+                  "fullness"
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
+          "head_rx",
+          [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.55
+          ]
+        ],
+        [
+          "body_y",
+          [
+            "-",
+            [
+              "-",
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "leg_h"
+                ]
+              ],
+              9
+            ],
+            [
+              "*",
+              [
+                "v",
+                "body_h"
+              ],
+              0.5
+            ]
+          ]
+        ],
+        [
+          "head_y",
+          [
+            "-",
+            [
+              "+",
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ],
+              [
+                "*",
+                [
+                  "v",
+                  "head_h"
+                ],
+                0.5
+              ]
+            ],
+            [
+              "v",
+              "body_y"
+            ]
+          ]
+        ],
+        [
+          "upper_len",
+          [
+            "*",
+            [
+              "v",
+              "leg_h"
+            ],
+            0.6
+          ]
+        ],
+        [
+          "lower_len",
+          [
+            "*",
+            [
+              "v",
+              "leg_h"
+            ],
+            0.59
+          ]
+        ],
+        [
+          "limb_w",
+          [
+            "+",
+            5,
+            [
+              "*",
+              [
+                "v",
+                "fullness"
+              ],
+              3
+            ]
+          ]
+        ],
+        [
+          "eye_r",
+          [
+            "*",
+            [
+              "v",
+              "head_rx"
+            ],
+            [
+              "+",
+              0.18,
+              [
+                "*",
+                0.09,
+                [
+                  "v",
+                  "eye_size"
+                ]
+              ]
+            ]
+          ]
+        ],
+        [
+          "ear_h",
+          [
+            "+",
+            20,
+            [
+              "*",
+              [
+                "v",
+                "ear_length"
+              ],
+              48
+            ]
+          ]
+        ],
+        [
+          "tail_l",
+          [
+            "+",
+            25,
+            [
+              "*",
+              [
+                "v",
+                "tail_length"
+              ],
+              57
+            ]
+          ]
+        ]
+      ],
+      "bones": [
+        {
+          "id": "root",
+          "parent": ""
+        },
+        {
+          "id": "body",
+          "parent": "root",
+          "y": [
+            "v",
+            "body_y"
+          ],
+          "clips": {
+            "idle": {
+              "y": [
+                "*",
+                [
+                  "*",
+                  [
+                    "-",
+                    1,
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ]
+                  ],
+                  0.75
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "y": [
+                "*",
+                [
+                  "*",
+                  [
+                    "-",
+                    1,
+                    [
+                      "cos",
+                      [
+                        "*",
+                        [
+                          "*",
+                          [
+                            "v",
+                            "phase"
+                          ],
+                          6.283185307179586
+                        ],
+                        2
+                      ]
+                    ]
+                  ],
+                  1.8
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "y": [
+                "*",
+                [
+                  "*",
+                  [
+                    "abs",
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ]
+                  ],
+                  6
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "head",
+          "parent": "body",
+          "y": [
+            "v",
+            "head_y"
+          ],
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.045
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ]
+                  ],
+                  0.065
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.15
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "tail",
+          "parent": "body",
+          "x": [
+            "*",
+            [
+              "v",
+              "body_rx"
+            ],
+            0.8
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "body_h"
+            ],
+            0.1
+          ],
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.16
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.28
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.5
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "thigh_l",
+          "parent": "body",
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "body_rx"
+              ]
+            ],
+            0.42
+          ],
+          "y": [
+            "-",
+            [
+              "*",
+              [
+                "v",
+                "body_h"
+              ],
+              0.5
+            ],
+            4
+          ]
+        },
+        {
+          "id": "shin_l",
+          "parent": "thigh_l",
+          "y": [
+            "v",
+            "upper_len"
+          ]
+        },
+        {
+          "id": "foot_l",
+          "parent": "shin_l",
+          "y": [
+            "v",
+            "lower_len"
+          ]
+        },
+        {
+          "id": "arm_l",
+          "parent": "body",
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "body_rx"
+              ]
+            ],
+            0.85
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "body_h"
+              ]
+            ],
+            0.16
+          ],
+          "angle": 0.12,
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.05
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ],
+                    -1
+                  ],
+                  0.35
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "+",
+                    1.5,
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "*",
+                          [
+                            "v",
+                            "phase"
+                          ],
+                          6.283185307179586
+                        ]
+                      ],
+                      0.15
+                    ]
+                  ]
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "ear_l",
+          "parent": "head",
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.61
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.36
+          ],
+          "angle": -0.14,
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.04
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.1
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.18
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "eye_l",
+          "parent": "head",
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.37
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.025
+          ],
+          "clips": {
+            "idle": {
+              "sy": [
+                "if",
+                [
+                  "lt",
+                  0.93,
+                  [
+                    "v",
+                    "phase"
+                  ]
+                ],
+                [
+                  "max",
+                  0.13,
+                  [
+                    "abs",
+                    [
+                      "cos",
+                      [
+                        "*",
+                        [
+                          "/",
+                          [
+                            "-",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            0.93
+                          ],
+                          0.07
+                        ],
+                        3.141592653589793
+                      ]
+                    ]
+                  ]
+                ],
+                1
+              ]
+            }
+          }
+        },
+        {
+          "id": "thigh_r",
+          "parent": "body",
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "body_rx"
+              ]
+            ],
+            0.42
+          ],
+          "y": [
+            "-",
+            [
+              "*",
+              [
+                "v",
+                "body_h"
+              ],
+              0.5
+            ],
+            4
+          ]
+        },
+        {
+          "id": "shin_r",
+          "parent": "thigh_r",
+          "y": [
+            "v",
+            "upper_len"
+          ]
+        },
+        {
+          "id": "foot_r",
+          "parent": "shin_r",
+          "y": [
+            "v",
+            "lower_len"
+          ]
+        },
+        {
+          "id": "arm_r",
+          "parent": "body",
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "body_rx"
+              ]
+            ],
+            0.85
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "body_h"
+              ]
+            ],
+            0.16
+          ],
+          "angle": -0.12,
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.05
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ],
+                    1
+                  ],
+                  0.35
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "+",
+                    1.5,
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "*",
+                          [
+                            "v",
+                            "phase"
+                          ],
+                          6.283185307179586
+                        ]
+                      ],
+                      0.15
+                    ]
+                  ]
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "ear_r",
+          "parent": "head",
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.61
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.36
+          ],
+          "angle": 0.14,
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.04
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.1
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.18
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "eye_r",
+          "parent": "head",
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.37
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.025
+          ],
+          "clips": {
+            "idle": {
+              "sy": [
+                "if",
+                [
+                  "lt",
+                  0.93,
+                  [
+                    "v",
+                    "phase"
+                  ]
+                ],
+                [
+                  "max",
+                  0.13,
+                  [
+                    "abs",
+                    [
+                      "cos",
+                      [
+                        "*",
+                        [
+                          "/",
+                          [
+                            "-",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            0.93
+                          ],
+                          0.07
+                        ],
+                        3.141592653589793
+                      ]
+                    ]
+                  ]
+                ],
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "shapes": [
+        {
+          "id": "tail",
+          "kind": "tube",
+          "bone": "tail",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "tail_l"
+                ],
+                0.2
+              ],
+              18
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "tail_l"
+                ],
+                0.9
+              ],
+              22
+            ],
+            [
+              [
+                "v",
+                "tail_l"
+              ],
+              -14
+            ]
+          ],
+          "widths": [
+            9,
+            7,
+            2
+          ],
+          "z": -35
+        },
+        {
+          "id": "body",
+          "kind": "superellipse",
+          "bone": "body",
+          "fill": "body",
+          "rx": [
+            "v",
+            "body_rx"
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "body_h"
+            ],
+            0.5
+          ],
+          "exponent": [
+            "+",
+            2,
+            [
+              "*",
+              [
+                "v",
+                "angularity"
+              ],
+              1.5
+            ]
+          ],
+          "z": 0
+        },
+        {
+          "id": "belly",
+          "kind": "superellipse",
+          "bone": "body",
+          "fill": "light",
+          "rx": [
+            "*",
+            [
+              "v",
+              "body_rx"
+            ],
+            0.63
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "body_h"
+            ],
+            0.36
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "body_h"
+            ],
+            0.07
+          ],
+          "exponent": [
+            "+",
+            2,
+            [
+              "*",
+              [
+                "v",
+                "angularity"
+              ],
+              0.5
+            ]
+          ],
+          "stroke_width": 0,
+          "z": 2
+        },
+        {
+          "id": "head",
+          "kind": "superellipse",
+          "bone": "head",
+          "fill": "body",
+          "rx": [
+            "v",
+            "head_rx"
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.5
+          ],
+          "exponent": [
+            "+",
+            2,
+            [
+              "*",
+              [
+                "v",
+                "angularity"
+              ],
+              2.8
+            ]
+          ],
+          "z": 30
+        },
+        {
+          "id": "muzzle",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "light",
+          "rx": [
+            "*",
+            [
+              "v",
+              "head_rx"
+            ],
+            0.44
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.19
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.23
+          ],
+          "stroke_width": 0,
+          "z": 32
+        },
+        {
+          "id": "nose",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "ink",
+          "rx": 4.4,
+          "ry": 3.1,
+          "y": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.15
+          ],
+          "stroke_width": 0,
+          "z": 50
+        },
+        {
+          "id": "smile",
+          "kind": "tube",
+          "bone": "head",
+          "fill": "ink",
+          "curve": [
+            [
+              -9,
+              [
+                "*",
+                [
+                  "v",
+                  "head_h"
+                ],
+                0.28
+              ]
+            ],
+            [
+              -4,
+              [
+                "*",
+                [
+                  "v",
+                  "head_h"
+                ],
+                0.36
+              ]
+            ],
+            [
+              4,
+              [
+                "*",
+                [
+                  "v",
+                  "head_h"
+                ],
+                0.36
+              ]
+            ],
+            [
+              9,
+              [
+                "*",
+                [
+                  "v",
+                  "head_h"
+                ],
+                0.28
+              ]
+            ]
+          ],
+          "widths": [
+            1.2,
+            1.2
+          ],
+          "stroke_width": 0,
+          "z": 50
+        },
+        {
+          "id": "thigh_l",
+          "kind": "tube",
+          "bone": "thigh_l",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                0.33
+              ]
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                0.66
+              ]
+            ],
+            [
+              0,
+              [
+                "+",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                2
+              ]
+            ]
+          ],
+          "widths": [
+            [
+              "v",
+              "limb_w"
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.88
+            ]
+          ],
+          "z": -20
+        },
+        {
+          "id": "shin_l",
+          "kind": "tube",
+          "bone": "shin_l",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              -2
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "lower_len"
+                ],
+                0.3
+              ]
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "lower_len"
+                ],
+                0.66
+              ]
+            ],
+            [
+              0,
+              [
+                "v",
+                "lower_len"
+              ]
+            ]
+          ],
+          "widths": [
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.89
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.72
+            ]
+          ],
+          "z": -19
+        },
+        {
+          "id": "knee_l",
+          "kind": "ellipse",
+          "bone": "shin_l",
+          "fill": "body",
+          "rx": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            0.88
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            0.88
+          ],
+          "stroke_width": 0,
+          "z": -18
+        },
+        {
+          "id": "foot_l",
+          "kind": "superellipse",
+          "bone": "foot_l",
+          "fill": "accent",
+          "rx": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            1.65
+          ],
+          "ry": 8,
+          "exponent": 3,
+          "x": -2,
+          "z": -16
+        },
+        {
+          "id": "arm_l",
+          "kind": "tube",
+          "bone": "arm_l",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              -8,
+              12
+            ],
+            [
+              -10,
+              25
+            ],
+            [
+              -6,
+              38
+            ]
+          ],
+          "widths": [
+            [
+              "+",
+              [
+                "v",
+                "limb_w"
+              ],
+              1
+            ],
+            [
+              "v",
+              "limb_w"
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.9
+            ]
+          ],
+          "z": -10
+        },
+        {
+          "id": "hand_l",
+          "kind": "ellipse",
+          "bone": "arm_l",
+          "fill": "accent",
+          "rx": [
+            "+",
+            [
+              "v",
+              "limb_w"
+            ],
+            1
+          ],
+          "ry": [
+            "+",
+            [
+              "v",
+              "limb_w"
+            ],
+            2
+          ],
+          "x": -6,
+          "y": 38,
+          "z": -9
+        },
+        {
+          "id": "long_ear_l",
+          "kind": "leaf",
+          "bone": "ear_l",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "long"
+          ],
+          "length": [
+            "v",
+            "ear_h"
+          ],
+          "width": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.24
+          ],
+          "curl": -8,
+          "angle": -1.5707963267948966,
+          "z": 20
+        },
+        {
+          "id": "round_ear_l",
+          "kind": "ellipse",
+          "bone": "ear_l",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "round"
+          ],
+          "rx": [
+            "+",
+            10,
+            [
+              "*",
+              [
+                "v",
+                "ear_h"
+              ],
+              0.1
+            ]
+          ],
+          "ry": [
+            "+",
+            14,
+            [
+              "*",
+              [
+                "v",
+                "ear_h"
+              ],
+              0.12
+            ]
+          ],
+          "y": -7,
+          "z": 20
+        },
+        {
+          "id": "ear_inner_l",
+          "kind": "leaf",
+          "bone": "ear_l",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "long"
+          ],
+          "length": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.77
+          ],
+          "width": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.13
+          ],
+          "curl": -6,
+          "angle": -1.5707963267948966,
+          "stroke_width": 0,
+          "z": 21
+        },
+        {
+          "id": "cheek_l",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "accent",
+          "rx": 6,
+          "ry": 4,
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.64
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.17
+          ],
+          "stroke_width": 0,
+          "z": 38
+        },
+        {
+          "id": "eye_white_l",
+          "kind": "ellipse",
+          "bone": "eye_l",
+          "fill": "paper",
+          "rx": [
+            "v",
+            "eye_r"
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            1.18
+          ],
+          "z": 40
+        },
+        {
+          "id": "pupil_l",
+          "kind": "ellipse",
+          "bone": "eye_l",
+          "fill": "ink",
+          "rx": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.39
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.61
+          ],
+          "x": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.12
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.1
+          ],
+          "stroke_width": 0,
+          "z": 41
+        },
+        {
+          "id": "eye_glint_l",
+          "kind": "ellipse",
+          "bone": "eye_l",
+          "fill": "paper",
+          "rx": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.13
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.17
+          ],
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "eye_r"
+              ]
+            ],
+            0.03
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "eye_r"
+              ]
+            ],
+            0.18
+          ],
+          "stroke_width": 0,
+          "z": 42
+        },
+        {
+          "id": "horn_l",
+          "kind": "tube",
+          "bone": "head",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "curved"
+          ],
+          "curve": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.35
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.4
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.88
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.9
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.93
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.75
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.62
+              ]
+            ]
+          ],
+          "widths": [
+            5,
+            3.4,
+            1
+          ],
+          "z": 19
+        },
+        {
+          "id": "antenna_l",
+          "kind": "tube",
+          "bone": "head",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "antennae"
+          ],
+          "curve": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.4
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.65
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.52
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.67
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.56
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.8
+              ]
+            ]
+          ],
+          "widths": [
+            2,
+            1.5
+          ],
+          "z": 19
+        },
+        {
+          "id": "antenna_tip_l",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "antennae"
+          ],
+          "rx": 4.5,
+          "ry": 5,
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.56
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.8
+          ],
+          "z": 20
+        },
+        {
+          "id": "thigh_r",
+          "kind": "tube",
+          "bone": "thigh_r",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                0.33
+              ]
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                0.66
+              ]
+            ],
+            [
+              0,
+              [
+                "+",
+                [
+                  "v",
+                  "upper_len"
+                ],
+                2
+              ]
+            ]
+          ],
+          "widths": [
+            [
+              "v",
+              "limb_w"
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.88
+            ]
+          ],
+          "z": -20
+        },
+        {
+          "id": "shin_r",
+          "kind": "tube",
+          "bone": "shin_r",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              -2
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "lower_len"
+                ],
+                0.3
+              ]
+            ],
+            [
+              0,
+              [
+                "*",
+                [
+                  "v",
+                  "lower_len"
+                ],
+                0.66
+              ]
+            ],
+            [
+              0,
+              [
+                "v",
+                "lower_len"
+              ]
+            ]
+          ],
+          "widths": [
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.89
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.72
+            ]
+          ],
+          "z": -19
+        },
+        {
+          "id": "knee_r",
+          "kind": "ellipse",
+          "bone": "shin_r",
+          "fill": "body",
+          "rx": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            0.88
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            0.88
+          ],
+          "stroke_width": 0,
+          "z": -18
+        },
+        {
+          "id": "foot_r",
+          "kind": "superellipse",
+          "bone": "foot_r",
+          "fill": "accent",
+          "rx": [
+            "*",
+            [
+              "v",
+              "limb_w"
+            ],
+            1.65
+          ],
+          "ry": 8,
+          "exponent": 3,
+          "x": 2,
+          "z": -16
+        },
+        {
+          "id": "arm_r",
+          "kind": "tube",
+          "bone": "arm_r",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              8,
+              12
+            ],
+            [
+              10,
+              25
+            ],
+            [
+              6,
+              38
+            ]
+          ],
+          "widths": [
+            [
+              "+",
+              [
+                "v",
+                "limb_w"
+              ],
+              1
+            ],
+            [
+              "v",
+              "limb_w"
+            ],
+            [
+              "*",
+              [
+                "v",
+                "limb_w"
+              ],
+              0.9
+            ]
+          ],
+          "z": -10
+        },
+        {
+          "id": "hand_r",
+          "kind": "ellipse",
+          "bone": "arm_r",
+          "fill": "accent",
+          "rx": [
+            "+",
+            [
+              "v",
+              "limb_w"
+            ],
+            1
+          ],
+          "ry": [
+            "+",
+            [
+              "v",
+              "limb_w"
+            ],
+            2
+          ],
+          "x": 6,
+          "y": 38,
+          "z": -9
+        },
+        {
+          "id": "long_ear_r",
+          "kind": "leaf",
+          "bone": "ear_r",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "long"
+          ],
+          "length": [
+            "v",
+            "ear_h"
+          ],
+          "width": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.24
+          ],
+          "curl": 8,
+          "angle": -1.5707963267948966,
+          "z": 20
+        },
+        {
+          "id": "round_ear_r",
+          "kind": "ellipse",
+          "bone": "ear_r",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "round"
+          ],
+          "rx": [
+            "+",
+            10,
+            [
+              "*",
+              [
+                "v",
+                "ear_h"
+              ],
+              0.1
+            ]
+          ],
+          "ry": [
+            "+",
+            14,
+            [
+              "*",
+              [
+                "v",
+                "ear_h"
+              ],
+              0.12
+            ]
+          ],
+          "y": -7,
+          "z": 20
+        },
+        {
+          "id": "ear_inner_r",
+          "kind": "leaf",
+          "bone": "ear_r",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "ears"
+            ],
+            "long"
+          ],
+          "length": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.77
+          ],
+          "width": [
+            "*",
+            [
+              "v",
+              "ear_h"
+            ],
+            0.13
+          ],
+          "curl": 6,
+          "angle": -1.5707963267948966,
+          "stroke_width": 0,
+          "z": 21
+        },
+        {
+          "id": "cheek_r",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "accent",
+          "rx": 6,
+          "ry": 4,
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.64
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "head_h"
+            ],
+            0.17
+          ],
+          "stroke_width": 0,
+          "z": 38
+        },
+        {
+          "id": "eye_white_r",
+          "kind": "ellipse",
+          "bone": "eye_r",
+          "fill": "paper",
+          "rx": [
+            "v",
+            "eye_r"
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            1.18
+          ],
+          "z": 40
+        },
+        {
+          "id": "pupil_r",
+          "kind": "ellipse",
+          "bone": "eye_r",
+          "fill": "ink",
+          "rx": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.39
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.61
+          ],
+          "x": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.12
+          ],
+          "y": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.1
+          ],
+          "stroke_width": 0,
+          "z": 41
+        },
+        {
+          "id": "eye_glint_r",
+          "kind": "ellipse",
+          "bone": "eye_r",
+          "fill": "paper",
+          "rx": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.13
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "eye_r"
+            ],
+            0.17
+          ],
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "eye_r"
+              ]
+            ],
+            0.03
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "eye_r"
+              ]
+            ],
+            0.18
+          ],
+          "stroke_width": 0,
+          "z": 42
+        },
+        {
+          "id": "horn_r",
+          "kind": "tube",
+          "bone": "head",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "curved"
+          ],
+          "curve": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.35
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.4
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.88
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.9
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.93
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.75
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.62
+              ]
+            ]
+          ],
+          "widths": [
+            5,
+            3.4,
+            1
+          ],
+          "z": 19
+        },
+        {
+          "id": "antenna_r",
+          "kind": "tube",
+          "bone": "head",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "antennae"
+          ],
+          "curve": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.4
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.3
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.65
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.52
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.67
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  1,
+                  [
+                    "v",
+                    "head_rx"
+                  ]
+                ],
+                0.56
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "head_h"
+                  ]
+                ],
+                0.8
+              ]
+            ]
+          ],
+          "widths": [
+            2,
+            1.5
+          ],
+          "z": 19
+        },
+        {
+          "id": "antenna_tip_r",
+          "kind": "ellipse",
+          "bone": "head",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "horns"
+            ],
+            "antennae"
+          ],
+          "rx": 4.5,
+          "ry": 5,
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "head_rx"
+              ]
+            ],
+            0.56
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "head_h"
+              ]
+            ],
+            0.8
+          ],
+          "z": 20
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "mark_count"
+            ]
+          },
+          "items": [
+            {
+              "id": "mark_{i}",
+              "kind": "ellipse",
+              "bone": "body",
+              "fill": "accent",
+              "rx": [
+                "+",
+                3.4,
+                [
+                  "*",
+                  [
+                    "v",
+                    "i"
+                  ],
+                  0.32
+                ]
+              ],
+              "ry": [
+                "+",
+                4.5,
+                [
+                  "*",
+                  [
+                    "v",
+                    "i"
+                  ],
+                  0.25
+                ]
+              ],
+              "x": [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "i"
+                      ],
+                      2.39996323
+                    ]
+                  ],
+                  [
+                    "v",
+                    "body_rx"
+                  ]
+                ],
+                0.4
+              ],
+              "y": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "i"
+                      ],
+                      2.39996323
+                    ]
+                  ],
+                  [
+                    "v",
+                    "body_h"
+                  ]
+                ],
+                0.22
+              ],
+              "stroke_width": 0,
+              "z": 4
+            }
+          ]
+        }
+      ],
+      "ik": [
+        {
+          "upper": "thigh_l",
+          "lower": "shin_l",
+          "foot": "foot_l",
+          "length_a": [
+            "v",
+            "upper_len"
+          ],
+          "length_b": [
+            "v",
+            "lower_len"
+          ],
+          "bend": -1,
+          "target": [
+            [
+              "*",
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "body_rx"
+                ]
+              ],
+              0.42
+            ],
+            -8
+          ],
+          "targets": {
+            "walk": [
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "body_rx"
+                    ]
+                  ],
+                  0.42
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "v",
+                      "leg_h"
+                    ],
+                    [
+                      "+",
+                      0.1,
+                      [
+                        "*",
+                        [
+                          "v",
+                          "motion_stride"
+                        ],
+                        0.37
+                      ]
+                    ]
+                  ],
+                  [
+                    "if",
+                    [
+                      "lt",
+                      [
+                        "fract",
+                        [
+                          "+",
+                          [
+                            "v",
+                            "phase"
+                          ],
+                          0
+                        ]
+                      ],
+                      0.62
+                    ],
+                    [
+                      "-",
+                      0.5,
+                      [
+                        "/",
+                        [
+                          "fract",
+                          [
+                            "+",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            0
+                          ]
+                        ],
+                        0.62
+                      ]
+                    ],
+                    [
+                      "+",
+                      -0.5,
+                      [
+                        "smooth",
+                        [
+                          "/",
+                          [
+                            "-",
+                            [
+                              "fract",
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "phase"
+                                ],
+                                0
+                              ]
+                            ],
+                            0.62
+                          ],
+                          0.38
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "-",
+                -8,
+                [
+                  "if",
+                  [
+                    "lt",
+                    [
+                      "fract",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        0
+                      ]
+                    ],
+                    0.62
+                  ],
+                  0,
+                  [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "*",
+                          [
+                            "/",
+                            [
+                              "-",
+                              [
+                                "fract",
+                                [
+                                  "+",
+                                  [
+                                    "v",
+                                    "phase"
+                                  ],
+                                  0
+                                ]
+                              ],
+                              0.62
+                            ],
+                            0.38
+                          ],
+                          3.141592653589793
+                        ]
+                      ],
+                      [
+                        "v",
+                        "leg_h"
+                      ]
+                    ],
+                    [
+                      "+",
+                      0.08,
+                      [
+                        "*",
+                        [
+                          "v",
+                          "motion_lift"
+                        ],
+                        0.2
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          }
+        },
+        {
+          "upper": "thigh_r",
+          "lower": "shin_r",
+          "foot": "foot_r",
+          "length_a": [
+            "v",
+            "upper_len"
+          ],
+          "length_b": [
+            "v",
+            "lower_len"
+          ],
+          "bend": 1,
+          "target": [
+            [
+              "*",
+              [
+                "*",
+                1,
+                [
+                  "v",
+                  "body_rx"
+                ]
+              ],
+              0.42
+            ],
+            -8
+          ],
+          "targets": {
+            "walk": [
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    1,
+                    [
+                      "v",
+                      "body_rx"
+                    ]
+                  ],
+                  0.42
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "v",
+                      "leg_h"
+                    ],
+                    [
+                      "+",
+                      0.1,
+                      [
+                        "*",
+                        [
+                          "v",
+                          "motion_stride"
+                        ],
+                        0.37
+                      ]
+                    ]
+                  ],
+                  [
+                    "if",
+                    [
+                      "lt",
+                      [
+                        "fract",
+                        [
+                          "+",
+                          [
+                            "v",
+                            "phase"
+                          ],
+                          0.5
+                        ]
+                      ],
+                      0.62
+                    ],
+                    [
+                      "-",
+                      0.5,
+                      [
+                        "/",
+                        [
+                          "fract",
+                          [
+                            "+",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            0.5
+                          ]
+                        ],
+                        0.62
+                      ]
+                    ],
+                    [
+                      "+",
+                      -0.5,
+                      [
+                        "smooth",
+                        [
+                          "/",
+                          [
+                            "-",
+                            [
+                              "fract",
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "phase"
+                                ],
+                                0.5
+                              ]
+                            ],
+                            0.62
+                          ],
+                          0.38
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "-",
+                -8,
+                [
+                  "if",
+                  [
+                    "lt",
+                    [
+                      "fract",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        0.5
+                      ]
+                    ],
+                    0.62
+                  ],
+                  0,
+                  [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "*",
+                          [
+                            "/",
+                            [
+                              "-",
+                              [
+                                "fract",
+                                [
+                                  "+",
+                                  [
+                                    "v",
+                                    "phase"
+                                  ],
+                                  0.5
+                                ]
+                              ],
+                              0.62
+                            ],
+                            0.38
+                          ],
+                          3.141592653589793
+                        ]
+                      ],
+                      [
+                        "v",
+                        "leg_h"
+                      ]
+                    ],
+                    [
+                      "+",
+                      0.08,
+                      [
+                        "*",
+                        [
+                          "v",
+                          "motion_lift"
+                        ],
+                        0.2
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          }
+        }
+      ],
+      "measurements": {
+        "standing_height": [
+          "v",
+          "height"
+        ],
+        "body_width": [
+          "*",
+          [
+            "v",
+            "body_rx"
+          ],
+          2
+        ],
+        "head_width": [
+          "*",
+          [
+            "v",
+            "head_rx"
+          ],
+          2
+        ],
+        "leg_height": [
+          "v",
+          "leg_h"
+        ]
+      }
+    },
+    "plant": {
+      "version": 1,
+      "title": "Plant",
+      "description": "A bounded branching grammar with centerline-attached leaves and selectable crowns.",
+      "parameters": {
+        "height": {
+          "label": "Stem height",
+          "type": "float",
+          "min": 125,
+          "max": 265,
+          "default": 195,
+          "description": "",
+          "sample": [
+            "mix",
+            140,
+            245,
+            [
+              "rand",
+              "height"
+            ]
+          ]
+        },
+        "bend": {
+          "label": "Stem curvature",
+          "type": "float",
+          "min": -65,
+          "max": 65,
+          "default": 18,
+          "description": "",
+          "sample": [
+            "mix",
+            -48,
+            48,
+            [
+              "rand",
+              "bend"
+            ]
+          ]
+        },
+        "leaf_size": {
+          "label": "Leaf length",
+          "type": "float",
+          "min": 25,
+          "max": 82,
+          "default": 50,
+          "description": "",
+          "sample": [
+            "mix",
+            32,
+            72,
+            [
+              "rand",
+              "leaf_size"
+            ]
+          ]
+        },
+        "leaf_fullness": {
+          "label": "Leaf fullness",
+          "type": "float",
+          "min": 0.2,
+          "max": 0.8,
+          "default": 0.45,
+          "description": "",
+          "sample": [
+            "mix",
+            0.26,
+            0.67,
+            [
+              "rand",
+              "leaf_fullness"
+            ]
+          ]
+        },
+        "leaf_pairs": {
+          "label": "Leaf pairs",
+          "type": "int",
+          "min": 2,
+          "max": 6,
+          "default": 4,
+          "description": "",
+          "sample": [
+            "mix",
+            2,
+            6,
+            [
+              "rand",
+              "pairs"
+            ]
+          ]
+        },
+        "crown_size": {
+          "label": "Crown size",
+          "type": "float",
+          "min": 16,
+          "max": 38,
+          "default": 25,
+          "description": "",
+          "sample": [
+            "mix",
+            19,
+            34,
+            [
+              "rand",
+              "crown"
+            ]
+          ]
+        },
+        "petals": {
+          "label": "Petal count",
+          "type": "int",
+          "min": 5,
+          "max": 9,
+          "default": 6,
+          "description": "",
+          "sample": [
+            "mix",
+            5,
+            9,
+            [
+              "rand",
+              "petals"
+            ]
+          ]
+        }
+      },
+      "parameter_order": [
+        "height",
+        "bend",
+        "leaf_size",
+        "leaf_fullness",
+        "leaf_pairs",
+        "crown_size",
+        "petals"
+      ],
+      "choices": {
+        "crown": {
+          "values": [
+            "flower",
+            "lantern",
+            "frond"
+          ]
+        }
+      },
+      "derived": [],
+      "bones": [
+        {
+          "id": "root",
+          "parent": ""
+        },
+        {
+          "id": "stem",
+          "parent": "root",
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.035
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "walk": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.05
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.09
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "id": "crown",
+          "parent": "stem",
+          "y": [
+            "*",
+            -1,
+            [
+              "v",
+              "height"
+            ]
+          ],
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "sin",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "phase"
+                        ],
+                        6.283185307179586
+                      ]
+                    ]
+                  ],
+                  0.09
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.18
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "leaf_pairs"
+            ]
+          },
+          "items": [
+            {
+              "id": "leaf_l_{i}",
+              "parent": "stem",
+              "x": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "*",
+                      3,
+                      [
+                        "v",
+                        "bend"
+                      ]
+                    ],
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ],
+                  [
+                    "-",
+                    1,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    2,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              "y": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "/",
+                  [
+                    "+",
+                    [
+                      "v",
+                      "i"
+                    ],
+                    1
+                  ],
+                  [
+                    "+",
+                    [
+                      "v",
+                      "leaf_pairs"
+                    ],
+                    1
+                  ]
+                ]
+              ],
+              "angle": [
+                "*",
+                1,
+                [
+                  "+",
+                  0.4,
+                  [
+                    "*",
+                    0.15,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              "sx": -1,
+              "clips": {
+                "idle": {
+                  "angle": [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            6.283185307179586
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "i"
+                            ],
+                            0.6
+                          ]
+                        ]
+                      ],
+                      0.05
+                    ],
+                    [
+                      "v",
+                      "motion_energy"
+                    ]
+                  ]
+                },
+                "celebrate": {
+                  "angle": [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            6.283185307179586
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "i"
+                            ],
+                            0.6
+                          ]
+                        ]
+                      ],
+                      0.15
+                    ],
+                    [
+                      "v",
+                      "motion_energy"
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "leaf_pairs"
+            ]
+          },
+          "items": [
+            {
+              "id": "leaf_r_{i}",
+              "parent": "stem",
+              "x": [
+                "*",
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "*",
+                      3,
+                      [
+                        "v",
+                        "bend"
+                      ]
+                    ],
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ],
+                  [
+                    "-",
+                    1,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    2,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              "y": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "/",
+                  [
+                    "+",
+                    [
+                      "v",
+                      "i"
+                    ],
+                    1
+                  ],
+                  [
+                    "+",
+                    [
+                      "v",
+                      "leaf_pairs"
+                    ],
+                    1
+                  ]
+                ]
+              ],
+              "angle": [
+                "*",
+                -1,
+                [
+                  "+",
+                  0.4,
+                  [
+                    "*",
+                    0.15,
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              "sx": 1,
+              "clips": {
+                "idle": {
+                  "angle": [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            6.283185307179586
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "i"
+                            ],
+                            0.6
+                          ]
+                        ]
+                      ],
+                      0.05
+                    ],
+                    [
+                      "v",
+                      "motion_energy"
+                    ]
+                  ]
+                },
+                "celebrate": {
+                  "angle": [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "sin",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "phase"
+                            ],
+                            6.283185307179586
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "i"
+                            ],
+                            0.6
+                          ]
+                        ]
+                      ],
+                      0.15
+                    ],
+                    [
+                      "v",
+                      "motion_energy"
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "id": "stem",
+          "kind": "tube",
+          "bone": "stem",
+          "fill": "body",
+          "curve": [
+            [
+              0,
+              0
+            ],
+            [
+              [
+                "v",
+                "bend"
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                0.35
+              ]
+            ],
+            [
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "bend"
+                ]
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                0.75
+              ]
+            ],
+            [
+              0,
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ]
+          ],
+          "widths": [
+            7,
+            4,
+            2.2
+          ],
+          "z": -20
+        },
+        {
+          "id": "root_left",
+          "kind": "leaf",
+          "bone": "root",
+          "fill": "body",
+          "length": 29,
+          "width": 8,
+          "curl": -5,
+          "angle": -2.8,
+          "z": 1
+        },
+        {
+          "id": "root_right",
+          "kind": "leaf",
+          "bone": "root",
+          "fill": "body",
+          "length": 29,
+          "width": 8,
+          "curl": -5,
+          "angle": -0.34,
+          "z": 1
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "leaf_pairs"
+            ]
+          },
+          "items": [
+            {
+              "id": "leaf_l_{i}",
+              "kind": "leaf",
+              "bone": "leaf_l_{i}",
+              "fill": "body",
+              "length": [
+                "*",
+                [
+                  "v",
+                  "leaf_size"
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.25
+                  ]
+                ]
+              ],
+              "width": [
+                "*",
+                [
+                  "*",
+                  [
+                    "v",
+                    "leaf_size"
+                  ],
+                  [
+                    "v",
+                    "leaf_fullness"
+                  ]
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.25
+                  ]
+                ]
+              ],
+              "curl": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "leaf_size"
+                  ]
+                ],
+                0.12
+              ],
+              "z": 0
+            },
+            {
+              "id": "vein_l_{i}",
+              "kind": "leaf",
+              "bone": "leaf_l_{i}",
+              "fill": "light",
+              "length": [
+                "*",
+                [
+                  "v",
+                  "leaf_size"
+                ],
+                [
+                  "-",
+                  0.7,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.2
+                  ]
+                ]
+              ],
+              "width": 1.7,
+              "curl": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "leaf_size"
+                  ]
+                ],
+                0.08
+              ],
+              "stroke_width": 0,
+              "z": 1
+            }
+          ]
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "leaf_pairs"
+            ]
+          },
+          "items": [
+            {
+              "id": "leaf_r_{i}",
+              "kind": "leaf",
+              "bone": "leaf_r_{i}",
+              "fill": "body",
+              "length": [
+                "*",
+                [
+                  "v",
+                  "leaf_size"
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.25
+                  ]
+                ]
+              ],
+              "width": [
+                "*",
+                [
+                  "*",
+                  [
+                    "v",
+                    "leaf_size"
+                  ],
+                  [
+                    "v",
+                    "leaf_fullness"
+                  ]
+                ],
+                [
+                  "-",
+                  1,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.25
+                  ]
+                ]
+              ],
+              "curl": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "leaf_size"
+                  ]
+                ],
+                0.12
+              ],
+              "z": 0
+            },
+            {
+              "id": "vein_r_{i}",
+              "kind": "leaf",
+              "bone": "leaf_r_{i}",
+              "fill": "light",
+              "length": [
+                "*",
+                [
+                  "v",
+                  "leaf_size"
+                ],
+                [
+                  "-",
+                  0.7,
+                  [
+                    "*",
+                    [
+                      "/",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "v",
+                          "leaf_pairs"
+                        ],
+                        1
+                      ]
+                    ],
+                    0.2
+                  ]
+                ]
+              ],
+              "width": 1.7,
+              "curl": [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "leaf_size"
+                  ]
+                ],
+                0.08
+              ],
+              "stroke_width": 0,
+              "z": 1
+            }
+          ]
+        },
+        {
+          "repeat": {
+            "var": "i",
+            "count": [
+              "v",
+              "petals"
+            ]
+          },
+          "items": [
+            {
+              "id": "petal_{i}",
+              "kind": "ellipse",
+              "bone": "crown",
+              "fill": "accent",
+              "when": [
+                "eq",
+                [
+                  "v",
+                  "crown"
+                ],
+                "flower"
+              ],
+              "rx": [
+                "*",
+                [
+                  "v",
+                  "crown_size"
+                ],
+                0.7
+              ],
+              "ry": [
+                "*",
+                [
+                  "v",
+                  "crown_size"
+                ],
+                0.33
+              ],
+              "x": [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    [
+                      "/",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        6.283185307179586
+                      ],
+                      [
+                        "v",
+                        "petals"
+                      ]
+                    ]
+                  ],
+                  [
+                    "v",
+                    "crown_size"
+                  ]
+                ],
+                0.62
+              ],
+              "y": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "/",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "i"
+                        ],
+                        6.283185307179586
+                      ],
+                      [
+                        "v",
+                        "petals"
+                      ]
+                    ]
+                  ],
+                  [
+                    "v",
+                    "crown_size"
+                  ]
+                ],
+                0.62
+              ],
+              "angle": [
+                "/",
+                [
+                  "*",
+                  [
+                    "v",
+                    "i"
+                  ],
+                  6.283185307179586
+                ],
+                [
+                  "v",
+                  "petals"
+                ]
+              ],
+              "z": 3
+            }
+          ]
+        },
+        {
+          "id": "flower_center",
+          "kind": "ellipse",
+          "bone": "crown",
+          "fill": "gold",
+          "when": [
+            "eq",
+            [
+              "v",
+              "crown"
+            ],
+            "flower"
+          ],
+          "rx": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            0.43
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            0.43
+          ],
+          "z": 5
+        },
+        {
+          "id": "lantern",
+          "kind": "superellipse",
+          "bone": "crown",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "crown"
+            ],
+            "lantern"
+          ],
+          "rx": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            0.8
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            1.1
+          ],
+          "exponent": 2.8,
+          "z": 3
+        },
+        {
+          "id": "lantern_core",
+          "kind": "ellipse",
+          "bone": "crown",
+          "fill": "gold",
+          "when": [
+            "eq",
+            [
+              "v",
+              "crown"
+            ],
+            "lantern"
+          ],
+          "rx": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            0.4
+          ],
+          "ry": [
+            "*",
+            [
+              "v",
+              "crown_size"
+            ],
+            0.65
+          ],
+          "stroke_width": 0,
+          "z": 4
+        },
+        {
+          "id": "frond",
+          "kind": "leaf",
+          "bone": "crown",
+          "fill": "body",
+          "when": [
+            "eq",
+            [
+              "v",
+              "crown"
+            ],
+            "frond"
+          ],
+          "length": [
+            "*",
+            [
+              "v",
+              "leaf_size"
+            ],
+            0.8
+          ],
+          "width": [
+            "*",
+            [
+              "v",
+              "leaf_size"
+            ],
+            0.3
+          ],
+          "curl": -8,
+          "angle": -1.5707963267948966,
+          "z": 3
+        }
+      ],
+      "ik": [],
+      "groups": {},
+      "structural_parameters": [
+        "leaf_pairs",
+        "petals"
+      ],
+      "measurements": {
+        "stem_height": [
+          "v",
+          "height"
+        ],
+        "leaf_length": [
+          "v",
+          "leaf_size"
+        ],
+        "crown_diameter": [
+          "*",
+          [
+            "v",
+            "crown_size"
+          ],
+          2
+        ]
+      }
+    },
+    "dwelling": {
+      "version": 1,
+      "title": "Dwelling",
+      "description": "A bounded facade grammar with floor/window repetition and discrete roof structures.",
+      "parameters": {
+        "width": {
+          "label": "Building width",
+          "type": "float",
+          "min": 100,
+          "max": 205,
+          "default": 150,
+          "description": "",
+          "sample": [
+            "mix",
+            115,
+            190,
+            [
+              "rand",
+              "width"
+            ]
+          ]
+        },
+        "floor_height": {
+          "label": "Floor height",
+          "type": "float",
+          "min": 45,
+          "max": 74,
+          "default": 58,
+          "description": "",
+          "sample": [
+            "mix",
+            48,
+            69,
+            [
+              "rand",
+              "floor_height"
+            ]
+          ]
+        },
+        "floors": {
+          "label": "Floors",
+          "type": "int",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "description": "",
+          "sample": [
+            "mix",
+            1,
+            3,
+            [
+              "rand",
+              "floors"
+            ]
+          ]
+        },
+        "roof_height": {
+          "label": "Roof height",
+          "type": "float",
+          "min": 25,
+          "max": 78,
+          "default": 48,
+          "description": "",
+          "sample": [
+            "mix",
+            32,
+            68,
+            [
+              "rand",
+              "roof"
+            ]
+          ]
+        },
+        "columns": {
+          "label": "Window columns",
+          "type": "int",
+          "min": 2,
+          "max": 4,
+          "default": 3,
+          "description": "",
+          "sample": [
+            "mix",
+            2,
+            4,
+            [
+              "rand",
+              "columns"
+            ]
+          ]
+        },
+        "window_size": {
+          "label": "Window scale",
+          "type": "float",
+          "min": 0.42,
+          "max": 0.72,
+          "default": 0.56,
+          "description": "",
+          "sample": [
+            "mix",
+            0.45,
+            0.68,
+            [
+              "rand",
+              "window_size"
+            ]
+          ]
+        },
+        "lean": {
+          "label": "Roof asymmetry",
+          "type": "float",
+          "min": -0.28,
+          "max": 0.28,
+          "default": 0,
+          "description": "",
+          "sample": [
+            "mix",
+            -0.22,
+            0.22,
+            [
+              "rand",
+              "lean"
+            ]
+          ]
+        }
+      },
+      "parameter_order": [
+        "width",
+        "floor_height",
+        "floors",
+        "roof_height",
+        "columns",
+        "window_size",
+        "lean"
+      ],
+      "choices": {
+        "roof": {
+          "values": [
+            "gable",
+            "dome",
+            "flat"
+          ]
+        }
+      },
+      "derived": [
+        [
+          "height",
+          [
+            "*",
+            [
+              "v",
+              "floor_height"
+            ],
+            [
+              "v",
+              "floors"
+            ]
+          ]
+        ]
+      ],
+      "bones": [
+        {
+          "id": "root",
+          "parent": ""
+        },
+        {
+          "id": "flag",
+          "parent": "root",
+          "x": [
+            "*",
+            [
+              "v",
+              "width"
+            ],
+            0.28
+          ],
+          "y": [
+            "-",
+            [
+              "-",
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ],
+              [
+                "*",
+                [
+                  "v",
+                  "roof_height"
+                ],
+                0.62
+              ]
+            ],
+            23
+          ],
+          "clips": {
+            "idle": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.05
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            },
+            "celebrate": {
+              "angle": [
+                "*",
+                [
+                  "*",
+                  [
+                    "sin",
+                    [
+                      "*",
+                      [
+                        "v",
+                        "phase"
+                      ],
+                      6.283185307179586
+                    ]
+                  ],
+                  0.15
+                ],
+                [
+                  "v",
+                  "motion_energy"
+                ]
+              ]
+            }
+          }
+        }
+      ],
+      "shapes": [
+        {
+          "id": "wall",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "body",
+          "points": [
+            [
+              [
+                "/",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                2
+              ],
+              0
+            ],
+            [
+              [
+                "/",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                2
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                6
+              ]
+            ],
+            [
+              [
+                "+",
+                [
+                  "/",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "width"
+                    ]
+                  ],
+                  2
+                ],
+                6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ],
+            [
+              [
+                "-",
+                [
+                  "/",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  2
+                ],
+                6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ],
+            [
+              [
+                "/",
+                [
+                  "v",
+                  "width"
+                ],
+                2
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                6
+              ]
+            ],
+            [
+              [
+                "/",
+                [
+                  "v",
+                  "width"
+                ],
+                2
+              ],
+              0
+            ]
+          ],
+          "z": 0
+        },
+        {
+          "id": "foundation",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "shade",
+          "points": [
+            [
+              [
+                "-",
+                [
+                  "/",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "width"
+                    ]
+                  ],
+                  2
+                ],
+                5
+              ],
+              -9
+            ],
+            [
+              [
+                "+",
+                [
+                  "-",
+                  [
+                    "/",
+                    [
+                      "*",
+                      -1,
+                      [
+                        "v",
+                        "width"
+                      ]
+                    ],
+                    2
+                  ],
+                  5
+                ],
+                [
+                  "+",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  10
+                ]
+              ],
+              -9
+            ],
+            [
+              [
+                "+",
+                [
+                  "-",
+                  [
+                    "/",
+                    [
+                      "*",
+                      -1,
+                      [
+                        "v",
+                        "width"
+                      ]
+                    ],
+                    2
+                  ],
+                  5
+                ],
+                [
+                  "+",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  10
+                ]
+              ],
+              0
+            ],
+            [
+              [
+                "-",
+                [
+                  "/",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "width"
+                    ]
+                  ],
+                  2
+                ],
+                5
+              ],
+              0
+            ]
+          ],
+          "z": 2
+        },
+        {
+          "id": "gable",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "roof"
+            ],
+            "gable"
+          ],
+          "points": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                [
+                  "v",
+                  "lean"
+                ]
+              ],
+              [
+                "-",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "v",
+                  "roof_height"
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ]
+          ],
+          "z": 10
+        },
+        {
+          "id": "dome",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "roof"
+            ],
+            "dome"
+          ],
+          "points": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.141592653589793
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.141592653589793
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.2986722862692828
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.2986722862692828
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.4557519189487724
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.4557519189487724
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.612831551628262
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.612831551628262
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.7699111843077517
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.7699111843077517
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    3.9269908169872414
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    3.9269908169872414
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.084070449666731
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.084070449666731
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.241150082346221
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.241150082346221
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.39822971502571
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.39822971502571
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.5553093477052
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.5553093477052
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.71238898038469
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.71238898038469
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    4.869468613064179
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    4.869468613064179
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.026548245743669
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.026548245743669
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.183627878423159
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.183627878423159
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.340707511102648
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.340707511102648
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.497787143782138
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.497787143782138
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.654866776461628
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.654866776461628
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.811946409141117
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.811946409141117
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    5.969026041820607
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    5.969026041820607
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    6.126105674500097
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    6.126105674500097
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  [
+                    "cos",
+                    6.283185307179586
+                  ],
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.59
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "sin",
+                    6.283185307179586
+                  ],
+                  [
+                    "v",
+                    "roof_height"
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "z": 10
+        },
+        {
+          "id": "flat_roof",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "accent",
+          "when": [
+            "eq",
+            [
+              "v",
+              "roof"
+            ],
+            "flat"
+          ],
+          "points": [
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "width"
+                  ]
+                ],
+                0.6
+              ],
+              [
+                "-",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "roof_height"
+                  ],
+                  0.4
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.6
+              ],
+              [
+                "-",
+                [
+                  "*",
+                  -1,
+                  [
+                    "v",
+                    "height"
+                  ]
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "roof_height"
+                  ],
+                  0.4
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.6
+              ],
+              [
+                "*",
+                -1,
+                [
+                  "v",
+                  "height"
+                ]
+              ]
+            ]
+          ],
+          "z": 10
+        },
+        {
+          "id": "chimney",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "shade",
+          "points": [
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.24
+              ],
+              [
+                "-",
+                [
+                  "-",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "height"
+                    ]
+                  ],
+                  [
+                    "*",
+                    [
+                      "v",
+                      "roof_height"
+                    ],
+                    0.6
+                  ]
+                ],
+                20
+              ]
+            ],
+            [
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.24
+                ],
+                14
+              ],
+              [
+                "-",
+                [
+                  "-",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "v",
+                      "height"
+                    ]
+                  ],
+                  [
+                    "*",
+                    [
+                      "v",
+                      "roof_height"
+                    ],
+                    0.6
+                  ]
+                ],
+                20
+              ]
+            ],
+            [
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.24
+                ],
+                14
+              ],
+              [
+                "+",
+                [
+                  "-",
+                  [
+                    "-",
+                    [
+                      "*",
+                      -1,
+                      [
+                        "v",
+                        "height"
+                      ]
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "roof_height"
+                      ],
+                      0.6
+                    ]
+                  ],
+                  20
+                ],
+                [
+                  "+",
+                  [
+                    "*",
+                    [
+                      "v",
+                      "roof_height"
+                    ],
+                    0.6
+                  ],
+                  20
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.24
+              ],
+              [
+                "+",
+                [
+                  "-",
+                  [
+                    "-",
+                    [
+                      "*",
+                      -1,
+                      [
+                        "v",
+                        "height"
+                      ]
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "roof_height"
+                      ],
+                      0.6
+                    ]
+                  ],
+                  20
+                ],
+                [
+                  "+",
+                  [
+                    "*",
+                    [
+                      "v",
+                      "roof_height"
+                    ],
+                    0.6
+                  ],
+                  20
+                ]
+              ]
+            ]
+          ],
+          "z": 6
+        },
+        {
+          "id": "flagpole",
+          "kind": "polygon",
+          "bone": "flag",
+          "fill": "ink",
+          "points": [
+            [
+              -0.9,
+              0
+            ],
+            [
+              0.9,
+              0
+            ],
+            [
+              0.9,
+              26
+            ],
+            [
+              -0.9,
+              26
+            ]
+          ],
+          "stroke_width": 0,
+          "z": 20
+        },
+        {
+          "id": "flagcloth",
+          "kind": "polygon",
+          "bone": "flag",
+          "fill": "gold",
+          "points": [
+            [
+              0,
+              1
+            ],
+            [
+              25,
+              4
+            ],
+            [
+              18,
+              12
+            ],
+            [
+              0,
+              11
+            ]
+          ],
+          "z": 21
+        },
+        {
+          "repeat": {
+            "var": "r",
+            "count": [
+              "-",
+              [
+                "v",
+                "floors"
+              ],
+              1
+            ]
+          },
+          "items": [
+            {
+              "repeat": {
+                "var": "c",
+                "count": [
+                  "v",
+                  "columns"
+                ]
+              },
+              "items": [
+                {
+                  "id": "window_{r}_{c}",
+                  "kind": "superellipse",
+                  "bone": "root",
+                  "fill": "glass",
+                  "rx": [
+                    "*",
+                    [
+                      "*",
+                      [
+                        "/",
+                        [
+                          "v",
+                          "width"
+                        ],
+                        [
+                          "v",
+                          "columns"
+                        ]
+                      ],
+                      [
+                        "v",
+                        "window_size"
+                      ]
+                    ],
+                    0.5
+                  ],
+                  "ry": [
+                    "*",
+                    [
+                      "v",
+                      "floor_height"
+                    ],
+                    0.25
+                  ],
+                  "exponent": 2.8,
+                  "x": [
+                    "+",
+                    [
+                      "*",
+                      [
+                        "*",
+                        -1,
+                        [
+                          "v",
+                          "width"
+                        ]
+                      ],
+                      0.5
+                    ],
+                    [
+                      "/",
+                      [
+                        "*",
+                        [
+                          "v",
+                          "width"
+                        ],
+                        [
+                          "+",
+                          [
+                            "v",
+                            "c"
+                          ],
+                          0.5
+                        ]
+                      ],
+                      [
+                        "v",
+                        "columns"
+                      ]
+                    ]
+                  ],
+                  "y": [
+                    "+",
+                    [
+                      "*",
+                      -1,
+                      [
+                        "v",
+                        "height"
+                      ]
+                    ],
+                    [
+                      "*",
+                      [
+                        "+",
+                        [
+                          "v",
+                          "r"
+                        ],
+                        0.48
+                      ],
+                      [
+                        "v",
+                        "floor_height"
+                      ]
+                    ]
+                  ],
+                  "z": 3
+                },
+                {
+                  "id": "mullion_{r}_{c}",
+                  "kind": "polygon",
+                  "bone": "root",
+                  "fill": "ink",
+                  "points": [
+                    [
+                      [
+                        "-",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "*",
+                              -1,
+                              [
+                                "v",
+                                "width"
+                              ]
+                            ],
+                            0.5
+                          ],
+                          [
+                            "/",
+                            [
+                              "*",
+                              [
+                                "v",
+                                "width"
+                              ],
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "c"
+                                ],
+                                0.5
+                              ]
+                            ],
+                            [
+                              "v",
+                              "columns"
+                            ]
+                          ]
+                        ],
+                        1
+                      ],
+                      [
+                        "-",
+                        [
+                          "+",
+                          [
+                            "*",
+                            -1,
+                            [
+                              "v",
+                              "height"
+                            ]
+                          ],
+                          [
+                            "*",
+                            [
+                              "+",
+                              [
+                                "v",
+                                "r"
+                              ],
+                              0.48
+                            ],
+                            [
+                              "v",
+                              "floor_height"
+                            ]
+                          ]
+                        ],
+                        [
+                          "*",
+                          [
+                            "v",
+                            "floor_height"
+                          ],
+                          0.25
+                        ]
+                      ]
+                    ],
+                    [
+                      [
+                        "+",
+                        [
+                          "-",
+                          [
+                            "+",
+                            [
+                              "*",
+                              [
+                                "*",
+                                -1,
+                                [
+                                  "v",
+                                  "width"
+                                ]
+                              ],
+                              0.5
+                            ],
+                            [
+                              "/",
+                              [
+                                "*",
+                                [
+                                  "v",
+                                  "width"
+                                ],
+                                [
+                                  "+",
+                                  [
+                                    "v",
+                                    "c"
+                                  ],
+                                  0.5
+                                ]
+                              ],
+                              [
+                                "v",
+                                "columns"
+                              ]
+                            ]
+                          ],
+                          1
+                        ],
+                        2
+                      ],
+                      [
+                        "-",
+                        [
+                          "+",
+                          [
+                            "*",
+                            -1,
+                            [
+                              "v",
+                              "height"
+                            ]
+                          ],
+                          [
+                            "*",
+                            [
+                              "+",
+                              [
+                                "v",
+                                "r"
+                              ],
+                              0.48
+                            ],
+                            [
+                              "v",
+                              "floor_height"
+                            ]
+                          ]
+                        ],
+                        [
+                          "*",
+                          [
+                            "v",
+                            "floor_height"
+                          ],
+                          0.25
+                        ]
+                      ]
+                    ],
+                    [
+                      [
+                        "+",
+                        [
+                          "-",
+                          [
+                            "+",
+                            [
+                              "*",
+                              [
+                                "*",
+                                -1,
+                                [
+                                  "v",
+                                  "width"
+                                ]
+                              ],
+                              0.5
+                            ],
+                            [
+                              "/",
+                              [
+                                "*",
+                                [
+                                  "v",
+                                  "width"
+                                ],
+                                [
+                                  "+",
+                                  [
+                                    "v",
+                                    "c"
+                                  ],
+                                  0.5
+                                ]
+                              ],
+                              [
+                                "v",
+                                "columns"
+                              ]
+                            ]
+                          ],
+                          1
+                        ],
+                        2
+                      ],
+                      [
+                        "+",
+                        [
+                          "-",
+                          [
+                            "+",
+                            [
+                              "*",
+                              -1,
+                              [
+                                "v",
+                                "height"
+                              ]
+                            ],
+                            [
+                              "*",
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "r"
+                                ],
+                                0.48
+                              ],
+                              [
+                                "v",
+                                "floor_height"
+                              ]
+                            ]
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "floor_height"
+                            ],
+                            0.25
+                          ]
+                        ],
+                        [
+                          "*",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "floor_height"
+                            ],
+                            0.25
+                          ],
+                          2
+                        ]
+                      ]
+                    ],
+                    [
+                      [
+                        "-",
+                        [
+                          "+",
+                          [
+                            "*",
+                            [
+                              "*",
+                              -1,
+                              [
+                                "v",
+                                "width"
+                              ]
+                            ],
+                            0.5
+                          ],
+                          [
+                            "/",
+                            [
+                              "*",
+                              [
+                                "v",
+                                "width"
+                              ],
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "c"
+                                ],
+                                0.5
+                              ]
+                            ],
+                            [
+                              "v",
+                              "columns"
+                            ]
+                          ]
+                        ],
+                        1
+                      ],
+                      [
+                        "+",
+                        [
+                          "-",
+                          [
+                            "+",
+                            [
+                              "*",
+                              -1,
+                              [
+                                "v",
+                                "height"
+                              ]
+                            ],
+                            [
+                              "*",
+                              [
+                                "+",
+                                [
+                                  "v",
+                                  "r"
+                                ],
+                                0.48
+                              ],
+                              [
+                                "v",
+                                "floor_height"
+                              ]
+                            ]
+                          ],
+                          [
+                            "*",
+                            [
+                              "v",
+                              "floor_height"
+                            ],
+                            0.25
+                          ]
+                        ],
+                        [
+                          "*",
+                          [
+                            "*",
+                            [
+                              "v",
+                              "floor_height"
+                            ],
+                            0.25
+                          ],
+                          2
+                        ]
+                      ]
+                    ]
+                  ],
+                  "stroke_width": 0,
+                  "z": 4
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ground_window_-1",
+          "kind": "superellipse",
+          "bone": "root",
+          "fill": "glass",
+          "rx": [
+            "*",
+            [
+              "v",
+              "width"
+            ],
+            0.1
+          ],
+          "ry": 14,
+          "exponent": 2.8,
+          "x": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "width"
+              ]
+            ],
+            0.32
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "floor_height"
+              ]
+            ],
+            0.5
+          ],
+          "z": 3
+        },
+        {
+          "id": "ground_window_1",
+          "kind": "superellipse",
+          "bone": "root",
+          "fill": "glass",
+          "rx": [
+            "*",
+            [
+              "v",
+              "width"
+            ],
+            0.1
+          ],
+          "ry": 14,
+          "exponent": 2.8,
+          "x": [
+            "*",
+            [
+              "*",
+              1,
+              [
+                "v",
+                "width"
+              ]
+            ],
+            0.32
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "v",
+                "floor_height"
+              ]
+            ],
+            0.5
+          ],
+          "z": 3
+        },
+        {
+          "id": "door",
+          "kind": "polygon",
+          "bone": "root",
+          "fill": "shade",
+          "points": [
+            [
+              [
+                "*",
+                -1,
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              0
+            ],
+            [
+              [
+                "*",
+                -1,
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "*",
+                [
+                  "*",
+                  -1,
+                  [
+                    "*",
+                    [
+                      "v",
+                      "floor_height"
+                    ],
+                    0.7
+                  ]
+                ],
+                0.67
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  3.3379421944391554
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      3.3379421944391554
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  3.5342917352885173
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      3.5342917352885173
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  3.730641276137879
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      3.730641276137879
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  3.9269908169872414
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      3.9269908169872414
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  4.123340357836604
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      4.123340357836604
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  4.319689898685965
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      4.319689898685965
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  4.516039439535327
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      4.516039439535327
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  4.71238898038469
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      4.71238898038469
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  4.908738521234052
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      4.908738521234052
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  5.105088062083414
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      5.105088062083414
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  5.301437602932776
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      5.301437602932776
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  5.497787143782138
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      5.497787143782138
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  5.6941366846315
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      5.6941366846315
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  5.890486225480862
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      5.890486225480862
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  6.086835766330224
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      6.086835766330224
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "cos",
+                  6.283185307179586
+                ],
+                [
+                  "*",
+                  [
+                    "v",
+                    "width"
+                  ],
+                  0.12
+                ]
+              ],
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "*",
+                    -1,
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.67
+                ],
+                [
+                  "*",
+                  [
+                    "*",
+                    [
+                      "sin",
+                      6.283185307179586
+                    ],
+                    [
+                      "*",
+                      [
+                        "v",
+                        "floor_height"
+                      ],
+                      0.7
+                    ]
+                  ],
+                  0.33
+                ]
+              ]
+            ],
+            [
+              [
+                "*",
+                [
+                  "v",
+                  "width"
+                ],
+                0.12
+              ],
+              0
+            ]
+          ],
+          "z": 5
+        },
+        {
+          "id": "door_knob",
+          "kind": "ellipse",
+          "bone": "root",
+          "fill": "gold",
+          "rx": 2.3,
+          "ry": 2.3,
+          "x": [
+            "*",
+            [
+              "*",
+              [
+                "v",
+                "width"
+              ],
+              0.12
+            ],
+            0.48
+          ],
+          "y": [
+            "*",
+            [
+              "*",
+              -1,
+              [
+                "*",
+                [
+                  "v",
+                  "floor_height"
+                ],
+                0.7
+              ]
+            ],
+            0.35
+          ],
+          "stroke_width": 0,
+          "z": 6
+        }
+      ],
+      "ik": [],
+      "groups": {},
+      "structural_parameters": [
+        "floors",
+        "columns"
+      ],
+      "measurements": {
+        "wall_width": [
+          "v",
+          "width"
+        ],
+        "wall_height": [
+          "v",
+          "height"
+        ],
+        "roof_height": [
+          "v",
+          "roof_height"
+        ]
+      }
+    }
+  }
+}

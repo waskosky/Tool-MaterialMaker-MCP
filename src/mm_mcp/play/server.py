@@ -110,6 +110,8 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
                 return self._static('index.html')
             if path.startswith('/static/'):
                 return self._static(path[len('/static/'):])
+            if path=='/api/vectors/capabilities':
+                return self._send(app.vectors.command({'operation':'describe'}))
             if path=='/api/capabilities':
                 return self._send(app.capabilities())
             if path=='/api/blender/capabilities':
@@ -175,7 +177,9 @@ def make_handler(cfg,catalog,outdir=None,static_dir=STATIC_DIR,*,service=None,to
             return url,request_path(url.path,cfg.base_path)
         def _post(self):
             self._guard(api=True); _,path=self._route(); body=self._body()
-            if path=='/api/render':
+            if path=='/api/vectors':
+                result=app.vectors.command(body)
+            elif path=='/api/render':
                 result=app.build(body)
             elif path=='/api/blender/meshes':
                 result=app.blender.upload(**body)

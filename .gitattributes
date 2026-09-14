@@ -1,0 +1,2 @@
+# The generated compiler pin covers exact UTF-8/LF bytes on every platform.
+src/mm_mcp/vector/** text eol=lf

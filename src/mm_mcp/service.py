@@ -28,6 +28,8 @@ class MaterialService:
         self.root=Path(getattr(self.cfg,'workspace_dir','') or Path(self.cfg.output_dir)/'workspace').resolve()
         self.root.mkdir(parents=True,exist_ok=True)
         self.graphs=GraphStore(self.root,self.catalog)
+        from mm_mcp.vector.service import VectorService
+        self.vectors=VectorService(self.root)
         self.recipes=RecipeLibrary(self.cfg.cookbook_dir,self.root/'recipes',self.catalog)
         self.builds=BuildStore(self.root/'builds',self.cfg,self.catalog)
         self.thumbnails=ThumbnailStore(self.root,self.builds,self._project_origin)
@@ -56,7 +58,7 @@ class MaterialService:
                 'catalog_available':bool(self.catalog),'native_render_configured':native,
                 'native_render_verified_this_session':self._native_verified,'render_configuration_error':reason,
                 'last_render_error':self._last_render_error,
-                'features':{'recipe_search':True,'typed_controls':True,'variation_families':True,
+                'features':{'vector_plant_authoring':True,'recipe_search':True,'typed_controls':True,'variation_families':True,
                             'world_context_bindings':True,'graph_transactions':True,'persistent_undo':True,
                             'immutable_builds':True,'jobs':True,'cancel_worker_render':True,
                             'layer_composition':bool(self.catalog),'engine_packages':list(TARGETS),

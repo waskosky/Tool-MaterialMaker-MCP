@@ -19,8 +19,9 @@ row points at.
 
 | Component or gate | State | Evidence |
 | --- | --- | --- |
+| RAI plant authoring, persistence and immutable native exports | ✅ verified | 570 portable tests; actual compiler, concurrent revisions, protected adoption, HTTP/MCP and artifact reproduction in `tests/upgrade/test_vector_authoring.py`. Browser/native proof recorded separately. |
 | Shared service, build/export and portable authoring contracts | ✅ verified | 485 passed, 1 Windows-only skip; [current checks](docs/upgrade/TESTING.md#current-portable-checks). |
-| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all 42 documented tools; `tests/test_readme_counts.py`. |
+| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all 43 documented tools; `tests/test_readme_counts.py`. |
 | Native retry isolation and source-relative dependencies | ✅ verified | Focused subprocess/asset regressions; `tests/upgrade/test_render_reliability.py`. |
 | Saved setup, repair and authenticated launch reuse | ✅ verified | [Launch evidence](docs/upgrade/evidence/workshop-launch-local.json) and setup/session regressions. |
 | Visual library, variations, history and exact downloads | ✅ verified | 3 real HTTP/CSP browser cases and 21 Node state cases; [browser evidence](docs/upgrade/evidence/workshop-browser-local.json). |

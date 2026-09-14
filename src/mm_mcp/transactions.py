@@ -111,7 +111,10 @@ def apply_patch(graph: dict, operations: list, catalog: dict, *, mode='strict') 
     return out, changes
 
 class GraphStore:
-    def __init__(self, root: str | Path, catalog: dict):
+    def __init__(self, root: str | Path, catalog: dict, *, kind='material', validate=None, patch=None):
+        if kind not in ('material', 'vector-plant'):
+            raise ValueError('Unknown installed project kind')
+        self.kind, self.validate_document, self.patch_document = kind, validate, patch
         self.root = Path(root); self.root.mkdir(parents=True, exist_ok=True)
         self.path, self.catalog = self.root/'state.sqlite3', catalog
         with self.connect() as db:
@@ -125,6 +128,10 @@ class GraphStore:
                 CREATE TABLE IF NOT EXISTS snapshots(project TEXT, name TEXT, graph TEXT, revision INTEGER,
                     PRIMARY KEY(project, name));
             """)
+            # Serialize the additive migration across independently starting browser/MCP processes.
+            db.execute('BEGIN IMMEDIATE')
+            if 'kind' not in {r['name'] for r in db.execute('PRAGMA table_info(projects)')}:
+                db.execute("ALTER TABLE projects ADD COLUMN kind TEXT NOT NULL DEFAULT 'material'")
     @contextmanager
     def connect(self):
         db = sqlite3.connect(self.path, timeout=30)
@@ -136,17 +143,19 @@ class GraphStore:
         finally:
             db.close()
     def create(self, graph, title='Untitled'):
-        problems = validate_graph(graph, self.catalog, mode='import')
+        problems = (self.validate_document(graph) if self.validate_document else
+                    validate_graph(graph, self.catalog, mode='import'))
         if any(p['severity']=='error' for p in problems):
             raise ServiceError('VALIDATION_FAILED', 'Cannot create project from invalid graph.', problems=problems)
         pid, raw = 'p_' + uuid.uuid4().hex, canonical(graph)
         with self.connect() as db:
-            db.execute('INSERT INTO projects VALUES(?,?,?,?,?,?)', (pid, str(title)[:512], 0, raw, 0, time.time()))
+            db.execute('INSERT INTO projects(id,title,revision,graph,cursor,created,kind) VALUES(?,?,?,?,?,?,?)',
+                       (pid, str(title)[:512], 0, raw, 0, time.time(), self.kind))
             db.execute('INSERT INTO history VALUES(?,?,?,?)', (pid, 0, raw, 'Created'))
         return self.read(pid)
     def _row(self, db, pid):
         identifier(pid)
-        row = db.execute('SELECT * FROM projects WHERE id=?', (pid,)).fetchone()
+        row = db.execute('SELECT * FROM projects WHERE id=? AND kind=?', (pid,self.kind)).fetchone()
         if row is None:
             raise ServiceError('PROJECT_NOT_FOUND', 'Project not found.')
         return row
@@ -159,7 +168,7 @@ class GraphStore:
             return self._result(self._row(db, pid))
     def list(self):
         with self.connect() as db:
-            return [dict(r) for r in db.execute('SELECT id,title,revision,created FROM projects ORDER BY created DESC')]
+            return [dict(r) for r in db.execute('SELECT id,title,revision,created FROM projects WHERE kind=? ORDER BY created DESC', (self.kind,))]
     def patch(self, pid, expected_revision, operations, idempotency_key, *, dry_run=False, authorize=None):
         identifier(idempotency_key, 'idempotency key')
         if type(expected_revision) is not int:
@@ -167,6 +176,7 @@ class GraphStore:
         request_hash = digest({'revision':expected_revision,'operations':operations,'dry_run':dry_run})
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
+            row = self._row(db, pid)
             receipt = db.execute('SELECT * FROM receipts WHERE project=? AND key=?', (pid,idempotency_key)).fetchone()
             if receipt:
                 if receipt['request_hash'] != request_hash:
@@ -175,7 +185,9 @@ class GraphStore:
             row = self._row(db, pid)
             if row['revision'] != expected_revision:
                 raise ServiceError('REVISION_CONFLICT', 'Project changed; read it before retrying.', actual_revision=row['revision'])
-            graph, changes = apply_patch(json.loads(row['graph']), operations, self.catalog)
+            graph, changes = (self.patch_document(json.loads(row['graph']), operations)
+                              if self.patch_document else
+                              apply_patch(json.loads(row['graph']), operations, self.catalog))
             if authorize is not None:
                 authorize(graph)
             result = {'ok':True, 'project_id':pid, 'revision':expected_revision if dry_run else expected_revision+1,
@@ -190,6 +202,8 @@ class GraphStore:
             db.execute('INSERT INTO receipts VALUES(?,?,?,?)', (pid,idempotency_key,request_hash,canonical(result)))
         return result
     def history_step(self, pid, expected_revision, direction):
+        if type(expected_revision) is not int:
+            raise ServiceError('REVISION_REQUIRED','expected_revision must be an integer.')
         if direction not in ('undo','redo'):
             raise ServiceError('DIRECTION', 'Use undo or redo.')
         with self.connect() as db:
@@ -202,10 +216,12 @@ class GraphStore:
                 raise ServiceError('HISTORY_EMPTY',f'Nothing to {direction}.')
             db.execute('UPDATE projects SET graph=?,revision=revision+1,cursor=? WHERE id=?',(target['graph'],cursor,pid))
             return self._result(self._row(db,pid))
-    def snapshot(self, pid, name):
+    def snapshot(self, pid, name, expected_revision=None):
         _snapshot_name(name)
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE'); row=self._row(db,pid)
+            if expected_revision is not None and (type(expected_revision) is not int or row['revision'] != expected_revision):
+                raise ServiceError('REVISION_CONFLICT','Read the current revision first.')
             try:
                 db.execute('INSERT INTO snapshots VALUES(?,?,?,?)',(pid,name,row['graph'],row['revision']))
             except sqlite3.IntegrityError as exc:
