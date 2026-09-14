@@ -18,6 +18,8 @@ RETAINED = [
 def main():
     result=subprocess.run([sys.executable,'scripts/sync_package_data.py','--check'],cwd=ROOT)
     if result.returncode:return result.returncode
+    result=subprocess.run([sys.executable,'scripts/check_vector_compiler.py'],cwd=ROOT)
+    if result.returncode:return result.returncode
     command=[sys.executable,'-m','pytest','tests/upgrade',*[f'tests/{n}' for n in RETAINED],'-q',*sys.argv[1:]]
     return subprocess.run(command,cwd=ROOT).returncode
 if __name__=='__main__':raise SystemExit(main())

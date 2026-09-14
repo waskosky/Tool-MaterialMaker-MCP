@@ -64,3 +64,30 @@ jobs:
           path: |
             browser.xml
             browser-evidence/*.png
+  vector-compiler-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ".[dev]"
+      - name: Read independently reviewed RAI compiler pin
+        id: pin
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          from mm_mcp.vector.provenance import verify
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('revision=' + verify()['source_revision'] + '\n')
+          PY
+      - uses: actions/checkout@v4
+        with:
+          repository: waskosky/rai
+          ref: ${{ steps.pin.outputs.revision }}
+          ssh-key: ${{ secrets.RAI_VECTOR_SOURCE_KEY }}
+          persist-credentials: false
+          path: paired-rai
+      - run: python scripts/check_vector_compiler.py --rai-root paired-rai

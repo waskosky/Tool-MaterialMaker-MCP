@@ -42,7 +42,7 @@ comparison and export. [View the library](docs/upgrade/evidence/workshop-cookboo
 
 ## Use with an assistant
 
-The server exposes 32 shared material tools, 10 batch tools, and 8 live tools.
+The server exposes 33 shared material tools, 10 batch tools, and 8 live tools.
 Configure your MCP host to launch `mm-mcp` from the installed Python environment.
 Use the same working folder or `MM_WORKSPACE_DIR` as Workshop to share projects.
 The [tool reference](docs/upgrade/TOOLS.md) and [workflows](docs/upgrade/WORKFLOWS.md)
@@ -98,3 +98,12 @@ retain their notices. MaterialPilot source code is not copied into this implemen
 The uploaded baseline was `b41b65c612557a7da35a045091199058c0f76abb`; the retained
 Material Maker compatibility pin is `ad19fcf0ee34a7caf74df709dc4de7112f0d467d`.
 Godot and Material Maker are installed separately. See [PROVENANCE](docs/upgrade/PROVENANCE.md).
+
+## Vector plants in Foundry
+
+The companion's **Vector plants** workspace uses Workshop's persistent project
+transactions and a pinned RAI compiler. `vector_author` gives AI the same plant
+controls, protected revisions, seeded variations, comparisons, SVG motion
+previews, named versions and exact frozen exports. This plant-only workflow is
+available without a Material Maker render configuration. See the
+[plant operations](docs/upgrade/TOOLS.md#vector_author).

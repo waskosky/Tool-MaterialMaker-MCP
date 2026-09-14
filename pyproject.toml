@@ -50,7 +50,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-mm_mcp = ["preview_project/*", "play/static/*", "data/AUTHORING.md", "data/cookbook/*.md", "data/cookbook/*/*", "data/addons/mm_live/*"]
+mm_mcp = ["preview_project/*", "play/static/*", "data/AUTHORING.md", "data/cookbook/*.md", "data/cookbook/*/*", "data/addons/mm_live/*", "vector/source-lock.json", "vector/producer/manifest.json", "vector/producer/LICENSE", "vector/producer/data/catalog.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]

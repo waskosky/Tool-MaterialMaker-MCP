@@ -332,3 +332,29 @@ The adapter enforces loopback Host/Origin checks and a content security policy.
 
 Use the shared Python service or MCP interface for integrations. The actual route
 dispatch in `play/server.py` defines the browser adapter contract.
+
+## vector_author
+
+Shared plant authoring with a closed `request.operation`. Start with `describe`
+for typed controls, clip names and limits. `create` takes a plant `request` and
+optional `title`; `list`/`get` discover persistent projects.
+
+For edits supply `project_id`, `expected_revision`, `idempotency_key` and
+`operations`: `set_controls` with dotted control `values`, `adopt` with a validated
+`artifact`, or a separate `set_locks` transaction with `locked` control IDs.
+Browser and AI share the same SQLite transactions, locks and monotonic revisions.
+An exact patch retry returns its original receipt; call `get` for current state.
+
+`variants` accepts count/seed/ranges, `sweep` accepts control/values, and `preview`
+accepts clip/time/frame_count. Each requires project_id/expected_revision. They
+return candidates/SVG frames without mutating the project. Persisted locks are
+always applied. `history` (undo/redo), `snapshot` and `restore` also require an
+exact revision; `snapshots` lists saved names. Undo/restore intentionally restore
+the earlier artifact and lock configuration together as a new revision.
+
+`build` freezes project_id/expected_revision into an immutable `v_` build.
+`build_get` and `export` use only that build_id. Export returns a bounded ZIP as
+base64 with SHA-256; it includes the unchanged native RAI plant artifact, fully
+resolved request, SVG preview and exact source/project provenance. Material PBR
+builds and public game publication have separate contracts. No Material Maker,
+GPU, model or live RAI server is needed for the installed plant compiler.

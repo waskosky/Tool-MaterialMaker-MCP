@@ -275,6 +275,20 @@ TOOLS=[material_capabilities,material_recipe_search,material_recipe_describe,mat
        blender_capabilities,blender_mesh_upload,blender_job_submit,blender_job_get,blender_job_cancel,
        blender_result_get,blender_result_file,blender_result_export]
 
+@safe
+def vector_author(request: dict) -> dict:
+    """Author persistent vector plants. Start with operation=describe for controls and operations.
+
+    Browser and AI share projects, protected controls and revision checks. Patch needs
+    project_id, expected_revision, idempotency_key and operations (set_controls with
+    values, adopt with artifact, or a separate set_locks with locked control IDs).
+    Variants/sweep/preview/build require project_id and expected_revision. Export
+    requires an immutable build_id. Returned SVG is generated from installed recipes.
+    """
+    return get_service().vectors.command(request)
+
+TOOLS.append(vector_author)
+
 def register(mcp):
     for fn in TOOLS:
         mcp.tool(structured_output=False if fn is material_preview_image else None)(fn)
