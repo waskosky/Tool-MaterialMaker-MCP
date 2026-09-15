@@ -12,7 +12,7 @@ RETAINED = [
     'test_validator.py', 'test_paths.py', 'test_graph.py', 'test_inspect.py',
     'test_naming.py', 'test_author_helpers.py', 'test_author_helpers_rename.py',
     'test_render_compare.py', 'test_idle.py', 'test_cookbook.py',
-    'test_readme_counts.py',
+    'test_readme_counts.py', 'test_preview_sweep.py', 'test_normal_albedo_audit.py',
 ]
 
 def main():

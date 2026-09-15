@@ -215,6 +215,9 @@ def render_preview_sweep(albedo_path: str, normal_path: str, orm_path: str,
     Grayson can't tell how strong the bump reads until the light moves across
     it. Call render_graph first and pass its albedo/normal/orm output paths
     here, same as render_preview.
+
+    Use 1–120 frames, a positive frame_duration_ms up to 655350, tile in (0, 64],
+    and cone in [0, 90]. Failed sweeps preserve the previous completed GIF.
     """
     cfg, _ = _ensure_ready()
     try:

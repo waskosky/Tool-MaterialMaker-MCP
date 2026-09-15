@@ -36,7 +36,7 @@ def verify_images(paths, size=None, required=(), root=None):
                 im.verify()
             with Image.open(p) as im:
                 im.load(); dims=list(im.size); mode=im.mode
-        except (OSError, ValueError, Image.DecompressionBombError) as exc:
+        except (OSError, ValueError, SyntaxError, Image.DecompressionBombError) as exc:
             if isinstance(exc, ServiceError):
                 raise
             raise ServiceError('INVALID_IMAGE',f'Image cannot be decoded: {p.name}') from exc

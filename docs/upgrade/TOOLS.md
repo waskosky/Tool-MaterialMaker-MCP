@@ -273,7 +273,7 @@ key. `live_clear` returns a diagnostic directing callers to revisioned replaceme
 | `render_graph` | Batch-render an editable graph. |
 | `render_node_output` | Batch-render an isolated node output from a copy. |
 | `render_preview` | Preview existing maps on native 3D geometry. |
-| `render_preview_sweep` | Preview baked maps under moving light as a looping GIF, using the shared native lock. |
+| `render_preview_sweep` | Preview baked maps under moving light as a looping GIF (1–120 frames), using the shared native lock. Failed renders preserve the previous GIF. |
 | `save_graph` | Save source outside managed workspace state; overwrite is opt-in. |
 | `list_examples` | List cookbook and native example graphs. |
 | `load_example` | Read a graph from either library. |
