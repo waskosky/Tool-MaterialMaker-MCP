@@ -1,6 +1,6 @@
 # High-level tool reference
 
-These 32 shared functions are registered by `tools.register`, alongside 10 batch
+These 33 shared functions are registered by `tools.register`, alongside 11 batch
 and 8 live tools. Setup, session discovery, thumbnails and snapshot listing are
 browser HTTP routes; they do not add MCP tools. The actual source is authoritative.
 
@@ -273,6 +273,7 @@ key. `live_clear` returns a diagnostic directing callers to revisioned replaceme
 | `render_graph` | Batch-render an editable graph. |
 | `render_node_output` | Batch-render an isolated node output from a copy. |
 | `render_preview` | Preview existing maps on native 3D geometry. |
+| `render_preview_sweep` | Preview baked maps under moving light as a looping GIF, using the shared native lock. |
 | `save_graph` | Save source outside managed workspace state; overwrite is opt-in. |
 | `list_examples` | List cookbook and native example graphs. |
 | `load_example` | Read a graph from either library. |

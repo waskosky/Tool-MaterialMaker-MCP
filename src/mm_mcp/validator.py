@@ -8,9 +8,30 @@ from mm_mcp.catalog_builder import SPECIAL_TYPES, _parse_generic_node
 from mm_mcp.core import MAX_DEPTH, MAX_NODES, canonical, finite
 
 
+def _enum_literal_hint(spec: dict, pval) -> str | None:
+    """If `pval` is out of an enum's index range but equals one of the enum's
+    raw numeric `value` literals, return a hint naming the index the author
+    almost certainly meant. This is the wavelet_noise.type trap that produced
+    the t09 bug: type=-3 is the literal for index 4 ('Mult 3'), and Material
+    Maker stores the index, not the literal. Returns None when the enum carries
+    no confusable literals (value_literals is only populated for numeric,
+    index-mismatched literals) or none matches `pval`."""
+    literals = spec.get("value_literals")
+    if not literals:
+        return None
+    for i, lit in enumerate(literals):
+        try:
+            if int(lit) == pval:
+                names = spec.get("values", [])
+                name = names[i] if i < len(names) else "?"
+                return f" (looks like the raw literal for index {i} '{name}', use {i})"
+        except (TypeError, ValueError):
+            continue
+    return None
+
 def _definition(node, catalog):
     if node.get("type") == "graph":
-        return _parse_generic_node(node, "graph")
+        return _parse_generic_node(node, "graph", full_catalog=catalog)
     if isinstance(node.get('shader_model'), dict):
         return node['shader_model']
     entry = catalog.get(node.get('type'))
@@ -128,8 +149,18 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
                         if typ == 'enum' and isinstance(spec.get('values'), list):
                             outside |= value < 0 or value >= len(spec['values'])
                         if outside:
-                            msg = 'invalid enum index' if typ == 'enum' else 'outside editor range; not shader-clamped'
-                            report(where, f"parameter '{key}': {msg}", 'error' if strict and typ == 'enum' else 'warning')
+                            if typ == 'enum':
+                                values = spec.get('values', [])
+                                bounds = f"[0, {len(values) - 1}]" if values else f"[{low}, {high}]"
+                                msg = (f"parameter '{key}'={value} outside enum index range {bounds} - "
+                                       "Material Maker clamps an out-of-range index to 0 and renders "
+                                       "the wrong option; use the option's INDEX")
+                                hint = _enum_literal_hint(spec, value)
+                                options = ', '.join(f'{i}={v}' for i, v in enumerate(values))
+                                msg += hint or (f' (valid: {options})' if options else '')
+                                report(where, msg)
+                            else:
+                                report(where, f"parameter '{key}': outside editor range; not shader-clamped", 'warning')
             if t == 'graph':
                 walk(n, where, depth + 1, old_by_name.get(name))
         incoming, adjacency = set(), {name: set() for name in by_name}

@@ -10,6 +10,14 @@ from mm_mcp.play.sliders import resolve_node
 from mm_mcp.validator import validate_graph
 
 
+@pytest.mark.parametrize('mode', ['import', 'strict'])
+def test_exposed_compound_enum_uses_linked_catalog_range(graph, catalog, mode):
+    resolve_node(graph, 'surface')['parameters']['param1'] = 99
+    problems = validate_graph(graph, catalog, mode=mode)
+    assert any(p['severity'] == 'error' and p['where'] == 'surface'
+               and 'enum index range' in p['message'] for p in problems)
+
+
 @pytest.fixture
 def legacy_project(app, cfg, graph):
     resolve_node(graph, 'Material')['parameters'].update(

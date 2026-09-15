@@ -6,7 +6,7 @@
 
 Gate ledger. Three states only: ✅ verified · 🔌 wired · ⬜ not started.
 
-_Last updated: 2026-09-11 (local slashless-entry repair; published companion evidence retained)._
+_Last updated: 2026-09-15 (upstream synchronization; previous native/live evidence retained)._
 
 **How to read this file (rule adopted 2026-09-05, teardown #3):** each cell holds
 the state, one line of what it is, and a pointer to where the evidence lives
@@ -20,8 +20,8 @@ row points at.
 | Component or gate | State | Evidence |
 | --- | --- | --- |
 | RAI plant authoring, persistence and immutable native exports | ✅ verified | 570 portable tests; actual compiler, concurrent revisions, protected adoption, HTTP/MCP and artifact reproduction in `tests/upgrade/test_vector_authoring.py`. Browser/native proof recorded separately. |
-| Shared service, build/export and portable authoring contracts | ✅ verified | 485 passed, 1 Windows-only skip; [current checks](docs/upgrade/TESTING.md#current-portable-checks). |
-| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all 43 documented tools; `tests/test_readme_counts.py`. |
+| Shared service, build/export and portable authoring contracts | ✅ verified | 575 passed, 1 Windows-only skip after upstream merge; [contribution record](docs/upgrade/UPSTREAM.md). |
+| MCP tool registration with the actual SDK | ✅ verified | SDK 2.2.0 registers all 52 documented tools; `tests/test_readme_counts.py`. |
 | Native retry isolation and source-relative dependencies | ✅ verified | Focused subprocess/asset regressions; `tests/upgrade/test_render_reliability.py`. |
 | Saved setup, repair and authenticated launch reuse | ✅ verified | [Launch evidence](docs/upgrade/evidence/workshop-launch-local.json) and setup/session regressions. |
 | Visual library, variations, history and exact downloads | ✅ verified | 3 real HTTP/CSP browser cases and 21 Node state cases; [browser evidence](docs/upgrade/evidence/workshop-browser-local.json). |
@@ -33,7 +33,7 @@ row points at.
 | Slashless hosted browser entry | ✅ verified | Local prefix-stripping proxy proves CSS/JS, auth, saved-project query and reload; [entry regression](docs/upgrade/TESTING.md#slashless-hosted-entry). |
 | Shared MCP queue and independent service recovery | ✅ verified | One native worker, exact Edit source link, targeted restart, child/manager crashes and preserved routes/workspaces; [live evidence](docs/upgrade/evidence/workshop-companion-live.json). |
 | Native editor writes and bridge history | 🔌 wired | Disposable editor mutation checks remain; native writes disabled by default. |
-| Packaged resources, wheel and metadata | ✅ verified | 109 resource files match, wheel and metadata checks pass; [integration record](docs/upgrade/INTEGRATION.md). |
+| Packaged resources, wheel and metadata | ✅ verified | 145 resource files match; earlier wheel evidence in the [integration record](docs/upgrade/INTEGRATION.md). |
 | Integration branch CI | ✅ verified | Accepted Workshop `107534a`: all five Linux, Windows, macOS, distribution and browser jobs pass; [run 34579067693](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34579067693). |
 | Alpha release publication | ⬜ not started | Version 0.8.0a1 remains a development candidate; release workflow disabled on the fork. |
 

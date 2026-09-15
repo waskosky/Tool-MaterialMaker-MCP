@@ -235,7 +235,7 @@ def test_preview_retains_an_editable_packed_scene(blender_app):
     assert 'material.blend' in {item['name'] for item in result['manifest']['files']}
 
 
-@pytest.mark.parametrize('operation', ['render_graph', 'render_node_output', 'render_preview', 'live_render'])
+@pytest.mark.parametrize('operation', ['render_graph', 'render_node_output', 'render_preview', 'render_preview_sweep', 'live_render'])
 def test_retained_native_tools_share_blender_lock(app, graph, monkeypatch, operation):
     from mm_mcp import server
     from types import SimpleNamespace
@@ -243,13 +243,14 @@ def test_retained_native_tools_share_blender_lock(app, graph, monkeypatch, opera
     executed = threading.Event()
     def renderer(*args, **kwargs):
         executed.set()
-        return SimpleNamespace(ok=False, error='Synthetic renderer boundary', images=[], image=None, log_tail='')
+        return SimpleNamespace(ok=False, error='Synthetic renderer boundary', images=[], image=None, frame_count=0, log_tail='')
     monkeypatch.setattr(server, 'render', renderer)
     monkeypatch.setattr(server, '_render_preview', renderer)
+    monkeypatch.setattr(server, '_render_preview_sweep', renderer)
     monkeypatch.setattr(server, '_ensure_live_session', lambda cfg: SimpleNamespace(ok=True))
     monkeypatch.setattr(server.live, 'render', renderer)
     args = [graph] if operation == 'render_graph' else [graph, 'surface']
-    if operation == 'render_preview':
+    if operation in ('render_preview', 'render_preview_sweep'):
         path = str(Path(app.cfg.output_dir) / 'map.png')
         args = [path, path, path]
     if operation == 'live_render':

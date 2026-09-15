@@ -1,4 +1,12 @@
-# Local integration — 2026-09-08
+# Local integration
+
+September 15 follow-up: resumed upstream synchronization with the user's approval.
+Upstream `362598c` is integrated while preserving Workshop, Blender and vector
+contracts. The cookbook now has 71 materials and the new sweep MCP tool uses the
+shared native lock. See [UPSTREAM.md](UPSTREAM.md) for refreshed contributions and
+this pass's checks. Earlier dated sections below retain their original scope;
+statements pausing upstream work are historical.
+
 
 September 11 follow-up: the linked companion is published and deployed on the
 reviewed revisions in the [live acceptance record](evidence/workshop-companion-live.json).

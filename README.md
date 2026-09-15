@@ -3,10 +3,10 @@
 Make editable procedural materials in **Material Workshop**, then refine the real
 `.ptex` node graph in Material Maker or use the exported textures in your engine.
 The browser and your AI assistant share saved projects, controls, versions and builds.
-The cookbook is 53 materials across 12 categories.
+The cookbook is 71 materials across 12 categories.
 
 This is an alpha. Browser workflows and portable contracts have been exercised;
-successful native baking still needs validation on a compatible graphics setup.
+native baking has been checked on one prepared macOS setup at 128 and 256 pixels.
 See [current verification](docs/upgrade/TESTING.md).
 
 ## Start Workshop
@@ -40,9 +40,26 @@ render, and unbuilt recipes show an explicit placeholder. Follow the
 [Workshop walkthrough](docs/upgrade/WORKSHOP.md) for projects, variations, snapshots,
 comparison and export. [View the library](docs/upgrade/evidence/workshop-cookbook.png).
 
+## Cookbook and authoring references
+
+The expanded [cookbook](cookbook/README.md) includes editable graphs and recipe
+cards. Upstream's gallery shows the materials on a sphere, rounded cube and chess
+rook under moving light; these are upstream examples, separate from this fork's
+local acceptance evidence.
+
+| Cobblestone | Crystal |
+|:--:|:--:|
+| ![Cobblestone under moving light](docs/images/gallery/s07_cobblestone.gif) | ![Crystal under moving light](docs/images/gallery/gl04_raw_crystal_cluster.gif) |
+
+Use the [authoring guide](docs/AUTHORING.md),
+[noise vocabulary](docs/AUTHORING.md#noise-vocabulary-reach-past-voronoi--perlin),
+and [debug swatches](docs/DEBUG_SWATCHES.md) to choose building blocks and inspect
+individual nodes. The `render_preview_sweep` batch tool previews baked maps with
+moving light when a static image leaves their relief unclear.
+
 ## Use with an assistant
 
-The server exposes 33 shared material tools, 10 batch tools, and 8 live tools.
+The server exposes 33 shared material tools, 11 batch tools, and 8 live tools.
 Configure your MCP host to launch `mm-mcp` from the installed Python environment.
 Use the same working folder or `MM_WORKSPACE_DIR` as Workshop to share projects.
 The [tool reference](docs/upgrade/TOOLS.md) and [workflows](docs/upgrade/WORKFLOWS.md)
@@ -60,7 +77,8 @@ working desktop graphics context; Godot's `--headless` dummy renderer cannot bak
 ## Development and current limits
 
 Continue development on `integration/next`. The fork's `main` remains the branch for
-focused upstream contributions; further upstream work is paused pending maintainer activity.
+focused upstream contributions. Current upstream changes are integrated here;
+see the [upstream contribution record](docs/upgrade/UPSTREAM.md).
 No alpha release is published by this workflow.
 
 Install the development extras in your environment, then run the portable gate:
@@ -71,11 +89,11 @@ python scripts/check_release.py -m 'not browser and not native' -rs
 python scripts/build_distribution.py
 ```
 
-See [TESTING](docs/upgrade/TESTING.md) for browser and native acceptance. The local
-Godot 4.7 native attempt hit a Vulkan compute compiler failure; real worker
-cancellation passed, but successful native bake, exported-source reopening and
-engine imports remain unverified. Browser screenshots with test images establish
-UI behavior, not native material appearance.
+See [TESTING](docs/upgrade/TESTING.md) for browser and native acceptance. The
+prepared native profile has passed sand baking at 128 and 256 pixels, with
+editable-source reopening and Godot imports checked at 128 pixels. Broader recipe/device coverage and native
+editor writes still need acceptance. Browser screenshots made with test images
+establish UI behavior separately from native material appearance.
 
 | Guide | Purpose |
 | --- | --- |
