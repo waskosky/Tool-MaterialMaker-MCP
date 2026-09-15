@@ -1,112 +1,108 @@
-# Upstream contribution priorities — 2026-09-08
+# Upstream contributions — 2026-09-15
 
 Continue development on `integration/next`, tracking `origin/integration/next`.
-Reserve local and origin `main` for selected, reviewable upstream contributions.
-Use separate contribution heads from `upstream/main` when concurrent PRs need
-independent review. Do not merge the full integration branch into those heads.
+Reserve `main` for focused upstream contributions; use separate fix branches when
+PRs need independent review. The fork's application integration does not belong
+in those contribution branches.
 
 - Fork: [waskosky/Tool-MaterialMaker-MCP](https://github.com/waskosky/Tool-MaterialMaker-MCP).
 - Upstream: [graysonchalmers/Tool-MaterialMaker-MCP](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP).
-- Contribution baseline: upstream main `b41b65c612557a7da35a045091199058c0f76abb`,
-  identical to `origin/main` before these contributions. Each new PR contains one
-  independent commit on that baseline.
-- Previously open upstream work: no open issues; the sole PR before our submissions was the automated
-  [0.8.0 release PR #6](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/6).
-  It changes release metadata and the changelog, not the defects below. Its version
-  number does not mean upstream already contains this fork's alpha implementation.
+- Current integration baseline: upstream `362598cca9efa3cbf9e2a31a9deccd6a53a2b8f6`.
+- The user resumed upstream work after maintainer activity. Earlier instructions
+  pausing this work are historical.
 
-The first two contributions are now submitted and remain open. Priority reflects
-the impact visible in upstream source; native/GPU behavior has not been newly
-certified during this review.
+## Incoming synchronization
 
-| Request | Origin head | Commit | Verification |
-| --- | --- | --- | --- |
-| [#7: bind Play downloads to completed render snapshots](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/7) | `main` | `a2e100e` | 34 focused local checks; [Windows CI](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34260468951): 1,002 passed, 25 deselected. |
-| [#8: validate staged output before publication](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/8) | `fix/render-publication` | `d3c0bb6` | 47 focused local checks; independent review and regression fixes. |
+The merge starts from fork `d850361`, including the recent Blender and RAI plant
+work. It incorporates 112 upstream commits since the shared baseline: 18 new
+recipes, existing-material repairs, compound catalog range/default resolution,
+enum-index errors with corrective hints, authoring references and preview-rig
+improvements. The cookbook now has 71 materials across 12 categories.
 
-Both target upstream `main`. Upstream PR workflows require maintainer approval;
-the fork's Windows result belongs to #7. The inherited `release-please` workflow
-was disabled on the fork after it attempted to create a fork release PR and GitHub
-rejected that operation. Release automation remains enabled upstream. No release
-was published. The integration branch remains the development checkout.
+Fork-specific service, hosting, native protections and vector/Blender features
+remain intact. The animated-preview MCP tool uses the same native lock as the
+other render adapters. Actual SDK registration is 33 shared material tools,
+11 batch tools and 8 live tools. All 145 package resources match their canonical
+sources; package checks compare recipe paths rather than a fixed material count.
 
-Review worktrees are retained at `.worktrees/upstream-export` (`main`) and
-`.worktrees/upstream-render` (`fix/render-publication`) for follow-up changes.
+The cookbook check found an existing fork compatibility issue in
+`s05_hex_stone_tile`: native gradient RGB values can exceed 1.0, and its roughness
+ramp uses 1.05. Source validation now preserves finite HDR gradient colors, while
+browser color-input validation retains its unit range. Material Maker's pinned
+`types/gradient.gd` deserializes those RGB values directly into `Color`.
 
-## 1. Export the graph and files that produced the selected preview
+## Submitted upstream PRs
 
-The upstream browser's export route explicitly passes empty control values, and
-the export helper reloads the cookbook graph and includes every PNG in the shared
-output directory. A user can therefore download an unedited graph with maps from
-their edited preview, plus images left by another material.
-Sources: [HTTP export route](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/play/server.py#L76-L81),
-[ZIP helper](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/play/api.py#L66-L81).
+| Request | Origin branch / revision | Current evidence |
+| --- | --- | --- |
+| [#7: completed render downloads](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/7) | `main` / `f4c3d25` | 42 passed, 1 Windows-only skip, 1 native case excluded; [fork CI passed](https://github.com/waskosky/Tool-MaterialMaker-MCP/actions/runs/34935410321). |
+| [#8: staged render publication](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/8) | `fix/render-publication` / `22f8e73` | 75 passed, 6 native/platform cases excluded; independent spec and code-quality review. |
+| [#13: complete animated sweeps](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/13) | `fix/preview-sweep-publication` / `e2a1a78` | 76 passed, 6 native/platform cases excluded; 46 original failures reproduced and independent reviews passed. |
 
-Submitted in #7: each completed preview has private maps, a saved ZIP/applied
-graph, and a receipt. Map and export routes require its `preview_id`. Browser
-selection, editing and newer requests invalidate the prior download and ignore
-obsolete replies. Tests cover edited controls, unrelated PNGs, later renders,
-incomplete results, HTTP downloads and request-order races. Completed previews
-persist on disk; the upstream README documents cleanup.
+PRs #7 and #8 have been refreshed against current upstream without rewriting their
+published histories. GitHub reports all three PRs mergeable. PR #7's version, release
+manifest and changelog now match upstream; its seven-file diff contains only the
+Play snapshot fix, tests and documentation. PR #8 resolves the dependency and
+preview conflicts, retaining upstream's rig, sweep behavior and tile defaults.
 
-## 2. Reject failed or corrupt renders and preserve the previous preview
+PR #7 binds maps, ZIP and editable source to one completed `preview_id`; browser
+edits, selections and newer requests invalidate old downloads. PR #8 requires a
+successful native exit and decoded PNG output, clears each retry, preserves
+previous files on failure and retains native exporter compatibility. Multi-file
+engine publication still replaces files individually, without a directory-wide
+transaction. Neither refresh constitutes new native/GPU acceptance.
 
-Upstream reports a successful batch render after a nonzero process exit whenever
-any fresh PNG exists. Preview rendering accepts any nonempty output file and
-deletes the preceding preview before the attempt. This can advertise partial or
-invalid output and discard the user's last usable preview.
-Sources: [batch result handling](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/render.py#L164-L194),
-[preview publication](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/preview.py#L50-L69).
+Contribution worktrees remain at `.worktrees/upstream-export` and
+`.worktrees/upstream-render` for maintainer follow-up. The new sweep contribution
+uses `.worktrees/upstream-sweep`. Fork release automation
+remains disabled; this pass publishes source branches and PRs, not a release.
 
-Submitted in #8: private staging, successful-exit checks, actual PNG decoding and
-baked-map dimensions, followed by publication after validation. Each crash retry
-clears its old texture output. Process/decode failures preserve previous files.
-Relative output paths are resolved before invoking Godot.
+## Animated-preview publication
 
-Native-source review caught compatibility details that the patch now preserves:
-document-relative image references, rectangular dynamic texture buffers, protected
-engine material/metadata files, and absolute texture paths in UE5 helper scripts.
-Every native product is carried forward, with existing companion files visible
-to the native overwrite rules. Public tool signatures are unchanged. This does
-not certify PBR channel semantics, arbitrary custom profiles, or atomic publication
-of an entire multi-file directory. Real native/engine acceptance remains pending.
+Upstream's new `render_preview_sweep` could report success with one of 18 frames
+after a failed process and deleted a previous GIF before attempting a render.
+These cases were reproduced with simulated processes and real tiny PNG fixtures.
+The submitted [PR #13](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/13)
+on `fix/preview-sweep-publication` stages frames and GIF
+assembly privately, verifies complete successful output, and publishes only after
+assembly succeeds. The contribution is kept separate from the broader batch and
+single-image changes in #8. Both upstream contribution branches merge cleanly in
+either order; they share an identical optional retry callback.
 
-## 3. Protect native edits against unintended callers and stale/partial mutations
+The same fix is ported into the fork with existing PNG limits, canonical input
+paths, allowed roots and destination-symlink checks. The new native call is bounded
+to 120 frames, finite tile/cone controls and encodable frame timing. Review caught
+an input-alias race in the initial port; the native command now receives the
+canonical paths that were verified, with a regression that retargets the alias.
+Corrupt PNG checksums also return a structured failure through artifact validation.
 
-The native socket dispatches commands without authentication. `live_clear` is
-explicitly irreversible, and `live_apply` performs operations sequentially until
-one fails, without rolling earlier mutations back. Reads and writes do not share
-an expected revision, so an intervening human edit is not detected.
-Sources: [socket dispatch](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/addons/mm_live/live_server.gd#L17-L87),
-[clear and batch tools](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/server.py#L344-L406).
+## Validation scope
 
-Split this into reviewable requests: first authenticated local transport and
-bounded requests; then explicit revision checks, saved recovery state and atomic
-candidate application. The integration contains a proposed implementation, but
-its native transaction/rollback behavior still needs Godot acceptance. Treat the
-first small protection as urgent while keeping the larger native rewrite gated.
+Commands use the repository virtualenv. For worktree scripts, `PYTHONPATH=src:.`
+ensures imports come from that worktree rather than the editable primary checkout.
 
-## 4. Ship the resources needed by installed distributions
+- Portable integration gate: **641 passed, 1 Windows-only skip, 9 browser/native deselections**
+  using `python scripts/check_release.py -m 'not browser and not native'` (56.19 seconds).
+- Read-only native-source checks: set `MM_PROJECT_PATH` to the pinned Material
+  Maker checkout, then run `pytest tests/test_catalog_parse.py tests/test_catalog_build.py tests/test_normal_albedo_audit.py -q` (22 passed) and
+  `pytest tests/test_cookbook_gate.py -q` (216 passed across all 71 recipes).
+- HDR and legacy-edit regressions: 25 passed, including reproduced HDR failures
+  before the fix and unchanged browser color bounds.
+- PR #7: `pytest tests/test_play_api.py tests/test_play_server.py tests/test_play_browser.py tests/test_play_renderer.py tests/test_readme_counts.py -m 'not integration' -q`.
+  Startup tests use the pinned source and an inert executable path; no renderer
+  is launched. JavaScript syntax and diff checks pass.
+- PR #8: `pytest tests/test_render_publication.py tests/test_preview.py tests/test_render.py tests/test_play_renderer.py tests/test_render_tracked.py tests/test_render_compare.py tests/test_make_showcase.py tests/test_readme_counts.py -m 'not integration' -k 'not real_timeout_with_a_detached_grandchild' -q`.
+- PR #13: `pytest tests/test_preview.py tests/test_preview_sweep.py tests/test_render.py -m 'not integration' -k 'not real_timeout_with_a_detached_grandchild' -q`.
+- Fork sweep/catalog subset: 59 passed. The portable gate now retains the upstream
+  sweep regressions and normal/albedo audit, plus portable compound-catalog cases.
 
-Upstream wheels include browser/preview assets but omit the cookbook, authoring
-guide and live add-on; cookbook discovery explicitly returns empty outside a
-source checkout. The README recommends clone/editable installation, so this is
-less urgent than incorrect outputs and unsafe edits.
-Sources: [package data](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/pyproject.toml#L50-L51),
-[cookbook discovery](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/blob/b41b65c612557a7da35a045091199058c0f76abb/src/mm_mcp/config.py#L54-L63).
+Native graphics, broader engine acceptance and a live deployment are outside this
+pass. The earlier sand acceptance remains in [TESTING.md](TESTING.md).
 
-Proposed PR: synchronized package data, installed-resource fallbacks and an
-isolated wheel-install check. Add portable CI separately from native renderer
-claims. This integration's wheel was built and imported outside the checkout,
-including its resources and real SDK registration.
+## Later candidates
 
-The new shared project database, recipe families, world bindings, composition and
-mesh workflows stay on `integration/next` while they mature. The fixes found only
-inside those new modules are not existing upstream bugs. Coordinate release
-numbering with upstream's release automation when submitting selected changes.
-
-Before alpha native acceptance, carry the retry-isolation and document-relative
-image handling findings into its renderer with its cancellation and immutable
-build contracts intact. The alpha renderer currently stages once per render,
-not once per retry. Do not wholesale-copy #8's legacy engine-export publication
-onto the service's separate package contract.
+After maintainer feedback on these focused fixes, consider portable installation
+resources and small authenticated/bounded native transport changes. The larger
+native revision/rollback rewrite needs separate disposable-editor acceptance.
+Workshop, Foundry, Blender and vector-authoring architecture remain on the fork
+until there is maintainer interest in broader adoption.

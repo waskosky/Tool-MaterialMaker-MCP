@@ -3,8 +3,10 @@
 September 15 follow-up: resumed upstream synchronization with the user's approval.
 Upstream `362598c` is integrated while preserving Workshop, Blender and vector
 contracts. The cookbook now has 71 materials and the new sweep MCP tool uses the
-shared native lock. See [UPSTREAM.md](UPSTREAM.md) for refreshed contributions and
-this pass's checks. Earlier dated sections below retain their original scope;
+shared native lock. PRs #7/#8 are refreshed and the new sweep fix is submitted as
+#13, with the reviewed fork adaptation included. The final portable gate passes
+641 checks (one Windows-only skip, nine browser/native deselections). See
+[UPSTREAM.md](UPSTREAM.md) for contributions and this pass's checks. Earlier dated sections below retain their original scope;
 statements pausing upstream work are historical.
 
 

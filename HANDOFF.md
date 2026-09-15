@@ -16,12 +16,16 @@ authoring references and new preview rig are retained. The animated-preview MCP
 tool joins the existing native lock. Package resources are synchronized (145
 files); actual SDK registration is 33 shared, 11 batch and 8 live tools.
 
-The merged portable gate passes 575 checks with one Windows-only skip and nine
+The final portable gate passes 641 checks with one Windows-only skip and nine
 browser/native deselections. Catalog/default-resolution and material graph checks
 use the pinned Material Maker source without launching Godot. PR #7's refreshed
 diff removes release churn; PR #8 retains its publication checks alongside the
-new upstream preview rig and sweeps. Contribution details and current acceptance
-scope belong in [UPSTREAM.md](docs/upgrade/UPSTREAM.md).
+new upstream preview rig and sweeps. The new
+[PR #13](https://github.com/graysonchalmers/Tool-MaterialMaker-MCP/pull/13) safely
+publishes complete animated sweeps and is also merged into the fork with canonical
+input paths, bounded options and artifact checks. All three PRs are open and
+mergeable. Contribution details and current acceptance scope belong in
+[UPSTREAM.md](docs/upgrade/UPSTREAM.md).
 
 Earlier native acceptance remains limited to sand at 128/256 pixels using the
 prepared Godot 4.7 profile. Editable source reopening and native Godot LOW/HIGH
@@ -34,13 +38,12 @@ Native editor writes remain disabled. See [TESTING](docs/upgrade/TESTING.md), th
 
 ## Next work
 
-1. Complete and review the focused animated-preview publication fix, port it
-   into the fork, and publish the integration and refreshed upstream PRs.
+1. Follow maintainer feedback on upstream PRs #7, #8 and #13. Packaging and small
+   native transport protections are the next focused contribution candidates.
 2. Expand ordinary material use beyond sand and inspect more opaque categories
    in the intended engine.
 3. Keep native editor mutation/history acceptance separate before enabling it
-   for artist work. Packaging and small native transport improvements are later
-   upstream candidates.
+   for artist work.
 
 ## Heads-up
 
@@ -68,8 +71,8 @@ Newest first; older details remain in git history.
 
 - 2026-09-15: Resumed focused upstream work; integrated upstream `362598c`,
   retaining Workshop/Blender/vector contracts and adding the expanded cookbook,
-  catalog/default/enum fixes and preview rig. Refreshed PR candidates #7/#8;
-  animated-preview publication is the remaining contribution in this pass.
+  catalog/default/enum fixes and preview rig. Refreshed PRs #7/#8, submitted #13,
+  and verified the final fork with 641 portable checks plus read-only graph gates.
 - 2026-09-14: Added pinned RAI plant authoring through shared Workshop/MCP projects,
   protected revisions, seeded variants and frozen exports; 570 portable checks.
 - 2026-09-11: Added bounded Blender companion jobs, portable bakes and recovery;
