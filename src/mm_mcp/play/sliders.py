@@ -65,13 +65,18 @@ def derive_sliders(graph: dict, catalog: dict) -> list[dict]:
     walk(graph)
     return out
 
-def validate_values(specs: list[dict], values: dict, *, enforce_ranges: bool = False) -> dict:
+def validate_values(specs: list[dict], values: dict, *, enforce_ranges: bool = False,
+                    allow_hdr_colors: bool = False) -> dict:
     if not isinstance(values, dict):
         raise ServiceError('INVALID_PARAMETERS', 'Control values must be an object keyed by control ID.')
     canonical(values)
     known = {s['id']: s for s in specs}
     def rgba(v):
-        return isinstance(v, dict) and all(finite(v.get(k)) and 0 <= v[k] <= 1 for k in 'rgba')
+        # Native graphs can carry HDR RGB values (e.g. the stone recipe's 1.05
+        # roughness ramp). Browser color inputs still use the default unit range.
+        return (isinstance(v, dict) and all(finite(v.get(k)) for k in 'rgba')
+                and 0 <= v['a'] <= 1
+                and (allow_hdr_colors or all(0 <= v[k] <= 1 for k in 'rgb')))
     for key, value in values.items():
         if key not in known:
             raise ServiceError('UNKNOWN_CONTROL', f'Unknown control: {key}')

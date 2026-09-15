@@ -18,6 +18,23 @@ def test_exposed_compound_enum_uses_linked_catalog_range(graph, catalog, mode):
                and 'enum index range' in p['message'] for p in problems)
 
 
+@pytest.mark.parametrize('mode', ['import', 'strict'])
+def test_source_validation_preserves_hdr_gradient_colors(graph, catalog, mode):
+    gradient = resolve_node(graph, 'surface/src')['parameters']['ramp']
+    gradient['points'][-1]['r'] = 1.05
+    before = copy.deepcopy(graph)
+    assert not [p for p in validate_graph(graph, catalog, mode=mode) if p['severity'] == 'error']
+    assert graph == before
+
+
+def test_hdr_source_support_keeps_browser_color_controls_bounded(graph):
+    from mm_mcp.play.sliders import validate_values
+    gradient = resolve_node(graph, 'surface/src')['parameters']['ramp']
+    gradient['points'][-1]['r'] = 1.05
+    with pytest.raises(ServiceError):
+        validate_values([{'id': 'ramp', 'kind': 'gradient'}], {'ramp': gradient})
+
+
 @pytest.fixture
 def legacy_project(app, cfg, graph):
     resolve_node(graph, 'Material')['parameters'].update(

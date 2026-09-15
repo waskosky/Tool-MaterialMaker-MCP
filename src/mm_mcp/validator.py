@@ -140,7 +140,8 @@ def validate_graph(ptex, catalog: dict, _path: str = '', *, mode: str = 'import'
                     if typ == 'gradient':
                         from mm_mcp.play.sliders import validate_values
                         try:
-                            validate_values([{'id': key, 'kind': 'gradient'}], {key: value})
+                            validate_values([{'id': key, 'kind': 'gradient'}], {key: value},
+                                            allow_hdr_colors=True)
                         except ValueError as exc:
                             report(where, f"parameter '{key}': {exc}")
                     if finite(value):
