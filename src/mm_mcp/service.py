@@ -58,7 +58,7 @@ class MaterialService:
                 'catalog_available':bool(self.catalog),'native_render_configured':native,
                 'native_render_verified_this_session':self._native_verified,'render_configuration_error':reason,
                 'last_render_error':self._last_render_error,
-                'features':{'vector_plant_authoring':True,'recipe_search':True,'typed_controls':True,'variation_families':True,
+                'features':{'vector_document_authoring':True,'vector_plant_authoring':True,'recipe_search':True,'typed_controls':True,'variation_families':True,
                             'world_context_bindings':True,'graph_transactions':True,'persistent_undo':True,
                             'immutable_builds':True,'jobs':True,'cancel_worker_render':True,
                             'layer_composition':bool(self.catalog),'engine_packages':list(TARGETS),

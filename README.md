@@ -117,7 +117,18 @@ The uploaded baseline was `b41b65c612557a7da35a045091199058c0f76abb`; the retain
 Material Maker compatibility pin is `ad19fcf0ee34a7caf74df709dc4de7112f0d467d`.
 Godot and Material Maker are installed separately. See [PROVENANCE](docs/upgrade/PROVENANCE.md).
 
-## Vector plants in Foundry
+## Vector Studio in Foundry
+
+Foundry's canvas workspace supports general icons, props and illustrations through
+`vector_author` with `request.profile="vector-document-v1"`. Create a blank document,
+start from a template, or supply a complete bounded document. Browser and AI share
+the same named parts, paths, groups, palette, protection, revision checks and history.
+Frozen exports contain reproducible SVG and editable source; no model or game
+publisher is installed. The existing plant workspace remains available separately.
+
+See [the shared vector commands](docs/upgrade/TOOLS.md#general-vector-documents).
+
+### Existing plant recipes
 
 The companion's **Vector plants** workspace uses Workshop's persistent project
 transactions and a pinned RAI compiler. `vector_author` gives AI the same plant
