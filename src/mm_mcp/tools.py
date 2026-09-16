@@ -279,9 +279,12 @@ TOOLS=[material_capabilities,material_recipe_search,material_recipe_describe,mat
 def vector_author(request: dict) -> dict:
     """Author persistent vectors. Start with operation=describe for controls and operations.
 
-    Set profile=vector-document-v1 for general layered art: create with document or
-    template, patch with typed shape/path/group/transform/palette edits, protection,
-    history, palette variants and SVG/source exports. Omit profile for plant recipes.
+    Set profile=vector-document-v2 for reusable artwork, styles, local components,
+    recipe parameters, rigs, clips and AI proposals. Start with describe. v1 artwork
+    remains available; upgrade explicitly before adding v2 features. Omit profile
+    for plant recipes. AI submit/get/cancel/accept returns a reviewable candidate;
+    acceptance requires its exact source revision and candidate hash. Library
+    imports are explicit copies. Rigs animate named rigid parts, not skinned meshes.
 
     Browser and AI share projects, protected controls and revision checks. Patch needs
     project_id, expected_revision, idempotency_key and operations (set_controls with

@@ -12,31 +12,61 @@ import zipfile
 from mm_mcp.core import ServiceError, canonical, digest, file_lock
 from mm_mcp.transactions import GraphStore
 from .producer import document as compiler
+from .producer import document_v2 as advanced
 
 SCHEMA = 'workshop.vector-document-project/v1'
 BUILD_SCHEMA = 'workshop.vector-document-build/v1'
 
 
-class DocumentService:
-    def __init__(self, root, producer):
-        self.producer = producer
-        self.build_root = Path(root) / 'vector-document-builds'
-        self.store = GraphStore(root, {}, kind='vector-document', validate=self.validate, patch=self.patch)
+class DocumentStore(GraphStore):
+    def __init__(self, *args, schemas, **kwargs):
+        self.schemas = schemas
+        super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def validate(document):
-        compiler.validate(document)
+    def _row(self, db, pid):
+        row = super()._row(db, pid)
+        if json.loads(row['graph']).get('schema') not in self.schemas:
+            raise ServiceError('VECTOR_VERSION', 'Use the matching artwork profile; v2 features require an explicit upgrade.')
+        return row
+
+    def list(self):
+        with self.connect() as db:
+            return [dict(r) for r in db.execute(
+                "SELECT id,title,revision,created,json_extract(graph,'$.schema') AS document_schema "
+                "FROM projects WHERE kind=? AND json_extract(graph,'$.schema') IN (" + ','.join('?' for _ in self.schemas) + ') ORDER BY created DESC',
+                (self.kind, *self.schemas))]
+
+
+class DocumentService:
+    def __init__(self, root, producer, profile=compiler.PROFILE):
+        self.producer = producer
+        self.profile = profile
+        self.compiler = advanced if profile == advanced.PROFILE else compiler
+        self.build_root = Path(root) / 'vector-document-builds'
+        self.store = DocumentStore(root, {}, kind='vector-document', schemas=(compiler.SCHEMA, advanced.SCHEMA) if profile == advanced.PROFILE else (compiler.SCHEMA,), validate=self.validate, patch=self.patch)
+
+    def renderer(self, document):
+        if document.get('schema') == advanced.SCHEMA and self.profile == advanced.PROFILE:
+            return advanced
+        return compiler
+
+    def validate(self, document):
+        self.renderer(document).validate(document)
         return []
 
-    @staticmethod
-    def patch(document, operations):
-        return compiler.revise(document, operations), [{'op': op['op']} for op in operations]
+    def patch(self, document, operations):
+        if self.profile == advanced.PROFILE and operations == [{'op': 'upgrade'}]:
+            return advanced.upgrade(document), [{'op': 'upgrade'}]
+        if self.profile == advanced.PROFILE and document.get('schema') != advanced.SCHEMA:
+            raise ServiceError('VECTOR_UPGRADE', 'Upgrade this artwork before using v2 edits.')
+        return self.renderer(document).revise(document, operations), [{'op': op['op']} for op in operations]
 
     def project(self, row):
-        compiler.validate(row['graph'])
-        return {'ok': True, 'schema': SCHEMA, 'profile': compiler.PROFILE,
+        renderer = self.renderer(row['graph'])
+        renderer.validate(row['graph'])
+        return {'ok': True, 'schema': SCHEMA, 'profile': renderer.PROFILE,
                 'project_id': row['project_id'], 'title': row['title'], 'revision': row['revision'],
-                'document': row['graph'], 'preview_svg': compiler.render(row['graph']),
+                'document': row['graph'], 'preview_svg': renderer.render(row['graph']),
                 'content_sha256': compiler.structural_digest(row['graph']), 'producer': self.producer}
 
     def current(self, request):
@@ -57,13 +87,13 @@ class DocumentService:
             'variants': (shared | {'palettes'}, set()), 'preview': (shared, set()), 'build': (shared, set()),
             'build_get': ({'build_id'}, set()), 'export': ({'build_id'}, set()),
         }
-        if not isinstance(request, dict) or request.get('profile') != compiler.PROFILE or request.get('operation') not in contracts:
-            raise ServiceError('VECTOR_REQUEST', 'Use a supported vector-document-v1 operation.')
+        if not isinstance(request, dict) or request.get('profile') != self.profile or request.get('operation') not in contracts:
+            raise ServiceError('VECTOR_REQUEST', 'Use a supported vector document operation.')
         op = request['operation']
         required, optional = contracts[op]
         compiler.fields(request, required | {'profile', 'operation'}, optional)
         if op == 'describe':
-            return {'ok': True, **compiler.describe(), 'producer': self.producer, 'project_schema': SCHEMA,
+            return {'ok': True, **self.compiler.describe(), 'producer': self.producer, 'project_schema': SCHEMA,
                     'operations': list(contracts), 'revision_policy': 'Read, patch exact revision with unique idempotency_key, then get. History restores complete state including locks.'}
         if op == 'list':
             return {'ok': True, 'projects': self.store.list()}
@@ -72,7 +102,7 @@ class DocumentService:
             if not isinstance(title, str) or not 1 <= len(title.strip()) <= 80 or any(ord(c) < 32 for c in title):
                 raise ServiceError('VECTOR_TITLE', 'Use a name of 1–80 readable characters.')
             pure = {k: v for k, v in request.items() if k != 'title'}
-            document = compiler.execute(pure)['documents'][0]
+            document = self.compiler.execute(pure)['documents'][0]
             return self.project(self.store.create(document, title.strip()))
         if op == 'get':
             return self.project(self.store.read(request['project_id']))
@@ -97,7 +127,7 @@ class DocumentService:
             return self.store.snapshot(request['project_id'], request['name'], request['expected_revision'])
         if op == 'build':
             return self.build(project)
-        result = compiler.execute({'profile': compiler.PROFILE, 'operation': op, 'source': project['document'],
+        result = self.renderer(project['document']).execute({'profile': project['profile'], 'operation': op, 'source': project['document'],
                                    **({'palettes': request['palettes']} if op == 'variants' else {})})
         return {'ok': True, **result, 'project_id': project['project_id'], 'revision': project['revision']}
 
@@ -109,7 +139,7 @@ class DocumentService:
         with file_lock(self.build_root / '.build.lock'):
             if not target.exists():
                 files = {'project.json': canonical(source).encode(), 'document.json': canonical(source['document']).encode(),
-                         'preview.svg': compiler.render(source['document']).encode()}
+                         'preview.svg': self.renderer(source['document']).render(source['document']).encode()}
                 manifest = {'schema': BUILD_SCHEMA, 'status': 'complete', 'build_id': build_id,
                             'project_id': project['project_id'], 'revision': project['revision'],
                             'content_sha256': project['content_sha256'], 'producer': self.producer,
@@ -142,8 +172,8 @@ class DocumentService:
                 if len(data) != record['bytes'] or hashlib.sha256(data).hexdigest() != record['sha256']:
                     raise ValueError('checksum')
             source = json.loads((root / 'project.json').read_bytes())
-            compiler.validate(source['document'])
-            svg = compiler.render(source['document'])
+            self.renderer(source['document']).validate(source['document'])
+            svg = self.renderer(source['document']).render(source['document'])
             if ('d_' + digest(source) != build_id or source['schema'] != SCHEMA
                     or any(source[k] != manifest[k] for k in ('project_id', 'revision', 'producer'))
                     or compiler.structural_digest(source['document']) != manifest['content_sha256']

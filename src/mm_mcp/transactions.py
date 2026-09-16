@@ -214,6 +214,8 @@ class GraphStore:
             target=db.execute('SELECT graph FROM history WHERE project=? AND seq=?',(pid,cursor)).fetchone()
             if target is None:
                 raise ServiceError('HISTORY_EMPTY',f'Nothing to {direction}.')
+            if self.validate_document:
+                self.validate_document(json.loads(target['graph']))
             db.execute('UPDATE projects SET graph=?,revision=revision+1,cursor=? WHERE id=?',(target['graph'],cursor,pid))
             return self._result(self._row(db,pid))
     def snapshot(self, pid, name, expected_revision=None):
@@ -243,6 +245,8 @@ class GraphStore:
             snap=db.execute('SELECT graph FROM snapshots WHERE project=? AND name=?',(pid,name)).fetchone()
             if snap is None:
                 raise ServiceError('SNAPSHOT_NOT_FOUND','Snapshot not found.')
+            if self.validate_document:
+                self.validate_document(json.loads(snap['graph']))
             cursor=row['cursor']+1
             db.execute('DELETE FROM history WHERE project=? AND seq>?',(pid,row['cursor']))
             db.execute('INSERT INTO history VALUES(?,?,?,?)',(pid,cursor,snap['graph'],'Restore '+name))

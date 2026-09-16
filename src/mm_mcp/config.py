@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from pathlib import Path
 import sys
 from dataclasses import dataclass, field
@@ -91,6 +92,19 @@ def _dotenv_path() -> str:
     return os.path.join(os.getcwd(), ".env")
 
 
+def validate_vector_ai(binary='', model='', effort='low'):
+    if bool(binary) != bool(model):
+        raise ValueError('Configure both the artwork Codex binary and model, or neither.')
+    if effort not in ('low', 'medium', 'high'):
+        raise ValueError('Artwork AI effort must be low, medium or high.')
+    if binary:
+        path = Path(binary)
+        if not path.is_absolute() or not path.is_file() or not os.access(path, os.X_OK):
+            raise ValueError('Artwork Codex binary must be an absolute executable path.')
+        if not isinstance(model, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,95}', model):
+            raise ValueError('Use an explicit artwork AI model ID.')
+
+
 @dataclass
 class Config:
     godot_binary: str
@@ -115,8 +129,12 @@ class Config:
     foundry_path: str | None = None
     session_token_file: str | None = None
     blender_binary: str = ""
+    vector_ai_binary: str = ""
+    vector_ai_model: str = ""
+    vector_ai_effort: str = "low"
 
     def __post_init__(self):
+        validate_vector_ai(self.vector_ai_binary, self.vector_ai_model, self.vector_ai_effort)
         if self.blender_binary:
             self.blender_binary = str(Path(self.blender_binary).expanduser().resolve())
         self.base_path = mount_path(self.base_path)
@@ -246,4 +264,7 @@ def load_config(overrides: dict | None = None) -> Config:
         foundry_path=env['MM_FOUNDRY_PATH'] or None,
         session_token_file=env['MM_SESSION_TOKEN_FILE'] or None,
         blender_binary=env['MM_BLENDER_BINARY'],
+        vector_ai_binary=env.get('MM_VECTOR_AI_BINARY', ''),
+        vector_ai_model=env.get('MM_VECTOR_AI_MODEL', ''),
+        vector_ai_effort=env.get('MM_VECTOR_AI_EFFORT', 'low'),
     )

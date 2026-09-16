@@ -120,11 +120,20 @@ Godot and Material Maker are installed separately. See [PROVENANCE](docs/upgrade
 ## Vector Studio in Foundry
 
 Foundry's canvas workspace supports general icons, props and illustrations through
-`vector_author` with `request.profile="vector-document-v1"`. Create a blank document,
+`vector_author` with `request.profile="vector-document-v2"`. Create a blank document,
 start from a template, or supply a complete bounded document. Browser and AI share
 the same named parts, paths, groups, palette, protection, revision checks and history.
-Frozen exports contain reproducible SVG and editable source; no model or game
-publisher is installed. The existing plant workspace remains available separately.
+Reusable components/styles, recipe adapters, automatic rigid-part rig suggestions
+and editable clips share these same revision guards. Frozen exports contain SVG,
+editable source and optional motion sheets/timing. Original v1 documents upgrade
+explicitly; their old exports remain unchanged. The plant workspace stays available.
+
+An optional host Codex CLI provider supports in-page AI proposals. Configure
+`MM_VECTOR_AI_BINARY` and `MM_VECTOR_AI_MODEL` together, with optional
+`MM_VECTOR_AI_EFFORT=low|medium|high` (default low). Use the host account's saved
+Codex login. Runs ignore user config/rules, disable tools, use a temporary read-only
+working directory, and require explicit acceptance of the validated candidate.
+No provider credentials go to the browser. See the command reference for limits.
 
 See [the shared vector commands](docs/upgrade/TOOLS.md#general-vector-documents).
 

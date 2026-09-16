@@ -29,7 +29,7 @@ class MaterialService:
         self.root.mkdir(parents=True,exist_ok=True)
         self.graphs=GraphStore(self.root,self.catalog)
         from mm_mcp.vector.service import VectorService
-        self.vectors=VectorService(self.root)
+        self.vectors=VectorService(self.root, cfg=self.cfg)
         self.recipes=RecipeLibrary(self.cfg.cookbook_dir,self.root/'recipes',self.catalog)
         self.builds=BuildStore(self.root/'builds',self.cfg,self.catalog)
         self.thumbnails=ThumbnailStore(self.root,self.builds,self._project_origin)
@@ -58,6 +58,7 @@ class MaterialService:
                 'catalog_available':bool(self.catalog),'native_render_configured':native,
                 'native_render_verified_this_session':self._native_verified,'render_configuration_error':reason,
                 'last_render_error':self._last_render_error,
+                'vector_ai':self.vectors.studio.proposals.capabilities(),
                 'features':{'vector_document_authoring':True,'vector_plant_authoring':True,'recipe_search':True,'typed_controls':True,'variation_families':True,
                             'world_context_bindings':True,'graph_transactions':True,'persistent_undo':True,
                             'immutable_builds':True,'jobs':True,'cancel_worker_render':True,
@@ -266,6 +267,7 @@ class MaterialService:
             logging.getLogger(__name__).warning('Saved recipe %s could not reuse its project preview.',result['id'])
         return result
     def close(self):
+        self.vectors.studio.proposals.close()
         self.jobs.close()
 
 _SERVICES={}; _LOCK=threading.Lock()
