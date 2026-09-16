@@ -359,3 +359,43 @@ base64 with SHA-256; it includes the unchanged native RAI plant artifact, fully
 resolved request, SVG preview and exact source/project provenance. Material PBR
 builds and public game publication have separate contracts. No Material Maker,
 GPU, model or live RAI server is needed for the installed plant compiler.
+# General vector documents
+
+`vector_author` and `POST /api/vectors` accept `profile: "vector-document-v1"`.
+The same compiler is projected from the independently pinned, clean RAI source.
+Browser and MCP requests use one `GraphStore` database with a separate document
+kind; material and historical plant projects retain their original contracts.
+
+Start with `{"profile":"vector-document-v1","operation":"describe"}`. `create`
+accepts `title` and either `document` or `template` (`blank`, `power_cell`,
+`medical_kit`, `beacon`). `get` accepts `project_id` and returns the complete
+document, deterministic SVG, revision and producer. `list` lists this kind only.
+
+`patch` needs `project_id`, `expected_revision`, a unique `idempotency_key` and
+1–32 `operations`. A retry returns the original receipt; call `get` for current
+state. Edits are `add {node}`, `update {id,changes}`, `delete {id}`, `palette
+{colors}`, `canvas {canvas}`, `order {ids}` and `replace {document}`. Change locks
+only with a separate `set_lock {id,locked}` transaction. Protected descendants,
+ancestor transforms and referenced colors cannot be bypassed by replacement or
+palette edits; additions to a protected group are refused. Locks do not prevent
+new artwork elsewhere from overlapping a part.
+
+`history {direction: undo|redo}`, `snapshot {name}`, `restore {name}`, `preview`,
+`variants {palettes:[{colorName:"#RRGGBB"}]}` and `build` require the exact
+`expected_revision` and `project_id`. `snapshots` needs only `project_id`.
+History restores the complete document, including locks. Candidate previews do
+not write; adopt with a revision-fenced `replace` patch.
+
+`build` freezes a `d_…` ID. `build_get {build_id}` returns the verified manifest,
+document and SVG; `export {build_id}` returns a deterministic ZIP with `project.json`,
+`document.json`, `preview.svg` and `manifest.json`. Inventory, source identity,
+hashes, sizes and regenerated SVG are checked on every read. Later edits or
+producer-pin updates cannot silently change those frozen bytes. A producer that
+changes rendering must use an explicit version/migration rather than reinterpret
+this contract.
+
+Documents admit at most 128 named nodes, 8 hierarchy levels, 1,024 M/L/Q/C/Z path
+commands and 16 palette colors in 128 KiB. Rectangles, ellipses and groups support
+translation, rotation, positive scales, opacity and solid fills/strokes. No raw
+SVG import, URLs, fonts, scripts, filters or model execution. Native game intake
+still requires reviewed source pins and consumer validation.

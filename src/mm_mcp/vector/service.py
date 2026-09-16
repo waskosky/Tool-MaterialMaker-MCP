@@ -19,6 +19,8 @@ class VectorService:
     def __init__(self, root):
         self.root = Path(root)
         self.producer = verify()
+        from .documents import DocumentService
+        self.documents = DocumentService(root, self.producer)
         from .producer import authoring
         from .producer.artifact import render
         self.compiler, self.render = authoring, render
@@ -76,6 +78,8 @@ class VectorService:
         return self.read(request['project_id'], request['expected_revision'])
 
     def command(self, request):
+        if isinstance(request, dict) and request.get('profile') == 'vector-document-v1':
+            return self.documents.command(request)
         self.compiler.encode(request, self.compiler.MAX_REQUEST_BYTES)
         if not isinstance(request, dict):
             raise ServiceError('VECTOR_REQUEST', 'Use a plant command object.')

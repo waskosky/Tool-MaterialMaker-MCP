@@ -277,7 +277,11 @@ TOOLS=[material_capabilities,material_recipe_search,material_recipe_describe,mat
 
 @safe
 def vector_author(request: dict) -> dict:
-    """Author persistent vector plants. Start with operation=describe for controls and operations.
+    """Author persistent vectors. Start with operation=describe for controls and operations.
+
+    Set profile=vector-document-v1 for general layered art: create with document or
+    template, patch with typed shape/path/group/transform/palette edits, protection,
+    history, palette variants and SVG/source exports. Omit profile for plant recipes.
 
     Browser and AI share projects, protected controls and revision checks. Patch needs
     project_id, expected_revision, idempotency_key and operations (set_controls with

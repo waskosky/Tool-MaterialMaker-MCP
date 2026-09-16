@@ -112,7 +112,7 @@ def apply_patch(graph: dict, operations: list, catalog: dict, *, mode='strict') 
 
 class GraphStore:
     def __init__(self, root: str | Path, catalog: dict, *, kind='material', validate=None, patch=None):
-        if kind not in ('material', 'vector-plant'):
+        if kind not in ('material', 'vector-plant', 'vector-document'):
             raise ValueError('Unknown installed project kind')
         self.kind, self.validate_document, self.patch_document = kind, validate, patch
         self.root = Path(root); self.root.mkdir(parents=True, exist_ok=True)
