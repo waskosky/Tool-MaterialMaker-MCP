@@ -2,7 +2,7 @@
   "schema": "rai.vector-compiler-export/v1",
   "profile": "workshop-vector-authoring-v1",
   "source_repository": "waskosky/rai",
-  "source_revision": "d243bb27f28b38de246ce14d9cdab8e97f6393e8",
+  "source_revision": "8e9610353f1d64d8a93de55b0878b106f4a9038c",
   "source_clean": true,
   "files": [
     {
@@ -55,11 +55,39 @@
       "size": 16914
     },
     {
+      "path": "document_assistant.py",
+      "source_path": "mcp_server/vector_assets/document_assistant.py",
+      "source_sha256": "931dabaf4333bacb569dee9bda19828023036a114679f870ada9a6d83205a700",
+      "sha256": "931dabaf4333bacb569dee9bda19828023036a114679f870ada9a6d83205a700",
+      "size": 8394
+    },
+    {
+      "path": "document_library.py",
+      "source_path": "mcp_server/vector_assets/document_library.py",
+      "source_sha256": "304c96a803f916b19e880f7a7a9914ca942b6418e480fbe17e3d582a8a156663",
+      "sha256": "304c96a803f916b19e880f7a7a9914ca942b6418e480fbe17e3d582a8a156663",
+      "size": 10262
+    },
+    {
+      "path": "document_motion.py",
+      "source_path": "mcp_server/vector_assets/document_motion.py",
+      "source_sha256": "67d2fdc0bf5cb39208983e4fb04887f59a7ebb96c3843c2937937d30ea775b04",
+      "sha256": "67d2fdc0bf5cb39208983e4fb04887f59a7ebb96c3843c2937937d30ea775b04",
+      "size": 14282
+    },
+    {
       "path": "document_templates.py",
       "source_path": "mcp_server/vector_assets/document_templates.py",
       "source_sha256": "a8d52cd653cbe77e9eeeb4243064e6703e340ad097b7c1bfa38a9bb34df9063f",
       "sha256": "a8d52cd653cbe77e9eeeb4243064e6703e340ad097b7c1bfa38a9bb34df9063f",
       "size": 4246
+    },
+    {
+      "path": "document_v2.py",
+      "source_path": "mcp_server/vector_assets/document_v2.py",
+      "source_sha256": "98c3f65589bcc484bf8f1b70a347af4cec3f176125f4e49f84a3d3fdfe6006e2",
+      "sha256": "98c3f65589bcc484bf8f1b70a347af4cec3f176125f4e49f84a3d3fdfe6006e2",
+      "size": 20747
     },
     {
       "path": "expression.py",
