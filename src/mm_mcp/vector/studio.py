@@ -99,7 +99,8 @@ class StudioService(DocumentService):
             "preview_edits": (shared | {"operations"}, set()),
             "sample": (shared | {"clip", "time"}, set()),
             "frames": (shared | {"clip", "count"}, set()),
-            "build": (shared, {"clip"}),
+            "mask": (shared, set()),
+            "build": (shared, {"clip", "mask"}),
         }
         operation = request.get("operation") if isinstance(request, dict) else None
         if operation not in contracts:
@@ -130,6 +131,11 @@ class StudioService(DocumentService):
                     result.update(
                         motion_sheet_svg=(root / "motion.sheet.svg").read_text(),
                         motion=json.loads((root / "motion.json").read_bytes()),
+                    )
+                if (root / "mask.json").exists():
+                    result.update(
+                        material_mask_svg=(root / "mask.svg").read_text(),
+                        material_mask=json.loads((root / "mask.json").read_bytes()),
                     )
             return result
         required, optional = contracts[operation]
@@ -186,7 +192,7 @@ class StudioService(DocumentService):
                 project, request["intent"], request["selected_ids"]
             )
         if operation == "build":
-            return self.build(project, request.get("clip"))
+            return self.build(project, request.get("clip"), request.get("mask", False))
         if operation == "preview_edits":
             candidate = v2.revise(project["document"], request["operations"])
             return {
@@ -202,6 +208,7 @@ class StudioService(DocumentService):
             "rig_suggest": ("preset",),
             "sample": ("clip", "time"),
             "frames": ("clip", "count"),
+            "mask": (),
         }[operation]
         result = v2.execute(
             {
@@ -329,11 +336,13 @@ class StudioService(DocumentService):
                 )
             return {"ok": True, "entry": self.library_get(key)}
 
-    def build(self, project, clip=None):
+    def build(self, project, clip=None, mask=False):
         if project["profile"] != v2.PROFILE:
             return super().build(project)
         if clip is not None:
             v1.identifier(clip)
+        if type(mask) is not bool:
+            raise ValueError("Mask export must be explicitly true or false")
         source = {
             k: project[k]
             for k in (
@@ -346,6 +355,8 @@ class StudioService(DocumentService):
             )
         }
         source["export"] = {"clip": clip, "count": 16, "cell": 256}
+        if mask:
+            source["export"]["mask"] = True
         build_id = "d_" + digest(source)
         self.build_root.mkdir(parents=True, exist_ok=True)
         target = self.build_root / build_id
@@ -394,7 +405,9 @@ class StudioService(DocumentService):
                 "export",
             },
         )
-        v1.fields(source["export"], {"clip", "count", "cell"})
+        v1.fields(source["export"], {"clip", "count", "cell"}, {"mask"})
+        if "mask" in source["export"] and source["export"]["mask"] is not True:
+            raise ValueError("Invalid frozen mask option")
         if source["export"]["count"] != 16 or source["export"]["cell"] != 256:
             raise ValueError("Unsupported motion export format")
         v2.validate(source["document"])
@@ -407,6 +420,19 @@ class StudioService(DocumentService):
             files["motion.sheet.svg"], files["motion.json"] = sheet(
                 source["document"], source["export"]["clip"]
             )
+        if source["export"].get("mask"):
+            result = v2.execute(
+                {
+                    "profile": v2.PROFILE,
+                    "operation": "mask",
+                    "source": source["document"],
+                }
+            )
+            files["mask.svg"] = result.pop("svg").encode()
+            result.pop("operation")
+            result.pop("profile")
+            result["file"] = "mask.svg"
+            files["mask.json"] = canonical(result).encode()
         if sum(map(len, files.values())) > 4 * 1024 * 1024:
             raise ValueError("Animation build exceeds four MiB")
         return files
@@ -431,7 +457,7 @@ class StudioService(DocumentService):
             if manifest["schema"] != BUILD_SCHEMA:
                 return super().get_build(build_id)
             paths = list(root.iterdir())
-            if len(paths) not in (4, 6) or any(
+            if len(paths) not in (4, 6, 8) or any(
                 p.is_symlink() or not p.is_file() or p.stat().st_size > 4 * 1024 * 1024
                 for p in paths
             ):
