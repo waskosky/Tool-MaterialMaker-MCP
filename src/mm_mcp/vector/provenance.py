@@ -25,7 +25,7 @@ def verify(root=ROOT):
             or manifest.get('schema') != 'rai.vector-compiler-export/v1'):
         raise ServiceError('VECTOR_COMPILER_PIN', 'The plant compiler differs from its reviewed source pin.')
     records = manifest.get('files')
-    if not isinstance(records, list) or not 1 <= len(records) <= 16:
+    if not isinstance(records, list) or not 1 <= len(records) <= 17:
         raise ServiceError('VECTOR_COMPILER_PIN', 'Invalid compiler inventory.')
     actual = set()
     if producer.is_symlink():

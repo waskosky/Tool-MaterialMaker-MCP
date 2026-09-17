@@ -143,9 +143,14 @@ def validate(document):
 
             recipe = component["recipe"]
             v1.fields(recipe, {"profile", "request"})
-            if recipe["profile"] != "plant-rest-v1":
+            if recipe["profile"] == "plant-rest-v1":
+                expected = recipe_component(recipe["request"], component["name"])
+            elif recipe["profile"] == "vector-repeat-v1":
+                from .document_modifiers import component as repeat_component
+
+                expected = repeat_component(recipe["request"], component["name"])
+            else:
                 raise ValueError("Unknown installed component recipe")
-            expected = recipe_component(recipe["request"], component["name"])
             if expected != component:
                 raise ValueError("Recipe parts differ from their parameters; detach before editing")
     v1.validate(_expanded(document))
@@ -355,6 +360,10 @@ def revise(source, operations):
                 if operation["id"] not in out["components"]:
                     raise ValueError("Unknown component")
                 out["components"][operation["id"]]["recipe"] = None
+        elif op in ("modifier_create", "modifier_update", "modifier_source"):
+            from .document_modifiers import revise as revise_modifier
+
+            out = revise_modifier(out, operation)
         elif op == "rig_set":
             v1.fields(operation, {"op", "rig"})
             out["rig"] = deepcopy(operation["rig"])
@@ -383,6 +392,10 @@ def create(template="blank"):
         from .document_library import courier
 
         return validate(courier())
+    if template == "emblem":
+        from .document_modifiers import emblem
+
+        return validate(emblem())
     return validate(upgrade(create_v1(template)))
 
 
@@ -392,7 +405,7 @@ def describe():
         "profile": PROFILE,
         "operation": "describe",
         "document_schema": SCHEMA,
-        "templates": ["blank", "power_cell", "medical_kit", "beacon", "courier"],
+        "templates": ["blank", "power_cell", "medical_kit", "beacon", "courier", "emblem"],
         "limits": {
             "nodes_expanded": 128,
             "hierarchy": 8,
@@ -417,12 +430,22 @@ def describe():
             "rig_suggest",
             "sample",
             "frames",
+            "mask",
         ],
+        "modifiers": ["mirror", "linear", "radial"],
+        "modifier_policy": (
+            "Editable source snapshot, at most 16 copies and 64 generated component parts. "
+            "Seeded translation variation. Detach explicitly to bake."
+        ),
         "rig_presets": ["auto", "sway", "bob", "flap", "walk"],
-        "component_policy": ("Embedded definitions; explicit snapshot import. "
-                             "No recursive components or external resources."),
-        "motion_policy": ("Rigid named parts only. Suggestions require preview/accept; edit pivots "
-                          "and clips. No mesh skinning or raster segmentation."),
+        "component_policy": (
+            "Embedded definitions; explicit snapshot import. "
+            "No recursive components or external resources."
+        ),
+        "motion_policy": (
+            "Rigid named parts only. Suggestions require preview/accept; edit pivots "
+            "and clips. No mesh skinning or raster segmentation."
+        ),
     }
 
 
@@ -441,6 +464,7 @@ def execute(request):
         "rig_suggest": {"source", "preset"},
         "sample": {"source", "clip", "time"},
         "frames": {"source", "clip", "count"},
+        "mask": {"source"},
     }
     if request.get("profile") != PROFILE or operation not in contracts:
         raise ValueError("Use an installed vector-document-v2 operation")
@@ -472,6 +496,20 @@ def execute(request):
         documents = [
             revise(request["source"], [{"op": "palette", "colors": colors}]) for colors in palettes
         ]
+    elif operation == "mask":
+        from .document_modifiers import mask
+
+        return {
+            "schema": "rai.vector-material-mask/v1",
+            "profile": PROFILE,
+            "operation": operation,
+            "svg": mask(request["source"]),
+            "source_sha256": v1.structural_digest(request["source"]),
+            "canvas": deepcopy(request["source"]["canvas"]),
+            "channel": "r",
+            "color_space": "linear",
+            "pose": "rest",
+        }
     elif operation == "rig_suggest":
         from .document_motion import suggest
 
