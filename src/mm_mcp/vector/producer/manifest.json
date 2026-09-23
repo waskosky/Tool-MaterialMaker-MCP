@@ -2,7 +2,7 @@
   "schema": "rai.vector-compiler-export/v1",
   "profile": "workshop-vector-authoring-v1",
   "source_repository": "waskosky/rai",
-  "source_revision": "457d3564fc519e3ee94b7a40198b8a0f38d8ef8f",
+  "source_revision": "6a5eca7f5c318b973c8aab995e62fb4d32fca5e6",
   "source_clean": true,
   "host_dependencies": {
     "pyclipper": "1.4.0"
