@@ -279,7 +279,8 @@ TOOLS=[material_capabilities,material_recipe_search,material_recipe_describe,mat
 def vector_author(request: dict) -> dict:
     """Author persistent vectors. Start with operation=describe for controls and operations.
 
-    Set profile=vector-document-v2 for reusable artwork, styles, local components,
+    Set profile=vector-document-v2 for signage construction, static SDF exports,
+    reusable artwork, styles, local components,
     recipe parameters, rigs, clips and AI proposals. Start with describe. v1 artwork
     remains available; upgrade explicitly before adding v2 features. Omit profile
     for plant recipes. AI submit/get/cancel/accept returns a reviewable candidate;

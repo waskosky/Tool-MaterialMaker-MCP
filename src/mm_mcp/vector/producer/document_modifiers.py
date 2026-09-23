@@ -62,6 +62,14 @@ def _noise(seed, copy, axis):
 def component(request, name):
     from .document_v2 import label
 
+    if (
+        isinstance(request, dict)
+        and isinstance(request.get("settings"), dict)
+        and request["settings"].get("kind") == "construction"
+    ):
+        from .document_construction import component as construct
+
+        return construct(request, name)
     label(name)
     v1.encode(request)
     v1.fields(request, {"source", "settings"})
@@ -156,8 +164,12 @@ def revise(document, operation):
         v1.fields(operation, {"op", "id", "settings" if op == "modifier_update" else "operations"})
         v1.identifier(operation["id"])
         definition = document["components"].get(operation["id"])
-        if not definition or not definition["recipe"] or definition["recipe"]["profile"] != PROFILE:
-            raise ValueError("Choose a procedural repetition component")
+        if (
+            not definition
+            or not definition["recipe"]
+            or definition["recipe"]["profile"] not in (PROFILE, "vector-construction-v1")
+        ):
+            raise ValueError("Choose a procedural repetition or construction component")
         request = deepcopy(definition["recipe"]["request"])
         if op == "modifier_update":
             request["settings"] = operation["settings"]

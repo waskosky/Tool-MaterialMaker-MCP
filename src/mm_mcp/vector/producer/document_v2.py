@@ -149,6 +149,12 @@ def validate(document):
                 from .document_modifiers import component as repeat_component
 
                 expected = repeat_component(recipe["request"], component["name"])
+                if expected["recipe"]["profile"] != recipe["profile"]:
+                    raise ValueError("Component recipe profile differs from its settings")
+            elif recipe["profile"] == "vector-construction-v1":
+                from .document_construction import component as construct
+
+                expected = construct(recipe["request"], component["name"])
             else:
                 raise ValueError("Unknown installed component recipe")
             if expected != component:
@@ -396,6 +402,10 @@ def create(template="blank"):
         from .document_modifiers import emblem
 
         return validate(emblem())
+    if template == "signage":
+        from .document_construction import signage
+
+        return validate(signage())
     return validate(upgrade(create_v1(template)))
 
 
@@ -405,7 +415,15 @@ def describe():
         "profile": PROFILE,
         "operation": "describe",
         "document_schema": SCHEMA,
-        "templates": ["blank", "power_cell", "medical_kit", "beacon", "courier", "emblem"],
+        "templates": [
+            "blank",
+            "power_cell",
+            "medical_kit",
+            "beacon",
+            "courier",
+            "emblem",
+            "signage",
+        ],
         "limits": {
             "nodes_expanded": 128,
             "hierarchy": 8,
@@ -431,8 +449,17 @@ def describe():
             "sample",
             "frames",
             "mask",
+            "sdf",
         ],
-        "modifiers": ["mirror", "linear", "radial"],
+        "modifiers": ["mirror", "linear", "radial", "construction"],
+        "construction_policy": (
+            "1–4 ordered Boolean/offset/linear-repeat steps. Closed opaque fills only. "
+            "Retained source; 2048 intermediate vertices, existing document limits apply."
+        ),
+        "sdf_policy": (
+            "Static canvas-clipped sampled distance field, 128/256/512 pixels, "
+            "2–32 texel spread. Same closed opaque geometry contract as construction."
+        ),
         "modifier_policy": (
             "Editable source snapshot, at most 16 copies and 64 generated component parts. "
             "Seeded translation variation. Detach explicitly to bake."
@@ -465,6 +492,7 @@ def execute(request):
         "sample": {"source", "clip", "time"},
         "frames": {"source", "clip", "count"},
         "mask": {"source"},
+        "sdf": {"source", "resolution", "spread"},
     }
     if request.get("profile") != PROFILE or operation not in contracts:
         raise ValueError("Use an installed vector-document-v2 operation")
@@ -496,6 +524,14 @@ def execute(request):
         documents = [
             revise(request["source"], [{"op": "palette", "colors": colors}]) for colors in palettes
         ]
+    elif operation == "sdf":
+        from .document_sdf import export
+
+        return {
+            "profile": PROFILE,
+            "operation": operation,
+            **export(request["source"], request["resolution"], request["spread"]),
+        }
     elif operation == "mask":
         from .document_modifiers import mask
 

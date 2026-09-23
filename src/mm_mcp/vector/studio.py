@@ -1,6 +1,7 @@
 """V2 project commands: reusable artwork, proposals, rigs and frozen motion."""
 
 from copy import deepcopy
+import base64
 import hashlib
 import json
 import math
@@ -15,6 +16,7 @@ from .producer import document as v1
 from .producer import document_v2 as v2
 from .producer import document_library as library
 from .producer import document_motion as motion
+from .producer import document_sdf as distance_field
 from .ai import CodexProvider, ProposalService
 
 BUILD_SCHEMA = "workshop.vector-document-build/v2"
@@ -100,7 +102,8 @@ class StudioService(DocumentService):
             "sample": (shared | {"clip", "time"}, set()),
             "frames": (shared | {"clip", "count"}, set()),
             "mask": (shared, set()),
-            "build": (shared, {"clip", "mask"}),
+            "sdf": (shared | {"resolution", "spread"}, set()),
+            "build": (shared, {"clip", "mask", "sdf"}),
         }
         operation = request.get("operation") if isinstance(request, dict) else None
         if operation not in contracts:
@@ -136,6 +139,12 @@ class StudioService(DocumentService):
                     result.update(
                         material_mask_svg=(root / "mask.svg").read_text(),
                         material_mask=json.loads((root / "mask.json").read_bytes()),
+                    )
+                if (root / "sdf.json").exists():
+                    result.update(
+                        material_sdf=json.loads((root / "sdf.json").read_bytes()),
+                        material_sdf_json=(root / "sdf.json").read_text(),
+                        material_sdf_png=base64.b64encode((root / "sdf.png").read_bytes()).decode("ascii"),
                     )
             return result
         required, optional = contracts[operation]
@@ -192,7 +201,7 @@ class StudioService(DocumentService):
                 project, request["intent"], request["selected_ids"]
             )
         if operation == "build":
-            return self.build(project, request.get("clip"), request.get("mask", False))
+            return self.build(project, request.get("clip"), request.get("mask", False), request.get("sdf"))
         if operation == "preview_edits":
             candidate = v2.revise(project["document"], request["operations"])
             return {
@@ -209,6 +218,7 @@ class StudioService(DocumentService):
             "sample": ("clip", "time"),
             "frames": ("clip", "count"),
             "mask": (),
+            "sdf": ("resolution", "spread"),
         }[operation]
         result = v2.execute(
             {
@@ -336,13 +346,15 @@ class StudioService(DocumentService):
                 )
             return {"ok": True, "entry": self.library_get(key)}
 
-    def build(self, project, clip=None, mask=False):
+    def build(self, project, clip=None, mask=False, sdf=None):
         if project["profile"] != v2.PROFILE:
             return super().build(project)
         if clip is not None:
             v1.identifier(clip)
         if type(mask) is not bool:
             raise ValueError("Mask export must be explicitly true or false")
+        if sdf is not None:
+            distance_field.options(sdf)
         source = {
             k: project[k]
             for k in (
@@ -357,6 +369,8 @@ class StudioService(DocumentService):
         source["export"] = {"clip": clip, "count": 16, "cell": 256}
         if mask:
             source["export"]["mask"] = True
+        if sdf is not None:
+            source["export"]["sdf"] = deepcopy(sdf)
         build_id = "d_" + digest(source)
         self.build_root.mkdir(parents=True, exist_ok=True)
         target = self.build_root / build_id
@@ -405,7 +419,7 @@ class StudioService(DocumentService):
                 "export",
             },
         )
-        v1.fields(source["export"], {"clip", "count", "cell"}, {"mask"})
+        v1.fields(source["export"], {"clip", "count", "cell"}, {"mask", "sdf"})
         if "mask" in source["export"] and source["export"]["mask"] is not True:
             raise ValueError("Invalid frozen mask option")
         if source["export"]["count"] != 16 or source["export"]["cell"] != 256:
@@ -433,6 +447,12 @@ class StudioService(DocumentService):
             result.pop("profile")
             result["file"] = "mask.svg"
             files["mask.json"] = canonical(result).encode()
+        if "sdf" in source["export"]:
+            options = distance_field.options(source["export"]["sdf"])
+            result = distance_field.export(source["document"], **options)
+            files["sdf.png"] = base64.b64decode(result.pop("png_base64"), validate=True)
+            result["file"] = "sdf.png"
+            files["sdf.json"] = canonical(result).encode()
         if sum(map(len, files.values())) > 4 * 1024 * 1024:
             raise ValueError("Animation build exceeds four MiB")
         return files
@@ -457,7 +477,7 @@ class StudioService(DocumentService):
             if manifest["schema"] != BUILD_SCHEMA:
                 return super().get_build(build_id)
             paths = list(root.iterdir())
-            if len(paths) not in (4, 6, 8) or any(
+            if len(paths) not in (4, 6, 8, 10) or any(
                 p.is_symlink() or not p.is_file() or p.stat().st_size > 4 * 1024 * 1024
                 for p in paths
             ):
