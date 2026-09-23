@@ -145,3 +145,25 @@ controls, protected revisions, seeded variations, comparisons, SVG motion
 previews, named versions and exact frozen exports. This plant-only workflow is
 available without a Material Maker render configuration. See the
 [plant operations](docs/upgrade/TOOLS.md#vector_author).
+
+### Solid vector construction and distance-field builds
+
+Vector Studio's v2 `signage` kit retains its original shapes and an ordered,
+disableable Boolean/offset/linear-repeat sequence. These use the existing
+modifier edits and revision-fenced project store. The fixed RAI compiler pin now
+declares host dependency `pyclipper==1.4.0`; normal editable/wheel installation
+installs it, and startup fails closed if the dependency differs. It is never
+bundled into a player export.
+
+For an exact saved v2 project, `sdf` accepts `resolution` (128/256/512) and `spread`
+(2–32 texels). `build` accepts `sdf={"resolution":256,"spread":16}` and freezes
+`sdf.png` plus `sdf.json` alongside the source. Builds may also include the existing
+mask and motion outputs. Reading or exporting recomputes the entire bounded
+inventory and checks every byte; earlier builds keep their prior inventory and
+identity. Source-derived SDF bytes and metadata are returned by `build_get`, so
+Foundry imports by exact build ID without accepting client-replacement pixels.
+
+Distance fields cover the static canvas-clipped rest pose of closed opaque fills;
+partial opacity, strokes and open outlines require a different future adapter.
+Fine features depend on resolution. See the [shared future vector roadmap](https://github.com/waskosky/godot-shaders-foundry/blob/main/docs/pipeline/VECTOR_ROADMAP.md)
+for the next creature/fitting/IK and AI art-direction stages and later extensions.

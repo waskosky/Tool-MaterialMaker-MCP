@@ -2,8 +2,11 @@
   "schema": "rai.vector-compiler-export/v1",
   "profile": "workshop-vector-authoring-v1",
   "source_repository": "waskosky/rai",
-  "source_revision": "5dc0b0cf2836824662c9c490175532bc765d474a",
+  "source_revision": "6a5eca7f5c318b973c8aab995e62fb4d32fca5e6",
   "source_clean": true,
+  "host_dependencies": {
+    "pyclipper": "1.4.0"
+  },
   "files": [
     {
       "path": "LICENSE",
@@ -62,6 +65,20 @@
       "size": 8394
     },
     {
+      "path": "document_construction.py",
+      "source_path": "mcp_server/vector_assets/document_construction.py",
+      "source_sha256": "16316b782a19507d0086ecc66d4304f2a4f57b4e0bb4ef8b5c61dda43aa11c19",
+      "sha256": "16316b782a19507d0086ecc66d4304f2a4f57b4e0bb4ef8b5c61dda43aa11c19",
+      "size": 6316
+    },
+    {
+      "path": "document_geometry.py",
+      "source_path": "mcp_server/vector_assets/document_geometry.py",
+      "source_sha256": "7e9cc224f7097dd7558cd0ddfc1e8e825c2a9d061072e2052743d12a0100d4a6",
+      "sha256": "7e9cc224f7097dd7558cd0ddfc1e8e825c2a9d061072e2052743d12a0100d4a6",
+      "size": 8671
+    },
+    {
       "path": "document_library.py",
       "source_path": "mcp_server/vector_assets/document_library.py",
       "source_sha256": "304c96a803f916b19e880f7a7a9914ca942b6418e480fbe17e3d582a8a156663",
@@ -71,9 +88,9 @@
     {
       "path": "document_modifiers.py",
       "source_path": "mcp_server/vector_assets/document_modifiers.py",
-      "source_sha256": "74a88f204dc605b3a6d05b0021065e335c3e9081713be1b36c12cab06822e8b8",
-      "sha256": "74a88f204dc605b3a6d05b0021065e335c3e9081713be1b36c12cab06822e8b8",
-      "size": 9287
+      "source_sha256": "d6a7c95c14a9d5c35f683b346ad71224efd97fea6308d01f520361afef68bc52",
+      "sha256": "d6a7c95c14a9d5c35f683b346ad71224efd97fea6308d01f520361afef68bc52",
+      "size": 9656
     },
     {
       "path": "document_motion.py",
@@ -81,6 +98,13 @@
       "source_sha256": "67d2fdc0bf5cb39208983e4fb04887f59a7ebb96c3843c2937937d30ea775b04",
       "sha256": "67d2fdc0bf5cb39208983e4fb04887f59a7ebb96c3843c2937937d30ea775b04",
       "size": 14282
+    },
+    {
+      "path": "document_sdf.py",
+      "source_path": "mcp_server/vector_assets/document_sdf.py",
+      "source_sha256": "70b8d07291d00d0ee2c7bd97d8dfbdc9aa3d4516f55878c624e71fdfe3d83856",
+      "sha256": "70b8d07291d00d0ee2c7bd97d8dfbdc9aa3d4516f55878c624e71fdfe3d83856",
+      "size": 5463
     },
     {
       "path": "document_templates.py",
@@ -92,9 +116,9 @@
     {
       "path": "document_v2.py",
       "source_path": "mcp_server/vector_assets/document_v2.py",
-      "source_sha256": "449fdf1ca1baf1d043457e285ba93c10b8aa06ec4a7f4e90dddbb99a862aa658",
-      "sha256": "449fdf1ca1baf1d043457e285ba93c10b8aa06ec4a7f4e90dddbb99a862aa658",
-      "size": 22118
+      "source_sha256": "9e4776d1a8c43347ce313393a26c54596342035915536e74771f4e193cdc178f",
+      "sha256": "9e4776d1a8c43347ce313393a26c54596342035915536e74771f4e193cdc178f",
+      "size": 23483
     },
     {
       "path": "expression.py",

@@ -3,6 +3,7 @@ from pathlib import Path
 import hashlib
 import json
 import re
+from importlib.metadata import PackageNotFoundError, version
 from mm_mcp.core import ServiceError
 
 ROOT = Path(__file__).parent
@@ -25,8 +26,15 @@ def verify(root=ROOT):
             or manifest.get('schema') != 'rai.vector-compiler-export/v1'):
         raise ServiceError('VECTOR_COMPILER_PIN', 'The plant compiler differs from its reviewed source pin.')
     records = manifest.get('files')
-    if not isinstance(records, list) or not 1 <= len(records) <= 17:
+    if not isinstance(records, list) or not 1 <= len(records) <= 20:
         raise ServiceError('VECTOR_COMPILER_PIN', 'Invalid compiler inventory.')
+    if manifest.get('host_dependencies') != {'pyclipper': '1.4.0'}:
+        raise ServiceError('VECTOR_COMPILER_PIN', 'Compiler host dependencies differ from the reviewed contract.')
+    try:
+        if version('pyclipper') != '1.4.0':
+            raise PackageNotFoundError('pyclipper==1.4.0')
+    except PackageNotFoundError as exc:
+        raise ServiceError('VECTOR_COMPILER_PIN', 'Install the pinned pyclipper==1.4.0 host dependency.') from exc
     actual = set()
     if producer.is_symlink():
         raise ServiceError('VECTOR_COMPILER_PIN', 'Compiler cannot be a symlink.')
