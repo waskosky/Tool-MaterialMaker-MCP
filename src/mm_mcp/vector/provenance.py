@@ -26,7 +26,7 @@ def verify(root=ROOT):
             or manifest.get('schema') != 'rai.vector-compiler-export/v1'):
         raise ServiceError('VECTOR_COMPILER_PIN', 'The plant compiler differs from its reviewed source pin.')
     records = manifest.get('files')
-    if not isinstance(records, list) or not 1 <= len(records) <= 20:
+    if not isinstance(records, list) or not 1 <= len(records) <= 22:
         raise ServiceError('VECTOR_COMPILER_PIN', 'Invalid compiler inventory.')
     if manifest.get('host_dependencies') != {'pyclipper': '1.4.0'}:
         raise ServiceError('VECTOR_COMPILER_PIN', 'Compiler host dependencies differ from the reviewed contract.')

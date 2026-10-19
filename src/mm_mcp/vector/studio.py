@@ -50,6 +50,11 @@ def sheet(document, clip, count=16, cell=256):
         count=count,
         frames=[{"index": f["index"], "time": f["time"]} for f in frames["frames"]],
     )
+    if "creature" in document:
+        timing.update(
+            schema="workshop.vector-sprite-sheet/v2",
+            sockets=[f["sockets"] for f in frames["frames"]],
+        )
     return "".join(svg).encode(), canonical(timing).encode()
 
 
@@ -93,16 +98,23 @@ class StudioService(DocumentService):
                 shared | {"library_id", "idempotency_key"},
                 {"target", "x", "y"},
             ),
-            "ai_submit": (shared | {"intent", "selected_ids"}, set()),
+            "ai_submit": (shared | {"intent", "selected_ids"}, {"direction"}),
             "ai_get": ({"proposal_id"}, set()),
             "ai_cancel": ({"proposal_id"}, set()),
             "ai_accept": (shared | {"proposal_id", "candidate_sha256"}, set()),
             "rig_suggest": (shared | {"preset"}, set()),
             "preview_edits": (shared | {"operations"}, set()),
+            "accept_preview": (
+                shared | {"operations", "candidate_sha256", "idempotency_key"},
+                set(),
+            ),
             "sample": (shared | {"clip", "time"}, set()),
             "frames": (shared | {"clip", "count"}, set()),
             "mask": (shared, set()),
             "sdf": (shared | {"resolution", "spread"}, set()),
+            "creature_inspect": (shared, set()),
+            "creature_fit": (shared | {"targets", "free_parameters"}, set()),
+            "creature_pose": (shared | {"leg", "target", "clip", "time"}, set()),
             "build": (shared, {"clip", "mask", "sdf"}),
         }
         operation = request.get("operation") if isinstance(request, dict) else None
@@ -144,7 +156,9 @@ class StudioService(DocumentService):
                     result.update(
                         material_sdf=json.loads((root / "sdf.json").read_bytes()),
                         material_sdf_json=(root / "sdf.json").read_text(),
-                        material_sdf_png=base64.b64encode((root / "sdf.png").read_bytes()).decode("ascii"),
+                        material_sdf_png=base64.b64encode(
+                            (root / "sdf.png").read_bytes()
+                        ).decode("ascii"),
                     )
             return result
         required, optional = contracts[operation]
@@ -170,6 +184,21 @@ class StudioService(DocumentService):
                 request["expected_revision"],
                 [{"op": "upgrade"}],
                 request["idempotency_key"],
+            )
+        if operation == "accept_preview":
+            if not isinstance(request["candidate_sha256"], str) or not re.fullmatch(
+                r"[a-f0-9]{64}", request["candidate_sha256"]
+            ):
+                raise ServiceError("VECTOR_CANDIDATE", "Accept the exact preview hash.")
+            return self.store.patch(
+                request["project_id"],
+                request["expected_revision"],
+                request["operations"],
+                request["idempotency_key"],
+                authorize=lambda document: self.proposals._exact(
+                    document, request["candidate_sha256"]
+                ),
+                authorization_digest=request["candidate_sha256"],
             )
         # Imported bytes are independently hash-pinned; GraphStore fences and
         # persists the exact proposed patch. Retrying retains the original receipt.
@@ -197,11 +226,46 @@ class StudioService(DocumentService):
                 project["document"], request["kind"], request["definition_id"]
             )
         if operation == "ai_submit":
+            direction = None
+            provenance = None
+            if "direction" in request:
+                from .producer.document_direction import constraints
+
+                settings = request["direction"]
+                v1.fields(
+                    settings,
+                    {
+                        "reference_project_id",
+                        "expected_reference_revision",
+                        "stroke_width",
+                    },
+                )
+                reference = self.current(
+                    {
+                        "project_id": settings["reference_project_id"],
+                        "expected_revision": settings["expected_reference_revision"],
+                    }
+                )
+                direction = constraints(reference["document"], settings["stroke_width"])
+                provenance = {
+                    "project_id": reference["project_id"],
+                    "revision": reference["revision"],
+                    "source_sha256": reference["content_sha256"],
+                }
             return self.proposals.submit(
-                project, request["intent"], request["selected_ids"]
+                project,
+                request["intent"],
+                request["selected_ids"],
+                direction,
+                provenance,
             )
         if operation == "build":
-            return self.build(project, request.get("clip"), request.get("mask", False), request.get("sdf"))
+            return self.build(
+                project,
+                request.get("clip"),
+                request.get("mask", False),
+                request.get("sdf"),
+            )
         if operation == "preview_edits":
             candidate = v2.revise(project["document"], request["operations"])
             return {
@@ -212,6 +276,7 @@ class StudioService(DocumentService):
                 "revision": project["revision"],
                 "source_sha256": project["content_sha256"],
                 "candidate_sha256": v1.structural_digest(candidate),
+                "operations": deepcopy(request["operations"]),
             }
         fields = {
             "rig_suggest": ("preset",),
@@ -219,6 +284,9 @@ class StudioService(DocumentService):
             "frames": ("clip", "count"),
             "mask": (),
             "sdf": ("resolution", "spread"),
+            "creature_inspect": (),
+            "creature_fit": ("targets", "free_parameters"),
+            "creature_pose": ("leg", "target", "clip", "time"),
         }[operation]
         result = v2.execute(
             {

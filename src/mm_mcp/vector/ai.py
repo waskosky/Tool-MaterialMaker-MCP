@@ -254,9 +254,9 @@ class ProposalService:
             if j["state"] == "running" or now - j["created"] < TTL
         }
 
-    def submit(self, project, intent, selected):
+    def submit(self, project, intent, selected, direction=None, reference=None):
         source = deepcopy(project["document"])
-        prompt = planner.prompt(source, intent, selected)
+        prompt = planner.prompt(source, intent, selected, direction)
         if not self.provider.capabilities()["configured"]:
             raise ServiceError(
                 "AI_UNCONFIGURED",
@@ -296,6 +296,10 @@ class ProposalService:
                 "source": source,
                 "source_sha256": project["content_sha256"],
                 "selected": deepcopy(selected),
+                "intent": intent,
+                "direction": deepcopy(direction),
+                "reference": deepcopy(reference),
+                "deadline": time.monotonic() + TIMEOUT,
             }
             self.jobs[key] = job
             self.thread = threading.Thread(
@@ -319,13 +323,56 @@ class ProposalService:
                     cancel=job["cancel"].is_set,
                 ),
             ):
-                raw = self.provider.run(prompt, job["cancel"].is_set)
-                result = planner.admit(job["source"], raw, job["selected"])
+                candidates = []
+                count = 3 if job["direction"] is not None else 1
+                for index in range(count):
+                    if job["cancel"].is_set():
+                        break
+                    if time.monotonic() >= job["deadline"]:
+                        raise ServiceError(
+                            "AI_TIMEOUT", "Artwork family exceeded its deadline."
+                        )
+                    candidate_prompt = (
+                        planner.prompt(
+                            job["source"],
+                            job["intent"],
+                            job["selected"],
+                            job["direction"],
+                            index,
+                        )
+                        if count > 1
+                        else prompt
+                    )
+                    raw = self.provider.run(
+                        candidate_prompt,
+                        lambda: job["cancel"].is_set()
+                        or time.monotonic() >= job["deadline"],
+                    )
+                    if time.monotonic() >= job["deadline"]:
+                        raise ServiceError(
+                            "AI_TIMEOUT", "Artwork family exceeded its deadline."
+                        )
+                    candidates.append(
+                        planner.admit(
+                            job["source"], raw, job["selected"], job["direction"]
+                        )
+                    )
+                if (
+                    count > 1
+                    and len(candidates) == count
+                    and len({c["rendered_sha256"] for c in candidates}) != count
+                ):
+                    raise ServiceError(
+                        "AI_DIVERSITY",
+                        "The family repeated artwork. Request three distinct treatments.",
+                    )
             with self.lock:
                 if job["cancel"].is_set():
                     job["state"] = "cancelled"
                 else:
-                    job.update(state="ready", proposal=result)
+                    job.update(
+                        state="ready", proposal=candidates[0], candidates=candidates
+                    )
         except (
             ValueError,
             OSError,
@@ -357,6 +404,11 @@ class ProposalService:
         if job["state"] == "ready":
             out.update(deepcopy(job["proposal"]))
             out["preview_svg"] = v2.render(out["document"])
+            if job["direction"] is not None:
+                out.update(
+                    reference=deepcopy(job["reference"]),
+                    candidates=deepcopy(job["candidates"]),
+                )
         if job.get("error"):
             out["error"] = job["error"]
         if job.get("receipt"):
@@ -389,11 +441,23 @@ class ProposalService:
     def accept(self, key, project_id, expected_revision, candidate_sha256):
         with self.lock:
             job = self._job(key)
+            proposal = next(
+                (
+                    c
+                    for c in job.get("candidates", [job.get("proposal", {})])
+                    if c.get("candidate_sha256") == candidate_sha256
+                ),
+                None,
+            )
             if (
                 project_id != job["project_id"]
                 or type(expected_revision) is not int
                 or expected_revision != job["revision"]
-                or candidate_sha256 != job.get("proposal", {}).get("candidate_sha256")
+                or proposal is None
+                or (
+                    job["state"] == "accepted"
+                    and job.get("accepted_sha256") != candidate_sha256
+                )
             ):
                 raise ServiceError(
                     "AI_SOURCE",
@@ -413,7 +477,6 @@ class ProposalService:
                 raise ServiceError(
                     "AI_SOURCE", "Artwork source changed; request a new proposal."
                 )
-            proposal = job["proposal"]
             receipt = self.documents.store.patch(
                 project_id,
                 expected_revision,
@@ -423,7 +486,9 @@ class ProposalService:
                     document, proposal["candidate_sha256"]
                 ),
             )
-            job.update(state="accepted", receipt=receipt)
+            job.update(
+                state="accepted", receipt=receipt, accepted_sha256=candidate_sha256
+            )
             return deepcopy(receipt)
 
     @staticmethod

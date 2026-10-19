@@ -119,6 +119,12 @@ Godot and Material Maker are installed separately. See [PROVENANCE](docs/upgrade
 
 ## Vector Studio in Foundry
 
+The `trail_hopper` kit adds editable proportions, weighted measurement fitting,
+joint-limited leg IK and frozen per-frame attachment sockets. Preview changes
+before exact revision/hash acceptance. Ask AI can compare three treatments
+against a saved reference palette/stroke style while preserving rigs and protected
+parts. See [creature and art-direction commands](docs/upgrade/CREATURE_DIRECTION.md).
+
 Foundry's canvas workspace supports general icons, props and illustrations through
 `vector_author` with `request.profile="vector-document-v2"`. Create a blank document,
 start from a template, or supply a complete bounded document. Browser and AI share

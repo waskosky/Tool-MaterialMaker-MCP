@@ -1,7 +1,7 @@
 {
   "schema": "workshop.vector-compiler-lock/v1",
   "source_repository": "waskosky/rai",
-  "source_revision": "6a5eca7f5c318b973c8aab995e62fb4d32fca5e6",
-  "manifest_sha256": "acd414e2363b25498b46d37f43941d5a2b3851da34bc9ce2e979cc556d01ec8a",
+  "source_revision": "6198cf52459254a2272b2761981464ec757d56b3",
+  "manifest_sha256": "bca6ac4a0aa80034c3a76e58443c63dc4171b3031689ffae280e08822826266c",
   "recipe_catalog_sha256": "5ed1ad88a520f3b467abe6713b51c261ceddfe384bbac475da192cea0d3682af"
 }
