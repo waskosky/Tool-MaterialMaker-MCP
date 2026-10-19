@@ -44,7 +44,7 @@ def constraints(reference, stroke_width):
     )
 
 
-def evaluate(source, candidate, style):
+def evaluate(source, candidate, style, selected=()):
     validate(style)
     v2.validate(source)
     v2.validate(candidate)
@@ -52,10 +52,11 @@ def evaluate(source, candidate, style):
     if candidate["rig"] != source["rig"] or candidate.get("creature") != source.get("creature"):
         raise ValueError("Style direction must preserve the rig and recipe")
     protected = v1._protected(v2.expand(source))
+    included = v2.descendants(v2.expand(candidate)["nodes"], selected) if selected else None
     colors = {c.upper() for c in style["palette"].values()}
     checked = 0
     for node in v2.expand(candidate)["nodes"]:
-        if node["id"] in protected:
+        if node["id"] in protected or (included is not None and node["id"] not in included):
             continue
         if node["opacity"] != 1:
             raise ValueError("Style opacity differs from the reference constraints")
@@ -72,7 +73,9 @@ def evaluate(source, candidate, style):
             node["stroke"] != "none" and node["stroke_width"] != style["stroke_width"]
         ):
             raise ValueError("Style opacity or stroke differs from the reference constraints")
-    old, new = {n["id"] for n in source["nodes"]}, {n["id"] for n in candidate["nodes"]}
+    old_scope = v2.descendants(source["nodes"], selected) if selected else None
+    old = {n["id"] for n in source["nodes"] if old_scope is None or n["id"] in old_scope}
+    new = {n["id"] for n in candidate["nodes"] if included is None or n["id"] in included}
     retained = len(old & new) / len(old) if old else 1
     if retained < 0.8:
         raise ValueError(

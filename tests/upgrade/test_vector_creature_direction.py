@@ -113,8 +113,14 @@ def test_fit_preview_exact_acceptance_history_and_frozen_export(app):
     )
     changed = read(app.vectors, project)
     with pytest.raises(ServiceError, match="different request"):
-        current(app.vectors, project, "accept_preview", operations=preview["operations"],
-                candidate_sha256="0"*64, idempotency_key="fit")
+        current(
+            app.vectors,
+            project,
+            "accept_preview",
+            operations=preview["operations"],
+            candidate_sha256="0" * 64,
+            idempotency_key="fit",
+        )
     assert changed["document"] == preview["document"]
     assert changed["document"]["rig"] == project["document"]["rig"]
     restored = current(app.vectors, changed, "history", direction="undo")
@@ -244,5 +250,70 @@ def test_duplicate_family_or_stale_reference_cannot_be_accepted(tmp_path):
         )
         assert ready["state"] == "failed" and "repeated" in ready["error"]
         assert read(service, project) == project
+    finally:
+        service.studio.proposals.close()
+
+
+def test_reference_family_selection_keeps_the_other_artwork_colors(tmp_path):
+    class SelectionFixture(FamilyFixture):
+        def run(self, prompt, cancel):
+            context = json.loads(prompt.split("ARTWORK_REQUEST_JSON\n", 1)[1])
+            color = list(context["direction"]["palette"].values())[
+                context["family_index"]
+            ]
+            return json.dumps(
+                dict(
+                    summary="Selected bib treatment",
+                    warnings=[],
+                    operations_json=json.dumps(
+                        [dict(op="update", id="bib", changes=dict(fill=color))]
+                    ),
+                )
+            )
+
+    service = VectorService(tmp_path, ai_provider=SelectionFixture())
+    try:
+        project = call(service, "create", template="trail_hopper")
+        reference = call(
+            service, "create", template="trail_hopper", title="Separate reference"
+        )
+        current(
+            service,
+            reference,
+            "patch",
+            operations=[
+                dict(
+                    op="palette",
+                    colors=dict(
+                        ink="#112233", body="#445566", accent="#778899", light="#AABBCC"
+                    ),
+                )
+            ],
+            idempotency_key="reference-palette",
+        )
+        ready = wait(
+            service,
+            current(
+                service,
+                project,
+                "ai_submit",
+                intent="Three bib treatments",
+                selected_ids=["bib"],
+                direction=dict(
+                    reference_project_id=reference["project_id"],
+                    expected_reference_revision=1,
+                    stroke_width=0,
+                ),
+            ),
+        )
+        assert ready["state"] == "ready"
+        for candidate in ready["candidates"]:
+            assert candidate["metrics"]["parts_checked"] == 1
+            assert candidate["document"]["palette"] == project["document"]["palette"]
+            for before, after in zip(
+                project["document"]["nodes"], candidate["document"]["nodes"]
+            ):
+                if before["id"] != "bib":
+                    assert before == after
     finally:
         service.studio.proposals.close()

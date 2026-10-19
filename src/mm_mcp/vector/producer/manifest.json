@@ -2,7 +2,7 @@
   "schema": "rai.vector-compiler-export/v1",
   "profile": "workshop-vector-authoring-v1",
   "source_repository": "waskosky/rai",
-  "source_revision": "6198cf52459254a2272b2761981464ec757d56b3",
+  "source_revision": "7586097b1ca772bcd2ca16dd97a0afee0e029182",
   "source_clean": true,
   "host_dependencies": {
     "pyclipper": "1.4.0"
@@ -60,9 +60,9 @@
     {
       "path": "document_assistant.py",
       "source_path": "mcp_server/vector_assets/document_assistant.py",
-      "source_sha256": "384786d17a411e683160cbb200de9fc4752e715a31254109e28b16df2815107f",
-      "sha256": "384786d17a411e683160cbb200de9fc4752e715a31254109e28b16df2815107f",
-      "size": 9569
+      "source_sha256": "d2d13a69c266eaca9d55cd976657cd53440b801f6f6338aa9e23b18420aa3216",
+      "sha256": "d2d13a69c266eaca9d55cd976657cd53440b801f6f6338aa9e23b18420aa3216",
+      "size": 9657
     },
     {
       "path": "document_construction.py",
@@ -81,9 +81,9 @@
     {
       "path": "document_direction.py",
       "source_path": "mcp_server/vector_assets/document_direction.py",
-      "source_sha256": "1440672d7238fc445f6dc7af04a6a69471812503e4012b3a7e85bf2f5298e36c",
-      "sha256": "1440672d7238fc445f6dc7af04a6a69471812503e4012b3a7e85bf2f5298e36c",
-      "size": 4334
+      "source_sha256": "86cb2f43439bbfdbd2febbcc084dfde1c8a7dbb211268a9122bdadd5a69c98bc",
+      "sha256": "86cb2f43439bbfdbd2febbcc084dfde1c8a7dbb211268a9122bdadd5a69c98bc",
+      "size": 4669
     },
     {
       "path": "document_geometry.py",

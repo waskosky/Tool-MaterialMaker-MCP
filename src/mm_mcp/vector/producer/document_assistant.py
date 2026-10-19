@@ -112,7 +112,8 @@ def prompt(document, intent, selected, direction=None, family_index=0):
         context.update(direction=direction, family_index=family_index)
         context["direction_policy"] = (
             "Produce a distinct editable treatment for this family index (0,1,2). "
-            "All unprotected drawable paints must resolve to the frozen reference palette. "
+            "Within the selected change scope, unprotected drawable paints must resolve "
+            "to the frozen reference palette; outside artwork stays unchanged. "
             "Opacity is one; visible strokes use the exact supplied width. Preserve the "
             "rig, creature recipe and at least 80 percent of named parts. Preserve protected "
             "parts and selection scope. Consider reference palette permutations, simple "
@@ -197,5 +198,5 @@ def admit(document, response, selected, direction=None):
     if direction is not None:
         from .document_direction import evaluate
 
-        result.update(direction=direction, **evaluate(document, candidate, direction))
+        result.update(direction=direction, **evaluate(document, candidate, direction, selected))
     return result
