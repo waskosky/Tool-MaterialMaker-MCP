@@ -351,6 +351,11 @@ def frames(document, clip_id, count=16):
         result["frames"].append(
             {"index": index, "time": time, "svg": v1.render(sample(document, clip_id, time))}
         )
+        if "creature" in document:
+            from .document_creature import sockets
+
+            result["schema"] = "rai.vector-motion-frames/v2"
+            result["frames"][-1]["sockets"] = sockets(document, clip_id, time)
     from .authoring import encode
 
     encode(result)

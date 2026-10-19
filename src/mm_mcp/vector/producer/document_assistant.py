@@ -91,7 +91,7 @@ def selection(document, selected):
     return selected
 
 
-def prompt(document, intent, selected):
+def prompt(document, intent, selected, direction=None, family_index=0):
     v2.validate(document)
     selection(document, selected)
     if not isinstance(intent, str) or not 1 <= len(intent.strip()) <= 4000 or "\0" in intent:
@@ -103,6 +103,22 @@ def prompt(document, intent, selected):
         "source_sha256": v1.structural_digest(document),
         "document": document,
     }
+    if direction is not None:
+        from .document_direction import validate
+
+        validate(direction)
+        if type(family_index) is not int or not 0 <= family_index <= 2:
+            raise ValueError("Use a bounded three-candidate family index")
+        context.update(direction=direction, family_index=family_index)
+        context["direction_policy"] = (
+            "Produce a distinct editable treatment for this family index (0,1,2). "
+            "Within the selected change scope, unprotected drawable paints must resolve "
+            "to the frozen reference palette; outside artwork stays unchanged. "
+            "Opacity is one; visible strokes use the exact supplied width. Preserve the "
+            "rig, creature recipe and at least 80 percent of named parts. Preserve protected "
+            "parts and selection scope. Consider reference palette permutations, simple "
+            "accents and readable shape details. Never discard a procedural recipe."
+        )
     return (
         INSTRUCTIONS
         + "\nARTWORK_REQUEST_JSON\n"
@@ -110,7 +126,7 @@ def prompt(document, intent, selected):
     )
 
 
-def admit(document, response, selected):
+def admit(document, response, selected, direction=None):
     v2.validate(document)
     selection(document, selected)
     result = read_json(response)
@@ -130,7 +146,8 @@ def admit(document, response, selected):
         raise ValueError("Proposal warnings exceed their bound")
     operations = read_json(result["operations_json"])
     if not isinstance(operations, list) or any(
-        not isinstance(op, dict) or op.get("op") in ("set_lock", "replace") for op in operations
+        not isinstance(op, dict) or op.get("op") in ("set_lock", "replace", "creature_detach")
+        for op in operations
     ):
         raise ValueError(
             "AI proposes explicit part edits, never lock changes or whole-source replacement"
@@ -162,7 +179,7 @@ def admit(document, response, selected):
             raise ValueError("Proposal changes motion outside the selected parts")
     old = {n["id"]: n for n in document["nodes"]}
     new = {n["id"]: n for n in candidate["nodes"]}
-    return {
+    result = {
         "schema": SCHEMA,
         "summary": summary.strip(),
         "warnings": warnings,
@@ -178,3 +195,8 @@ def admit(document, response, selected):
             "parts_changed": sum(old[k] != new[k] for k in old.keys() & new.keys()),
         },
     }
+    if direction is not None:
+        from .document_direction import evaluate
+
+        result.update(direction=direction, **evaluate(document, candidate, direction, selected))
+    return result

@@ -169,11 +169,17 @@ class GraphStore:
     def list(self):
         with self.connect() as db:
             return [dict(r) for r in db.execute('SELECT id,title,revision,created FROM projects WHERE kind=? ORDER BY created DESC', (self.kind,))]
-    def patch(self, pid, expected_revision, operations, idempotency_key, *, dry_run=False, authorize=None):
+    def patch(self, pid, expected_revision, operations, idempotency_key, *, dry_run=False, authorize=None, authorization_digest=None):
         identifier(idempotency_key, 'idempotency key')
         if type(expected_revision) is not int:
             raise ServiceError('REVISION_REQUIRED', 'expected_revision must be an integer.')
-        request_hash = digest({'revision':expected_revision,'operations':operations,'dry_run':dry_run})
+        request = {'revision':expected_revision,'operations':operations,'dry_run':dry_run}
+        if authorization_digest is not None:
+            if (not isinstance(authorization_digest, str) or len(authorization_digest) != 64
+                    or any(c not in '0123456789abcdef' for c in authorization_digest)):
+                raise ServiceError('AUTHORIZATION_DIGEST', 'Use an exact candidate digest.')
+            request['authorization_digest'] = authorization_digest
+        request_hash = digest(request)
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
             row = self._row(db, pid)

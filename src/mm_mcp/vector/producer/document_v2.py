@@ -102,7 +102,11 @@ def _expanded(document):
 
 def validate(document):
     v1.encode(document)
-    v1.fields(document, {"schema", "canvas", "palette", "nodes", "styles", "components", "rig"})
+    v1.fields(
+        document,
+        {"schema", "canvas", "palette", "nodes", "styles", "components", "rig"},
+        {"creature"},
+    )
     if document["schema"] != SCHEMA:
         raise ValueError("Use an explicitly upgraded v2 document")
     v1.validate(
@@ -163,6 +167,10 @@ def validate(document):
     from .document_motion import validate as validate_motion
 
     validate_motion(document["rig"], document["nodes"])
+    if "creature" in document:
+        from .document_creature import validate as validate_creature
+
+        validate_creature(document)
     return document
 
 
@@ -350,6 +358,7 @@ def revise(source, operations):
                 "components": {},
                 "rig": {"bones": [], "clips": []},
             }
+            temporary.pop("creature", None)
             component["nodes"] = revise(temporary, edits)["nodes"]
         elif op in ("recipe_set", "recipe_detach"):
             v1.fields(
@@ -373,6 +382,16 @@ def revise(source, operations):
         elif op == "rig_set":
             v1.fields(operation, {"op", "rig"})
             out["rig"] = deepcopy(operation["rig"])
+        elif op in ("creature_set", "creature_detach"):
+            v1.fields(operation, {"op"} | ({"parameters"} if op == "creature_set" else set()))
+            if "creature" not in out:
+                raise ValueError("Choose an installed creature recipe")
+            if op == "creature_set":
+                from .document_creature import resize
+
+                out = resize(out, operation["parameters"])
+            else:
+                del out["creature"]
         elif op == "clip_set":
             v1.fields(operation, {"op", "clip"})
             clip = deepcopy(operation["clip"])
@@ -393,6 +412,11 @@ def revise(source, operations):
 
 def create(template="blank"):
     from .document_templates import create as create_v1
+
+    if template == "trail_hopper":
+        from .document_creature import create as create_creature
+
+        return validate(create_creature())
 
     if template == "courier":
         from .document_library import courier
@@ -423,6 +447,7 @@ def describe():
             "courier",
             "emblem",
             "signage",
+            "trail_hopper",
         ],
         "limits": {
             "nodes_expanded": 128,
@@ -450,6 +475,10 @@ def describe():
             "frames",
             "mask",
             "sdf",
+            "creature_inspect",
+            "creature_fit",
+            "creature_pose",
+            "direction_compare",
         ],
         "modifiers": ["mirror", "linear", "radial", "construction"],
         "construction_policy": (
@@ -493,6 +522,10 @@ def execute(request):
         "frames": {"source", "clip", "count"},
         "mask": {"source"},
         "sdf": {"source", "resolution", "spread"},
+        "creature_inspect": {"source"},
+        "creature_fit": {"source", "targets", "free_parameters"},
+        "creature_pose": {"source", "leg", "target", "clip", "time"},
+        "direction_compare": {"source", "reference", "candidates", "stroke_width"},
     }
     if request.get("profile") != PROFILE or operation not in contracts:
         raise ValueError("Use an installed vector-document-v2 operation")
@@ -524,6 +557,35 @@ def execute(request):
         documents = [
             revise(request["source"], [{"op": "palette", "colors": colors}]) for colors in palettes
         ]
+    elif operation == "direction_compare":
+        from .document_direction import compare
+
+        return {
+            "profile": PROFILE,
+            "operation": operation,
+            **compare(
+                request["source"],
+                request["reference"],
+                request["candidates"],
+                request["stroke_width"],
+            ),
+        }
+    elif operation.startswith("creature_"):
+        from . import document_creature as creature
+
+        args = {k: request[k] for k in contracts[operation] if k != "source"}
+        result = getattr(
+            creature,
+            {"creature_inspect": "describe", "creature_fit": "fit", "creature_pose": "pose"}[
+                operation
+            ],
+        )(request["source"], **args)
+        return {
+            "schema": "rai.vector-authoring/v2",
+            "profile": PROFILE,
+            "operation": operation,
+            **result,
+        }
     elif operation == "sdf":
         from .document_sdf import export
 
